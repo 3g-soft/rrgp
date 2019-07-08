@@ -1,3 +1,1 @@
-class MortarBullet(damage: Int, velocity: Vector2f, point: Point, range: Float): Bullet(damage, velocity, point, range) {
-
-}
+//class MortarBullet(damage: Int, velocity: Vector2f, point: Point, id: Int): Bullet(damage, velocity, point, id) {}

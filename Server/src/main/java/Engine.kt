@@ -1,9 +1,14 @@
 object Engine {
-    fun update() {}
+    val entities: MutableList<Entity> = emptyList<Entity>().toMutableList()
+
+    fun update() {
+        entities.forEach { entity ->
+
+        }
+    }
     fun checkAllCollisions(): List<CollisionEvent> {
         return listOf()
     }
-
     fun addNewPlayer() {}
     fun makeShot(owner: Player, initialVector: Vector2f) {}
 
