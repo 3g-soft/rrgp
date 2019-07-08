@@ -1,7 +1,4 @@
-import kotlin.math.PI
-import kotlin.math.atan2
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 data class Vector2f(var x: Float = 0f, var y: Float = 1f) {
     var length: Float
@@ -20,6 +17,11 @@ data class Vector2f(var x: Float = 0f, var y: Float = 1f) {
             else {
                 angle
             }
+        }
+        set(value) {
+            val len = this.length
+            this.x = len * cos(value)
+            this.y = len * sin(value)
         }
 
     fun normalize(): Vector2f {
