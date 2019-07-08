@@ -1,16 +1,11 @@
-class Player(position: Point, var hp: Int, var velocity: Vector2f, teamId: Int, homeIsland: Island) : Entity(position) {
+class Player(var hp: Int, teamId: Int, homeIsland: Island,
+             velocity: Vector2f, pos: Point, id: Int ) : MovableEntity(velocity, pos, id) {
     val isDead: Boolean
         get() = hp <= 0
 
     init {
         hp = 0
-        velocity = Vector2f()
         val shotBullets: MutableList<Bullet>
-    }
-
-    fun move() {
-        this.position.x += velocity.x
-        this.position.y += velocity.y
     }
 
     fun selectWeapon(wId: Int) {}
