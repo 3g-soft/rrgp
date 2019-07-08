@@ -13,4 +13,7 @@ class Player(var hp: Int, teamId: Int, homeIsland: Island,
     fun checkCollision(entity: Entity): CollisionEvent {
         return CollisionEvent(this, entity)
     }
+
+    val hitbox = Hitbox(200f, 100f, this)
+
 }

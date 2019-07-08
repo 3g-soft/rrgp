@@ -68,7 +68,7 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
                     broadcastState()
 
                 }
-                l.log("tick: $time, $i")
+//                l.log("tick: $time, $i")
             }
         }
 

@@ -1,4 +1,4 @@
-(function () {
+// (function () {
     class Connection{
         constructor(addr){
             this.nextid = 0;
@@ -16,7 +16,7 @@
                     this.onstate(resp.response)
                 }
                 // console.log(msg.data);
-                this.promiseControl[parseInt(resp.rid)](resp.response);
+                // this.promiseControl[parseInt(resp.rid)](resp.response);
             }).bind(this);
         }
     
@@ -32,17 +32,17 @@
         },
     }
 
-    var ws = new Connection("ws://127.0.0.1")
+    var ws = new Connection("ws://127.0.0.1:8080/game")
     ws.onstate = (e) => { entities = e }
 
     var canv = document.getElementById("canv")
     var ctx = canv.getContext("2d")
     var entities = []
     var sprites = {
-        ship: new Image("img/ship.png")
+        ship: new Image()
     }
-
-    while (ws.id == -1) {}
+    sprites.ship.src = "img/ship.png";
+    // while (ws.id == -1) {}
     var playerTeam = "blue"
     var lastMousePosition = {
         x: 0, y: 0
@@ -110,7 +110,8 @@
         ctx.save()
         ctx.translate(x, y)
         ctx.rotate(angle)
-        ctx.drawImage(image, -(image.width / 2), -(image.height / 2), sizeX, sizeY)
+        ctx.drawImage(image, -(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
+        // ctx.drawImage(image, 0, 0, sizeX, sizeY)
         ctx.restore()
     }
 
@@ -269,4 +270,4 @@
 
     init()
     setInterval(render, 17)
-})();
+// })();

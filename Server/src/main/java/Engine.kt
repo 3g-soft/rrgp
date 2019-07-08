@@ -1,22 +1,21 @@
 import websocket.EngineInterface
+import websocket.NetworkPlayer
 import websocket.Requestable
 
-object Engine: EngineInterface {
+class Engine: EngineInterface {
     val MOVES: MutableList<MovableEntity> = emptyList<MovableEntity>().toMutableList()
     var nextid = 0
-    val players = mutableMapOf<Int, Player>()
+    var angle = 0f
+//    val players = mutableMapOf<Int, Player>()
 
     override fun update() {
-        for(k in players.values)k.move()
+        MOVES.forEach { it.move() }
     }
     fun checkAllCollisions(): List<CollisionEvent> {
         return listOf()
     }
     override fun addNewPlayer(): Int {
-        val id = ++nextid
-        players[id] = Player(0 ,0, Island(0, 0, Point(0f, 0f), 0), Vector2f(0f ,0f), Point(0f, 0f), 0)
-        return id
-
+        return nextid++
     }
 
     fun makeShot(owner: Player, initialVector: Vector2f) {}
@@ -25,17 +24,13 @@ object Engine: EngineInterface {
         player.velocity = velocity.copy()
     }
 
-    override fun getState(): MutableMap<Int, Player> {
-        return players
+    override fun getState(): List<NetworkPlayer> {
+        angle += 0.05f
+        return listOf(NetworkPlayer(Vector2f(0f, 0f), Point(1f, 1f), angle , 1, nextid - 1, Point(200f, 100f)))
         TODO("must return copy of players")
     }
 
     override fun removePlayer(id: Int){
 
-    }
-
-    @Requestable(true)
-    fun velocityRequest(id: Int, x: String, y: String){
-        setPlayerVelocity(players[id]!!, Vector2f(x.toFloat(), y.toFloat()))
     }
 }
