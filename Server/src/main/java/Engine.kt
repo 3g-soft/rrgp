@@ -1,8 +1,8 @@
 object Engine {
-    val moves: MutableList<MoveableEntity> = emptyList<MoveableEntity>().toMutableList()
+    val MOVES: MutableList<MovableEntity> = emptyList<MovableEntity>().toMutableList()
 
     fun update() {
-        moves.forEach { entity ->
+        MOVES.forEach { entity ->
             entity.move()
         }
     }

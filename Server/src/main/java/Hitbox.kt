@@ -4,20 +4,31 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
 
 
     fun checkCollision(hitbox: Hitbox): Boolean {
-        var angle = if (owner.movable) {
+        var ownerAngle = if (owner is MovableEntity) {
             owner.velocity.angle
-        }
-        else {
+        } else {
             0f
         }
         val radius1 = sqrt((this.sizex / 2).pow(2) + (this.sizey / 2).pow(2))
         val angle1 = atan(this.sizey / this.sizex)
         val angles1 = listOf(angle1, PI.toFloat() - angle1, angle1 - PI.toFloat(), -angle1)
         val points1 = listOf(
-            Point(cos(angles1[0]) * radius1 + owner.position.x, sin(angles1[0]) * radius1 + owner.position.y),
-            Point(cos(angles1[1]) * radius1 + owner.position.x, sin(angles1[1]) * radius1 + owner.position.y),
-            Point(cos(angles1[2]) * radius1 + owner.position.x, sin(angles1[2]) * radius1 + owner.position.y),
-            Point(cos(angles1[3]) * radius1 + owner.position.x, sin(angles1[3]) * radius1 + owner.position.y)
+            Point(
+                cos(angles1[0] + ownerAngle) * radius1 + owner.position.x,
+                sin(angles1[0] + ownerAngle) * radius1 + owner.position.y
+            ),
+            Point(
+                cos(angles1[1] + ownerAngle) * radius1 + owner.position.x,
+                sin(angles1[1] + ownerAngle) * radius1 + owner.position.y
+            ),
+            Point(
+                cos(angles1[2] + ownerAngle) * radius1 + owner.position.x,
+                sin(angles1[2] + ownerAngle) * radius1 + owner.position.y
+            ),
+            Point(
+                cos(angles1[3] + ownerAngle) * radius1 + owner.position.x,
+                sin(angles1[3] + ownerAngle) * radius1 + owner.position.y
+            )
         )
         val lines1 = listOf(
             points1[0].getLine(points1[1]), points1[1].getLine(points1[2]),
@@ -25,14 +36,31 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
         )
 
 
+        var otherAngle = if (hitbox.owner is MovableEntity) {
+            hitbox.owner.velocity.angle
+        } else {
+            0f
+        }
         val radius2 = sqrt((hitbox.sizex / 2).pow(2) + (hitbox.sizey / 2).pow(2))
         val angle2 = atan(hitbox.sizey / hitbox.sizex)
         val angles2 = listOf(angle2, PI.toFloat() - angle2, angle2 - PI.toFloat(), -angle2)
         val points2 = listOf(
-            Point(cos(angles2[0]) * radius2 + owner.position.x, sin(angles2[0]) * radius2 + owner.position.y),
-            Point(cos(angles2[1]) * radius2 + owner.position.x, sin(angles2[1]) * radius2 + owner.position.y),
-            Point(cos(angles2[2]) * radius2 + owner.position.x, sin(angles2[2]) * radius2 + owner.position.y),
-            Point(cos(angles2[3]) * radius2 + owner.position.x, sin(angles2[3]) * radius2 + owner.position.y)
+            Point(
+                cos(angles2[0] + otherAngle) * radius2 + owner.position.x,
+                sin(angles2[0] + otherAngle) * radius2 + owner.position.y
+            ),
+            Point(
+                cos(angles2[1] + otherAngle) * radius2 + owner.position.x,
+                sin(angles2[1] + otherAngle) * radius2 + owner.position.y
+            ),
+            Point(
+                cos(angles2[2] + otherAngle) * radius2 + owner.position.x,
+                sin(angles2[2] + otherAngle) * radius2 + owner.position.y
+            ),
+            Point(
+                cos(angles2[3] + otherAngle) * radius2 + owner.position.x,
+                sin(angles2[3] + otherAngle) * radius2 + owner.position.y
+            )
         )
         val lines2 = listOf(
             points2[0].getLine(points2[1]), points2[1].getLine(points2[2]),
