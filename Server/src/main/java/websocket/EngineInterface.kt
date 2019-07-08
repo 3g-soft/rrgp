@@ -5,4 +5,5 @@ interface EngineInterface{
     fun doTick()
     fun addPlayer(): Int
     fun removePlayer(id: Int)
+    fun getGameState(): Any
 }

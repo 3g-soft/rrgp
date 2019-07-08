@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.*
+import kotlin.system.measureTimeMillis
 
 data class RequestData(val op: String, val args: Array<String>, val rid: Int = -1)
 data class Operation(val c: KFunction<*>, val needId: Boolean)
@@ -20,6 +21,7 @@ class LogoutRequest(val id: Int) : Request()
 
 @Target(AnnotationTarget.FUNCTION)
 annotation class Requestable(val needId: Boolean = false)
+
 
 class Server(val eng: EngineInterface, val tick: Long = 100) {
     class InvalidRequestParameterTypeException(str: String? = null) : Throwable(str)
@@ -57,10 +59,17 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
             eng.setup()
             while (isActive) {
                 delay(tick)
-                eng.doTick()
-                while (!channel.isEmpty) {
-                    processRequest(channel.receiveOrNull()!!)
+                var i = 0
+                val time = measureTimeMillis {
+                    eng.doTick()
+                    while (!channel.isEmpty) {
+                        processRequest(channel.receiveOrNull()!!)
+                        i++
+                    }
+                    broadcastState()
+
                 }
+                l.log("tick: $time, $i")
             }
         }
 
@@ -73,11 +82,11 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
                     clients[it] = nc
                 }
                 ws.onMessage {
-                    clients[it]?.recieve(gson.fromJson(it.message(), RequestData::class.java))
+                    runBlocking {
+                        clients[it]?.receive(gson.fromJson(it.message(), RequestData::class.java))}
                 }
                 ws.onClose {
                     runBlocking { requestChannel.send(LogoutRequest(clients[it]!!.id)) }
-                    clients[it]?.stop()
                     clients.remove(it)
                 }
             }
@@ -117,5 +126,12 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
 
     suspend fun join() {
         job.join()
+    }
+
+    fun broadcastState(){
+        val bs = "{\"name\": \"gd\", \"response\": ${gson.toJson(eng.getGameState())}}"
+        for(c in clients.values){
+            c.ctx.send(bs)
+        }
     }
 }

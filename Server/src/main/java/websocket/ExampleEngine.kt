@@ -99,8 +99,7 @@ class ExampleEngine: EngineInterface{
         players[id]!!.vel = Vector2f(0f, 0f)
     }
 
-    @Requestable
-    fun getGameState(): MutableMap<Int, Player> {
+    override fun getGameState(): MutableMap<Int, Player> {
         val copy = mutableMapOf<Int, Player>()
         players.forEach { it -> copy[it.key] = it.value.copy() }
 //        log.log(copy.toString())
