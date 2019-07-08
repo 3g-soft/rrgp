@@ -1,6 +1,5 @@
 class Player(var hp: Int, teamId: Int, homeIsland: Island,
              velocity: Vector2f, pos: Point, id: Int ) : MoveableEntity(velocity, pos, id) {
-    override val moving = true
     val isDead: Boolean
         get() = hp <= 0
 

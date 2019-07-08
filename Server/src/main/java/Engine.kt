@@ -1,9 +1,9 @@
 object Engine {
-    val entities: MutableList<Entity> = emptyList<Entity>().toMutableList()
+    val moves: MutableList<MoveableEntity> = emptyList<MoveableEntity>().toMutableList()
 
     fun update() {
-        entities.forEach { entity ->
-
+        moves.forEach { entity ->
+            entity.move()
         }
     }
     fun checkAllCollisions(): List<CollisionEvent> {
