@@ -1,1 +1,1 @@
-abstract class Entity (var position: Point)
+abstract class Entity(var position: Point)

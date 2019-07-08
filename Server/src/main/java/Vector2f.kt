@@ -15,14 +15,13 @@ data class Vector2f(var x: Float = 0f, var y: Float = 1f) {
     }
 
     val angle: Float
-    get() {
-        var angle = atan2(this.y, this.x)
-        return if (angle < 0) {
-            angle + 2 * PI.toFloat()
+        get() {
+            var angle = atan2(this.y, this.x)
+            return if (angle < 0) {
+                angle + 2 * PI.toFloat()
+            } else {
+                angle
+            }
         }
-        else {
-            angle
-        }
-    }
 
 }
