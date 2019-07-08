@@ -13,7 +13,9 @@ class Player(position: Point, var hp: Int, var velocity: Vector2f, teamId: Int, 
         this.position.y += velocity.y
     }
 
-    fun selectWeapon(wId: Int) {}
+    fun selectWeapon(wId: Int) {
+
+    }
 
     fun checkCollision(entity: Entity): CollisionEvent {
         return CollisionEvent(this, entity)
