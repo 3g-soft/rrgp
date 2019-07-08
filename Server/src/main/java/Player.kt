@@ -1,8 +1,11 @@
  class Player(position: Point, var hp: Int, var velocity: Vector2f, teamId: Int, homeIsland: Island): Entity(position) {
+     val isDead: Boolean
+        get() = hp <= 0
+
      init {
          hp = 0
          velocity = Vector2f()
-         //val shotBullets: MutableList<Bullet>
+         val shotBullets: MutableList<Bullet>
      }
 
      fun move() {
