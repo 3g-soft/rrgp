@@ -134,11 +134,11 @@
     }
 
     function spell1() {
-        alert('BOOM')
+        ws.sendRequest("shooot", 1)
     }
     
     function spell2() {
-        alert('BEWM')
+        ws.sendRequest("shoot", 2)
     }
 
     function renderButtons() {
