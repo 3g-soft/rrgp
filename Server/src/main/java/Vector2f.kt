@@ -1,3 +1,5 @@
+import kotlin.math.PI
+import kotlin.math.atan2
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -11,4 +13,16 @@ data class Vector2f(var x: Float = 0f, var y: Float = 1f) {
         y /= len
         return Vector2f(x, y)
     }
+
+    val angle: Float
+    get() {
+        var angle = atan2(this.y, this.x)
+        return if (angle < 0) {
+            angle + 2 * PI.toFloat()
+        }
+        else {
+            angle
+        }
+    }
+
 }

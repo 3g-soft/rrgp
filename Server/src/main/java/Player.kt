@@ -10,6 +10,8 @@
          this.position.y += velocity.y
      }
 
+     fun selectWeapon(wId: Int) { }
+
      fun checkCollision(entity: Entity): CollisionEvent {
          return CollisionEvent(this, entity)
      }
