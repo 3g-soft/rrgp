@@ -1,9 +1,8 @@
 package websocket
 
 interface EngineInterface{
-    fun setup()
-    fun doTick()
-    fun addPlayer(): Int
+    fun update()
+    fun addNewPlayer(): Int
     fun removePlayer(id: Int)
-    fun getGameState(): Any
+    fun getState(): Any
 }

@@ -56,12 +56,11 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
 
         fun CoroutineScope.serverActor() = actor<Request> {
             job = coroutineContext[Job]!!
-            eng.setup()
             while (isActive) {
                 delay(tick)
                 var i = 0
                 val time = measureTimeMillis {
-                    eng.doTick()
+                    eng.update()
                     while (!channel.isEmpty) {
                         processRequest(channel.receiveOrNull()!!)
                         i++
@@ -113,7 +112,7 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
                 }
                 r.response.complete(gson.toJson(result))
             }
-            is LoginRequest -> r.response.complete(eng.addPlayer())
+            is LoginRequest -> r.response.complete(eng.addNewPlayer())
             is LogoutRequest -> eng.removePlayer(r.id)
         }
     }
@@ -129,7 +128,7 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
     }
 
     fun broadcastState(){
-        val bs = "{\"name\": \"gd\", \"response\": ${gson.toJson(eng.getGameState())}}"
+        val bs = "{\"name\": \"gd\", \"response\": ${gson.toJson(eng.getState())}}"
         for(c in clients.values){
             c.ctx.send(bs)
         }

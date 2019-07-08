@@ -24,9 +24,8 @@ class ExampleEngine: EngineInterface{
 
     private var lastPlayerId = -1
 
-    override fun setup() {}
 
-    override fun doTick() {
+    override fun update() {
         for (i in players.keys) {
             val it = players[i]!!
             if (it.chasing == null) {
@@ -49,7 +48,7 @@ class ExampleEngine: EngineInterface{
         }
     }
 
-    override fun addPlayer(): Int {
+    override fun addNewPlayer(): Int {
         lastPlayerId++
         players[lastPlayerId] = (Player(Vector2f((0..size).random().toFloat(), (0..size).random().toFloat()), Vector2f(0f, 0f)))
         val id = lastPlayerId
@@ -99,7 +98,7 @@ class ExampleEngine: EngineInterface{
         players[id]!!.vel = Vector2f(0f, 0f)
     }
 
-    override fun getGameState(): MutableMap<Int, Player> {
+    override fun getState(): MutableMap<Int, Player> {
         val copy = mutableMapOf<Int, Player>()
         players.forEach { it -> copy[it.key] = it.value.copy() }
 //        log.log(copy.toString())
