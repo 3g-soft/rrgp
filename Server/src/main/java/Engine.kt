@@ -1,6 +1,6 @@
 object Engine {
     fun update() { }
-    fun checkAllCollisions(): MutableList<CollisionEvent> { return mutableListOf() }
+    fun checkAllCollisions(): List<CollisionEvent> { return listOf() }
     fun addNewPlayer() { }
-    fun getState(): MutableList<Entity> { return mutableListOf()}
+    fun getState(): List<Entity> { return listOf()}
 }
