@@ -4,7 +4,7 @@ object Engine {
         return listOf()
     }
 
-    fun addNewPlayer() {}
+    fun addNewPlayer(newPlayer: Player) {}
     fun makeShot(owner: Player, initialVector: Vector2f) {}
 
     fun setPlayerVelocity(player: Player, velocity: Vector2f) {
