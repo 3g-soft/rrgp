@@ -1,6 +1,6 @@
 object Engine {
-    fun update() { }
+    fun update() {  }
     fun checkAllCollisions(): List<CollisionEvent> { return listOf() }
-    fun addNewPlayer() { }
-    fun getState(): List<Entity> { return listOf()}
+    fun addNewPlayer() {  }
+    fun getState(): List<Entity> { return listOf() }
 }

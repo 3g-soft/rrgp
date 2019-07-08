@@ -5,7 +5,7 @@
      init {
          hp = 0
          velocity = Vector2f()
-         //val shotBullets: MutableList<Bullet>
+         val shotBullets: MutableList<Bullet>
      }
 
      fun move() {
