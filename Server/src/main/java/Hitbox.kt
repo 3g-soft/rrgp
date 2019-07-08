@@ -1,3 +1,5 @@
+package engine
+
 import kotlin.math.*
 
 data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
