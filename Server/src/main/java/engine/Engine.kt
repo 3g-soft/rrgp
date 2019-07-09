@@ -41,8 +41,12 @@ class Engine {
         entities.remove(entity)
     }
 
-    fun setPlayerVelocity(player: Player, velocity: Vector2f) {
-        player.velocity = velocity.copy()
+    fun setPlayerSpeed(player: Player, speed: Float) {
+        player.velocity.length = speed
+    }
+
+    fun setPlayerAngle(player: Player, angle: Float) {
+        player.velocity.angle = angle
     }
 
     fun getState(): List<Entity> {
