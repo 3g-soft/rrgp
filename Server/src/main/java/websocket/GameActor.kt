@@ -12,8 +12,12 @@ class LoginRequest(val response: CompletableDeferred<Int>) : Request()
 class LogoutRequest(val id: Int) : Request()
 class TickRequest: Request()
 class GetStateRequest(val response: CompletableDeferred<List<Entity>>): Request()
+class ShotRequest(val id: Int, val type: Int): Request()
+class ChangeAngleRequest(val id: Int, val angle: Float): Request()
 
 class GameActor(val eng: Engine) {
+    private val l = Logger("GA")
+
     private val requestChannel = GlobalScope.actor<Request> {
         for (request in channel){
             processRequest(request)
@@ -40,12 +44,22 @@ class GameActor(val eng: Engine) {
         response.await()
     }
 
+    fun shot(id: Int, type: Int) = GlobalScope.async {
+        requestChannel.send(ShotRequest(id, type))
+    }
+
+    fun changeAngle(id: Int, angle: Float) = GlobalScope.async {
+        requestChannel.send(ChangeAngleRequest(id, angle))
+    }
+
     private fun processRequest(r: Request){
         when (r) {
             is LoginRequest -> r.response.complete(eng.addNewPlayer())
             is LogoutRequest -> eng.removePlayer(r.id)
             is TickRequest -> eng.update()
             is GetStateRequest -> r.response.complete(eng.getState())
+            is ShotRequest -> l.log("Shot: not implemented")
+            is ChangeAngleRequest -> l.log("Angle: not implemented")
         }
     }
 }

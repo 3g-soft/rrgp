@@ -19,7 +19,7 @@
         }
     
         sendRequest(name, ...args){
-            this.ws.send(JSON.stringify({op: name, args: args, rid: id}))
+            this.ws.send(JSON.stringify({op: name, args: args, rid: this.nextid++}))
         }
     }
 

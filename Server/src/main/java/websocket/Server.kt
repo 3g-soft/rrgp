@@ -26,8 +26,8 @@ class Server(val eng: Engine, val tick: Long = 100) {
                 ws.onMessage {
                     GlobalScope.launch(Dispatchers.Default) {
                         val obj = JSONObject(it.message())
-                        TODO("must receive request")
-//                        clients[it]?.receive(RequestData(obj.getString("op")))
+                        l.log(it.message())
+                        parseRequest(clients[it]!!, obj)
                     }
                 }
                 ws.onClose {
@@ -49,5 +49,14 @@ class Server(val eng: Engine, val tick: Long = 100) {
             }
         }
         l.log("Started!")
+    }
+
+    fun parseRequest(id: Int, obj: JSONObject){
+        val name = obj.getString("op")
+        val args = obj.getJSONArray("args")
+        when(name){
+            "makeShot" -> gameActor.shot(id, args.getInt(0))
+            "changeAngle" -> gameActor.changeAngle(id, args.getFloat(0))
+        }
     }
 }
