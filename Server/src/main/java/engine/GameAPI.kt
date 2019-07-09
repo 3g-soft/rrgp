@@ -9,29 +9,29 @@ class GameAPI {
         onCollisionDamage(Engine.update())
     }
 
-    fun setPlayerAngle(angle: Float, uid: Int) {
-        var player = EntityManager.getById(uid)
+    fun setPlayerAngle(angle: Float, id: Int) {
+        var player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerAngle(player, angle)
         }
     }
 
-    fun setPlayerSpeed(speed: Float, uid: Int) {
-        var player = EntityManager.getById(uid)
+    fun setPlayerSpeed(speed: Float, id: Int) {
+        var player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerSpeed(player, speed)
         }
     }
 
-    fun setPlayerPos(pos: Point, uid: Int) {
-        var player = EntityManager.getById(uid)
+    fun setPlayerPos(pos: Point, id: Int) {
+        var player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerPos(player, pos)
         }
     }
 
-    fun setPlayerPos(x: Float, y: Float, uid: Int) {
-        var player = EntityManager.getById(uid)
+    fun setPlayerPos(x: Float, y: Float, id: Int) {
+        var player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerPos(player, Point(x, y))
         }
@@ -57,8 +57,8 @@ class GameAPI {
                         DataTransferEntity(
                             EntityManager.getId(entity),
                             entity.pos,
-                            DataTransferEntityType.Bullet
-                        )
+                            DataTransferEntityType.Bullet,
+                            entity.velocity.angle)
                     )
                 }
                 is Player -> {
@@ -66,7 +66,8 @@ class GameAPI {
                         DataTransferEntity(
                             EntityManager.getId(entity),
                             entity.pos,
-                            DataTransferEntityType.Player
+                            DataTransferEntityType.Player,
+                            entity.velocity.angle
                         )
                     )
                 }
