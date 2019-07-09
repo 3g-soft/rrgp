@@ -3,8 +3,6 @@ package engine
 import kotlin.math.*
 
 data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
-
-
     fun checkCollision(hitbox: Hitbox): Boolean {
         var ownerAngle = if (owner is MovableEntity) {
             owner.velocity.angle
