@@ -1,5 +1,6 @@
 package engine
 
+const val TEAMSCOUNT = 2
 class EntityManager {
     val EntityIDs: MutableMap<Entity, Int> = emptyMap<Entity, Int>().toMutableMap()
     val Teams: MutableMap<Int, MutableList<Int>> = emptyMap<Int, MutableList<Int>>().toMutableMap()
@@ -10,7 +11,7 @@ class EntityManager {
     }
 
     fun giveTeam(entity: Entity){
-        Teams[Teams.size%2]!!.add(EntityIDs[entity]!!)
+        Teams[Teams.size % TEAMSCOUNT]!!.add(EntityIDs[entity]!!)
     }
     fun identify(entity: Entity) {
         if (entity in EntityIDs.keys) return
@@ -24,5 +25,9 @@ class EntityManager {
                 return key
         }
         return null
+    }
+    fun getId(entity: Entity): Int {
+        if (entity !in EntityIDs) return 0
+        return EntityIDs[entity]!!
     }
 }

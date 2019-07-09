@@ -6,7 +6,6 @@ class DamageManager {
     fun assignHP(id: Int) {
         EntityHPs[id] = 280
     }
-
     fun dealDamage(id: Int, damage: Int) {
         if (EntityHPs[id] == null) return
         EntityHPs[id] = EntityHPs[id]!! - damage
@@ -17,4 +16,7 @@ class DamageManager {
 
         }
     }
+//    fun onCollisionDamage(CollisionEvent) {
+//
+//    }
 }

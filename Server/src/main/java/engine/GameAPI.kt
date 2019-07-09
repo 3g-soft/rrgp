@@ -5,6 +5,10 @@ class GameAPI {
     val DamageManager: DamageManager = DamageManager()
     val EntityManager: EntityManager = EntityManager()
 
+    fun update() {
+        Engine.update()
+    }
+
     fun setPlayerAngle(angle: Float, uid: Int) {
         var player = EntityManager.getById(uid)
         if (player is Player) {
@@ -18,7 +22,6 @@ class GameAPI {
             Engine.setPlayerSpeed(player, speed)
         }
     }
-
 
     fun setPlayerPos(pos: Point, uid: Int) {
         var player = EntityManager.getById(uid)
@@ -38,7 +41,8 @@ class GameAPI {
     fun createPlayer(): DataTransferPlayer {
 //        var r = Random(System.currentTimeMillis())
         var player = Player(Point(500f, 500f))
-        EntityManager.giveTeam(player)
+        EntityManager.identify(player)
+        DamageManager.assignHP(EntityManager.getId(player))
         Engine.addEntity(player)
         return DataTransferPlayer(EntityManager.getId(player), player.pos)
     }
