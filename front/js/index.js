@@ -31,7 +31,16 @@
     }
 
     var ws = new Connection("ws://127.0.0.1:8080/game")
-    ws.onstate = (e) => { entities = e }
+    ws.onstate = (e) => {
+        entities = e.map(ent => {
+            let newEnt = Object.assign({}, ent)
+            mewEnt.size = {
+                x: ent.sizeX,
+                y: ent.sizeY
+            }
+            return newEnt
+        })
+    }
 
     var canv = document.getElementById("canv")
     var ctx = canv.getContext("2d")
@@ -60,6 +69,7 @@
     }
 
     function init() {
+        ctx.transform(1, 0, 0, -1, 0, canv.height)
         document.addEventListener("keydown", (e) => {
             let you = entities.filter(ent => ent.id == ws.id)[0]
             switch (e.keyCode) {
