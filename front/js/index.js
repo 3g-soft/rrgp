@@ -31,7 +31,16 @@
     }
 
     var ws = new Connection("ws://127.0.0.1:8080/game")
-    ws.onstate = (e) => { entities = e }
+    ws.onstate = (e) => {
+        entities = e.map(ent => {
+            let newEnt = Object.assign({}, ent)
+            mewEnt.size = {
+                x: ent.sizeX,
+                y: ent.sizeY
+            }
+            return newEnt
+        })
+    }
 
     var canv = document.getElementById("canv")
     var ctx = canv.getContext("2d")
