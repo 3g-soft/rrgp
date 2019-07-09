@@ -6,7 +6,7 @@ class GameAPI {
     val EntityManager: EntityManager = EntityManager()
 
     fun update() {
-        Engine.update()
+        onCollisionDamage(Engine.update())
     }
 
     fun setPlayerAngle(angle: Float, uid: Int) {
@@ -45,5 +45,18 @@ class GameAPI {
         DamageManager.assignHP(EntityManager.getId(player))
         Engine.addEntity(player)
         return DataTransferPlayer(EntityManager.getId(player), player.pos)
+    }
+
+    private fun onCollisionDamage(collisions: List<CollisionEvent>) {
+        collisions.forEach { collision ->
+            DamageManager.dealDamage(
+                EntityManager.getId(collision.target1),
+                DamageManager.collisionDamage
+            )
+            DamageManager.dealDamage(
+                EntityManager.getId(collision.target2),
+                DamageManager.collisionDamage
+            )
+        }
     }
 }

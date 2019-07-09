@@ -3,8 +3,11 @@ package engine
 class DamageManager {
     val EntityHPs: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
 
+    val collisionDamage = 30
+    val defaultHp = 280
+
     fun assignHP(id: Int) {
-        EntityHPs[id] = 280
+        EntityHPs[id] = defaultHp
     }
     fun dealDamage(id: Int, damage: Int) {
         if (EntityHPs[id] == null) return
@@ -16,7 +19,4 @@ class DamageManager {
 
         }
     }
-//    fun onCollisionDamage(CollisionEvent) {
-//
-//    }
 }

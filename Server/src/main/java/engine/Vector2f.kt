@@ -2,7 +2,7 @@ package engine
 
 import kotlin.math.*
 
-data class Vector2f(var x: Float = 0f, var y: Float = 0f) {
+data class Vector2f(var x: Float = 0f, var y: Float = 1f) {
     var length: Float
         get() = sqrt(this.x.pow(2) + this.y.pow(2))
         set(value) {
