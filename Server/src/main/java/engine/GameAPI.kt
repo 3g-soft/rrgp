@@ -44,7 +44,14 @@ class GameAPI {
         EntityManager.identify(player)
         DamageManager.assignHP(EntityManager.getId(player))
         Engine.addEntity(player)
-        return DataTransferEntity(EntityManager.getId(player), player.pos, DataTransferEntityType.Player)
+        return DataTransferEntity(
+            EntityManager.getId(player),
+            player.pos,
+            DataTransferEntityType.Player,
+            player.hitbox.sizex,
+            player.hitbox.sizey,
+            player.velocity.angle
+        )
     }
 
     fun getAllEntities(): List<DataTransferEntity> {
@@ -58,7 +65,10 @@ class GameAPI {
                             EntityManager.getId(entity),
                             entity.pos,
                             DataTransferEntityType.Bullet,
-                            entity.velocity.angle)
+                            entity.hitbox.sizex,
+                            entity.hitbox.sizey,
+                            entity.velocity.angle
+                        )
                     )
                 }
                 is Player -> {
@@ -67,6 +77,8 @@ class GameAPI {
                             EntityManager.getId(entity),
                             entity.pos,
                             DataTransferEntityType.Player,
+                            entity.hitbox.sizex,
+                            entity.hitbox.sizey,
                             entity.velocity.angle
                         )
                     )
@@ -76,7 +88,9 @@ class GameAPI {
                         DataTransferEntity(
                             EntityManager.getId(entity),
                             entity.pos,
-                            DataTransferEntityType.Island
+                            DataTransferEntityType.Island,
+                            entity.hitbox.sizex,
+                            entity.hitbox.sizey
                         )
                     )
                 }
