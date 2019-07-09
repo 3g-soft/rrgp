@@ -38,17 +38,51 @@ class GameAPI {
     }
 
 
-    fun createPlayer(): DataTransferPlayer {
+    fun createPlayer(): DataTransferEntity {
 //        var r = Random(System.currentTimeMillis())
         var player = Player(Point(500f, 500f))
         EntityManager.identify(player)
         DamageManager.assignHP(EntityManager.getId(player))
         Engine.addEntity(player)
-        return DataTransferPlayer(EntityManager.getId(player), player.pos)
+        return DataTransferEntity(EntityManager.getId(player), player.pos, DataTransferEntityType.Player)
     }
 
-    fun getAllEntities(): List<Entity> {
-        return Engine.getState()
+    fun getAllEntities(): List<DataTransferEntity> {
+        val toReturn = mutableListOf<DataTransferEntity>()
+        val listOfEntities = Engine.getState()
+        for (entity in listOfEntities) {
+            when (entity) {
+                is Bullet -> {
+                    toReturn.add(
+                        DataTransferEntity(
+                            EntityManager.getId(entity),
+                            entity.pos,
+                            DataTransferEntityType.Bullet
+                        )
+                    )
+                }
+                is Player -> {
+                    toReturn.add(
+                        DataTransferEntity(
+                            EntityManager.getId(entity),
+                            entity.pos,
+                            DataTransferEntityType.Player
+                        )
+                    )
+                }
+                is Island -> {
+                    toReturn.add(
+                        DataTransferEntity(
+                            EntityManager.getId(entity),
+                            entity.pos,
+                            DataTransferEntityType.Island
+                        )
+                    )
+                }
+
+            }
+        }
+        return toReturn.toList()
     }
 
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
