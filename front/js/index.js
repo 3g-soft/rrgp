@@ -67,7 +67,7 @@
     var fields = [
         new Image(),    
     ]
-    fields[0].src = "sea.png"
+    fields[0].src = "img/sea.png"
     var offset = 5
 
     function distance(p1, p2) {
