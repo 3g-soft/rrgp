@@ -1,6 +1,5 @@
 package websocket
 
-import com.google.gson.GsonBuilder
 
 import io.javalin.Javalin
 import io.javalin.websocket.WsContext
@@ -10,6 +9,9 @@ import kotlinx.coroutines.channels.actor
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.*
 import kotlin.system.measureTimeMillis
+import Engine
+import org.json.JSONObject
+import org.json.*
 
 data class RequestData(val op: String, val args: Array<String>, val rid: Int = -1)
 data class Operation(val c: KFunction<*>, val needId: Boolean)
@@ -23,12 +25,11 @@ class LogoutRequest(val id: Int) : Request()
 annotation class Requestable(val needId: Boolean = false)
 
 
-class Server(val eng: EngineInterface, val tick: Long = 100) {
+class Server(val eng: Engine, val tick: Long = 100) {
     class InvalidRequestParameterTypeException(str: String? = null) : Throwable(str)
 
     val l = Logger("SRV")
     val requests = mutableMapOf<String, Operation>()
-    val gson = GsonBuilder().setPrettyPrinting().create()
 
     val clients = mutableMapOf<WsContext, WebClient>()
 
@@ -54,25 +55,22 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
             l.log("Registered request ${f.name}()")
         }
 
-        fun CoroutineScope.serverActor() = actor<Request> {
+        requestChannel = GlobalScope.actor<Request> {
             job = coroutineContext[Job]!!
             while (isActive) {
                 delay(tick)
-                var i = 0
+                var requestsCount = 0
                 val time = measureTimeMillis {
                     eng.update()
                     while (!channel.isEmpty) {
                         processRequest(channel.receiveOrNull()!!)
-                        i++
+                        requestsCount++
                     }
                     broadcastState()
 
                 }
-//                l.log("tick: $time, $i")
             }
         }
-
-        requestChannel = GlobalScope.serverActor()
 
         Javalin.create {}.apply {
             ws("/game") { ws ->
@@ -81,8 +79,11 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
                     clients[it] = nc
                 }
                 ws.onMessage {
-                    runBlocking {
-                        clients[it]?.receive(gson.fromJson(it.message(), RequestData::class.java))}
+                    GlobalScope.launch(Dispatchers.Default) {
+                        val obj = JSONObject(it.message())
+                        TODO("must receive request")
+//                        clients[it]?.receive(RequestData(obj.getString("op")))
+                    }
                 }
                 ws.onClose {
                     runBlocking { requestChannel.send(LogoutRequest(clients[it]!!.id)) }
@@ -110,7 +111,8 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
                 } else {
                     result = op.c.call(eng, *r.data.args)
                 }
-                r.response.complete(gson.toJson(result))
+                TODO("Do we really need response?")
+//                r.response.complete(gson.toJson(result))
             }
             is LoginRequest -> r.response.complete(eng.addNewPlayer())
             is LogoutRequest -> eng.removePlayer(r.id)
@@ -123,14 +125,10 @@ class Server(val eng: EngineInterface, val tick: Long = 100) {
         return resp
     }
 
-    suspend fun join() {
-        job.join()
-    }
-
     fun broadcastState(){
-        val bs = "{\"name\": \"gd\", \"response\": ${gson.toJson(eng.getState())}}"
+        val bs = JSONObject().put("name", "gd").put("response", eng.getState()).toString()
         for(c in clients.values){
-            c.ctx.send(bs)
+            GlobalScope.launch(Dispatchers.Default) { c.ctx.send(bs)}
         }
     }
 }

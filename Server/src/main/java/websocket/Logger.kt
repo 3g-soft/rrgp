@@ -1,10 +1,8 @@
 package websocket
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
-import kotlinx.coroutines.runBlocking
 
 object LogManager {
     data class LogEntry(val prefix: String, val data: String)
@@ -30,7 +28,7 @@ object LogManager {
 
 class Logger(private val prefix: String) {
     fun log(data: String) {
-        runBlocking {
+        GlobalScope.launch(Dispatchers.Default) {
             LogManager.send(prefix, data)
         }
     }
