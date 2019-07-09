@@ -26,7 +26,4 @@ class GameAPI {
         var player = Player(Point(500f, 500f))
         return player
     }
-
-
-
 }

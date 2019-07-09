@@ -14,20 +14,20 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
         val angles1 = listOf(angle1, PI.toFloat() - angle1, angle1 - PI.toFloat(), -angle1)
         val points1 = listOf(
             Point(
-                cos(angles1[0] + ownerAngle) * radius1 + owner.position.x,
-                sin(angles1[0] + ownerAngle) * radius1 + owner.position.y
+                cos(angles1[0] + ownerAngle) * radius1 + owner.pos.x,
+                sin(angles1[0] + ownerAngle) * radius1 + owner.pos.y
             ),
             Point(
-                cos(angles1[1] + ownerAngle) * radius1 + owner.position.x,
-                sin(angles1[1] + ownerAngle) * radius1 + owner.position.y
+                cos(angles1[1] + ownerAngle) * radius1 + owner.pos.x,
+                sin(angles1[1] + ownerAngle) * radius1 + owner.pos.y
             ),
             Point(
-                cos(angles1[2] + ownerAngle) * radius1 + owner.position.x,
-                sin(angles1[2] + ownerAngle) * radius1 + owner.position.y
+                cos(angles1[2] + ownerAngle) * radius1 + owner.pos.x,
+                sin(angles1[2] + ownerAngle) * radius1 + owner.pos.y
             ),
             Point(
-                cos(angles1[3] + ownerAngle) * radius1 + owner.position.x,
-                sin(angles1[3] + ownerAngle) * radius1 + owner.position.y
+                cos(angles1[3] + ownerAngle) * radius1 + owner.pos.x,
+                sin(angles1[3] + ownerAngle) * radius1 + owner.pos.y
             )
         )
         val lines1 = listOf(
@@ -46,20 +46,20 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
         val angles2 = listOf(angle2, PI.toFloat() - angle2, angle2 - PI.toFloat(), -angle2)
         val points2 = listOf(
             Point(
-                cos(angles2[0] + otherAngle) * radius2 + owner.position.x,
-                sin(angles2[0] + otherAngle) * radius2 + owner.position.y
+                cos(angles2[0] + otherAngle) * radius2 + owner.pos.x,
+                sin(angles2[0] + otherAngle) * radius2 + owner.pos.y
             ),
             Point(
-                cos(angles2[1] + otherAngle) * radius2 + owner.position.x,
-                sin(angles2[1] + otherAngle) * radius2 + owner.position.y
+                cos(angles2[1] + otherAngle) * radius2 + owner.pos.x,
+                sin(angles2[1] + otherAngle) * radius2 + owner.pos.y
             ),
             Point(
-                cos(angles2[2] + otherAngle) * radius2 + owner.position.x,
-                sin(angles2[2] + otherAngle) * radius2 + owner.position.y
+                cos(angles2[2] + otherAngle) * radius2 + owner.pos.x,
+                sin(angles2[2] + otherAngle) * radius2 + owner.pos.y
             ),
             Point(
-                cos(angles2[3] + otherAngle) * radius2 + owner.position.x,
-                sin(angles2[3] + otherAngle) * radius2 + owner.position.y
+                cos(angles2[3] + otherAngle) * radius2 + owner.pos.x,
+                sin(angles2[3] + otherAngle) * radius2 + owner.pos.y
             )
         )
         val lines2 = listOf(

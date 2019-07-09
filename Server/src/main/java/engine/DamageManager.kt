@@ -10,5 +10,10 @@ class DamageManager {
     fun dealDamage(id: Int, damage: Int) {
         if (EntityHPs[id] == null) return
         EntityHPs[id] = EntityHPs[id]!! - damage
+
+        if (EntityHPs[id]!! <= 0f) {
+            giveHP(id)
+            //tp to island
+        }
     }
 }
