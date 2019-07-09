@@ -12,11 +12,11 @@ abstract class MovableEntity(var velocity: Vector2f, pos: Point) : Entity(pos) {
 }
 
 class Bullet(velocity: Vector2f, pos: Point) : MovableEntity(velocity, pos) {
-    override val hitbox = Hitbox(5f, 5f, this)
+    override val hitbox = Hitbox(25f, 25f, this)
 }
 
 class Player(pos: Point, velocity: Vector2f = Vector2f()) : MovableEntity(velocity, pos) {
-    override val hitbox = Hitbox(50f, 10f, this)
+    override val hitbox = Hitbox(200f, 100f, this)
 
     fun onDeath() {
 
@@ -24,7 +24,7 @@ class Player(pos: Point, velocity: Vector2f = Vector2f()) : MovableEntity(veloci
 }
 
 class Island(pos: Point) : Entity(pos) {
-    override val hitbox = Hitbox(100f, 100f, this)
+    override val hitbox = Hitbox(400f, 400f, this)
 
     fun onDeath() {
 
