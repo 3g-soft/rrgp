@@ -60,6 +60,7 @@
     }
 
     function init() {
+        ctx.transform(1, 0, 0, -1, 0, canv.height)
         document.addEventListener("keydown", (e) => {
             let you = entities.filter(ent => ent.id == ws.id)[0]
             switch (e.keyCode) {
