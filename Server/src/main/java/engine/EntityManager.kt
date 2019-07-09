@@ -14,7 +14,7 @@ class EntityManager {
         Teams[Teams.size % TEAMSCOUNT]!!.add(EntityIDs[entity]!!)
     }
     fun identify(entity: Entity) {
-        if (entity in EntityIDs.keys) return
+        if (entity !in EntityIDs.keys) return
         EntityIDs[entity] = EntityIDs.size
         giveTeam(entity)
     }
@@ -29,5 +29,23 @@ class EntityManager {
     fun getId(entity: Entity): Int {
         if (entity !in EntityIDs) return 0
         return EntityIDs[entity]!!
+    }
+    fun removeEntity(id: Int) {
+        if (id !in EntityIDs.values) return
+        for( key in EntityIDs.keys ) {
+            if (EntityIDs[key] == id) {
+                EntityIDs.remove(key)
+                break
+            }
+        }
+        for ( key in Teams.keys ) {
+            if ( Teams[key]!!.contains(id) )
+                for ( entityid in Teams[key]!! ) {
+                    if ( entityid == id ) {
+                        Teams[key]!!.remove(id)
+                        return
+                    }
+                }
+        }
     }
 }

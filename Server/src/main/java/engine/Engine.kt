@@ -36,7 +36,8 @@ class Engine {
         entities.add(entity)
     }
 
-    fun removeEntity(entity: Entity) {
+    fun removeEntity(entity: Entity?) {
+        if (entity == null) return
         entities.remove(entity)
     }
 

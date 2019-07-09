@@ -37,7 +37,6 @@ class GameAPI {
         }
     }
 
-
     fun createPlayer(): DataTransferPlayer {
 //        var r = Random(System.currentTimeMillis())
         var player = Player(Point(500f, 500f))
@@ -49,6 +48,12 @@ class GameAPI {
 
     fun getAllEntities(): List<Entity> {
         return Engine.getState()
+    }
+
+    fun removePlayer(id: Int) {
+        Engine.removeEntity(EntityManager.getById(id))
+        EntityManager.removeEntity(id)
+        DamageManager.removeEntity(id)
     }
 
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
