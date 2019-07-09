@@ -1,7 +1,7 @@
 package engine
 
 class GameAPI {
-    val Engine: Engine               = Engine()
+    val Engine: Engine = Engine()
     val DamageManager: DamageManager = DamageManager()
     val EntityManager: EntityManager = EntityManager()
 
@@ -35,11 +35,11 @@ class GameAPI {
     }
 
 
-    fun createPlayer(): Player {
+    fun createPlayer(): DataTransferPlayer {
 //        var r = Random(System.currentTimeMillis())
         var player = Player(Point(500f, 500f))
         EntityManager.giveTeam(player)
         Engine.addEntity(player)
-        return player
+        return DataTransferPlayer(EntityManager.getId(player), player.pos)
     }
 }
