@@ -1,5 +1,5 @@
 package engine
 
-abstract class Entity(var position: Point) {
+abstract class Entity(var pos: Point) {
     abstract val hitbox: Hitbox
 }

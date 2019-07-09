@@ -9,7 +9,6 @@ class Engine {
             if (entity is MovableEntity) entity.move()
         }
         return checkAllCollisions()
-
     }
     private fun checkAllCollisions(): List<CollisionEvent> {
         val toReturn = mutableListOf<CollisionEvent>()
@@ -19,13 +18,13 @@ class Engine {
                     toReturn.add(CollisionEvent(entities[i], entities[j]))
                     var ent = entities[i]
                     if (ent is Player) {
-                        ent.position.x -= ent.velocity.x
-                        ent.position.y -= ent.velocity.y
+                        ent.pos.x -= ent.velocity.x
+                        ent.pos.y -= ent.velocity.y
                     }
                     ent = entities[j]
                     if (ent is Player) {
-                        ent.position.x -= ent.velocity.x
-                        ent.position.y -= ent.velocity.y
+                        ent.pos.x -= ent.velocity.x
+                        ent.pos.y -= ent.velocity.y
                     }
                 }
             }
