@@ -15,8 +15,6 @@
                 if(resp.hasOwnProperty('name')){
                     this.onstate(resp.response)
                 }
-                // console.log(msg.data);
-                // this.promiseControl[parseInt(resp.rid)](resp.response);
             }).bind(this);
         }
     
@@ -41,8 +39,9 @@
     var sprites = {
         ship: new Image()
     }
-    sprites.ship.src = "img/ship.png";
-    // while (ws.id == -1) {}
+    sprites.ship.src = "img/ship.png"
+
+
     var playerTeam = "blue"
     var lastMousePosition = {
         x: 0, y: 0
@@ -65,13 +64,21 @@
             let you = entities.filter(ent => ent.id == ws.id)[0]
             switch (e.keyCode) {
                 case 49:
-                    spell1()
+                    shot1()
                     highlight.left = true
                     break
                 
                 case 50:
-                    spell2()
+                    shot2()
                     highlight.right = true
+                    break
+                
+                case 68:
+                    ws.sendRequest("changeAngle", you.angle + 0.01)
+                    break
+                
+                case 65:
+                    ws.sendRequest("changeAngle", you.angle - 0.01)
                     break
             }
         })
@@ -90,13 +97,13 @@
 
             if (lastMousePosition.x >= leftButtonCoords.x && lastMousePosition.x <= leftButtonCoords.x + 60 &&
                 lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 60) {
-                spell1()
+                shot1()
                 highlight.left = true
             }
 
             if (lastMousePosition.x >= leftButtonCoords.x + 0.1 * canv.width && lastMousePosition.x <= leftButtonCoords.x + 60 + 0.1 * canv.width &&
                 lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 60) {
-                spell2()
+                shot2()
                 highlight.right = true
             }
         })
@@ -111,7 +118,6 @@
         ctx.translate(x, y)
         ctx.rotate(angle)
         ctx.drawImage(image, -(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
-        // ctx.drawImage(image, 0, 0, sizeX, sizeY)
         ctx.restore()
     }
 
@@ -134,12 +140,12 @@
         }
     }
 
-    function spell1() {
-        ws.sendRequest("shooot", 1)
+    function shot1() {
+        ws.sendRequest("makeShot", 1)
     }
     
-    function spell2() {
-        ws.sendRequest("shoot", 2)
+    function shot2() {
+        ws.sendRequest("makeShot", 2)
     }
 
     function renderButtons() {
@@ -162,7 +168,6 @@
         if(highlight.left) {
             ctx.fillStyle = "red"
             setTimeout(() => {
-                //console.log("hit")
                 highlight.left = false
             }, 100)
         }
