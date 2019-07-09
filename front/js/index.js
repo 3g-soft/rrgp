@@ -132,16 +132,16 @@
     function drawRotatedImage(image, x, y, sizeX, sizeY, angle) {
         ctx.save()
         ctx.translate(x, y)
-        ctx.rotate(angle + Math.PI)
+        ctx.rotate(angle)
         ctx.drawImage(image, -(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
         ctx.restore()
     }
 
     function renderField() {
-        for (let i = -fields[0].width; i < canv.width; i += fields[0].width) {
-            for (let j = 0; j < canv.height; j += fields[0].height) {
+        for (let i = -fields[0].width; i < canv.width + fields[0].width; i += fields[0].width) {
+            for (let j = -fields[0].height; j < canv.height + fields[0].height; j += fields[0].height) {
                 ctx.save()
-                ctx.translate(offset, 0)
+                ctx.translate(offset - Camera.pos.x % fields[0].width, -Camera.pos.y % fields[0].height)
                 ctx.drawImage(fields[0], i, j)
                 ctx.restore()
             }
