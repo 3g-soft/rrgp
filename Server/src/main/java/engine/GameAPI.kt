@@ -37,6 +37,9 @@ class GameAPI {
 
     fun createPlayer(): Player {
 //        var r = Random(System.currentTimeMillis())
-        return Player(Point(500f, 500f))
+        var player = Player(Point(500f, 500f))
+        EntityManager.giveTeam(player)
+        Engine.addEntity(player)
+        return player
     }
 }
