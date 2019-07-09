@@ -4,11 +4,14 @@ class EntityManager {
     val EntityIDs: MutableMap<Entity, Int> = emptyMap<Entity, Int>().toMutableMap()
     val IslandBoys: MutableMap<Int, MutableList<Int>> = emptyMap<Int, MutableList<Int>>().toMutableMap()
 
-    fun refreshIslandTeams() {
-        EntityIDs.forEach { entry: Map.Entry<Entity, Int> ->
-            if (entry.key is Player)
-        }
-    }
+//    fun refreshIslandTeams() {
+//        EntityIDs.forEach { entry: Map.Entry<Entity, Int> ->
+//            if (entry.key is Player)
+//        }
+//    }
+
+
+
     fun identify(entity: Entity) {
         EntityIDs[entity] = EntityIDs.size
     }

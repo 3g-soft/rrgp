@@ -1,7 +1,5 @@
 package engine
 
-import kotlin.random.Random
-
 class GameAPI {
     val Engine: Engine               = Engine()
     val DamageManager: DamageManager = DamageManager()
@@ -21,9 +19,24 @@ class GameAPI {
         }
     }
 
+
+    fun setPlayerPos(pos: Point, uid: Int) {
+        var player = EntityManager.getById(uid)
+        if (player is Player) {
+            Engine.setPlayerPos(player, pos)
+        }
+    }
+
+    fun setPlayerPos(x: Float, y: Float, uid: Int) {
+        var player = EntityManager.getById(uid)
+        if (player is Player) {
+            Engine.setPlayerPos(player, Point(x, y))
+        }
+    }
+
+
     fun createPlayer(): Player {
-        var r = Random(System.currentTimeMillis())
-        var player = Player(Point(500f, 500f))
-        return player
+//        var r = Random(System.currentTimeMillis())
+        return Player(Point(500f, 500f))
     }
 }

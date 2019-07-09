@@ -3,7 +3,7 @@ package engine
 class DamageManager {
     val EntityHPs: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
 
-    fun giveHP(id: Int) {
+    fun assignHP(id: Int) {
         EntityHPs[id] = 280
     }
 
@@ -12,8 +12,9 @@ class DamageManager {
         EntityHPs[id] = EntityHPs[id]!! - damage
 
         if (EntityHPs[id]!! <= 0f) {
-            giveHP(id)
-            //tp to island
+            assignHP(id)
+            //TODO:tp to island
+
         }
     }
 }

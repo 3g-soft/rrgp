@@ -48,6 +48,10 @@ class Engine {
         player.velocity.angle = angle
     }
 
+    fun setPlayerPos(player: Player, pos: Point) {
+        player.pos = pos.copy()
+    }
+
     fun getState(): List<Entity> {
         return entities.toList()
     }
