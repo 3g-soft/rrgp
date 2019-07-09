@@ -46,20 +46,20 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
         val angles2 = listOf(angle2, PI.toFloat() - angle2, angle2 - PI.toFloat(), -angle2)
         val points2 = listOf(
             Point(
-                cos(angles2[0] + otherAngle) * radius2 + owner.pos.x,
-                sin(angles2[0] + otherAngle) * radius2 + owner.pos.y
+                cos(angles2[0] + otherAngle) * radius2 + hitbox.owner.pos.x,
+                sin(angles2[0] + otherAngle) * radius2 + hitbox.owner.pos.y
             ),
             Point(
-                cos(angles2[1] + otherAngle) * radius2 + owner.pos.x,
-                sin(angles2[1] + otherAngle) * radius2 + owner.pos.y
+                cos(angles2[1] + otherAngle) * radius2 + hitbox.owner.pos.x,
+                sin(angles2[1] + otherAngle) * radius2 + hitbox.owner.pos.y
             ),
             Point(
-                cos(angles2[2] + otherAngle) * radius2 + owner.pos.x,
-                sin(angles2[2] + otherAngle) * radius2 + owner.pos.y
+                cos(angles2[2] + otherAngle) * radius2 + hitbox.owner.pos.x,
+                sin(angles2[2] + otherAngle) * radius2 + hitbox.owner.pos.y
             ),
             Point(
-                cos(angles2[3] + otherAngle) * radius2 + owner.pos.x,
-                sin(angles2[3] + otherAngle) * radius2 + owner.pos.y
+                cos(angles2[3] + otherAngle) * radius2 + hitbox.owner.pos.x,
+                sin(angles2[3] + otherAngle) * radius2 + hitbox.owner.pos.y
             )
         )
         val lines2 = listOf(

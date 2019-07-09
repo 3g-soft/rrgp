@@ -1,5 +1,10 @@
 package engine
 
+import java.security.InvalidParameterException
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+
 class GameAPI {
     val Engine: Engine = Engine()
     val DamageManager: DamageManager = DamageManager()
@@ -112,13 +117,15 @@ class GameAPI {
 
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
         fun deathCheck(value: Entity) {
-            when(DamageManager.dealDamage(
-                    EntityManager.getId(value),
-                    DamageManager.collisionDamage)) {
+            when (DamageManager.dealDamage(
+                EntityManager.getId(value),
+                DamageManager.collisionDamage
+            )) {
                 DeathState.NONE -> return
-                DeathState.ALIVE -> {}
+                DeathState.ALIVE -> {
+                }
                 DeathState.DEAD -> {
-                    when(value) {
+                    when (value) {
                         is Island -> value.onDeath()
                         is Player -> value.onDeath()
                     }
@@ -131,4 +138,40 @@ class GameAPI {
             deathCheck(collision.target2)
         }
     }
+
+    fun makeShot(id: Int, side: Int): DataTransferEntity {
+        var angle: Float
+        var player = EntityManager.getById(id)
+        if (player is Player) {
+            when (side) {
+                1 -> {
+                    angle = player.velocity.angle + PI.toFloat() / 2f
+                }
+                2 -> {
+                    angle = player.velocity.angle - PI.toFloat() / 2f
+                }
+                else -> {
+                    angle = player.velocity.angle
+                }
+            }
+            var radius = player.hitbox.sizey / 2 + 25f / 2f + 5
+            var bullet = Bullet(Vector2f(10f, angle, false), Point(radius * cos(angle), radius * sin(angle)))
+            EntityManager.identify(bullet)
+            var id = EntityManager.getId(bullet)
+            Engine.addEntity(bullet)
+            return DataTransferEntity(
+                id,
+                bullet.pos,
+                DataTransferEntityType.Bullet,
+                bullet.hitbox.sizex,
+                bullet.hitbox.sizey,
+                bullet.velocity.angle
+            )
+        }
+        else {
+            throw InvalidParameterException()
+        }
+    }
+
+
 }

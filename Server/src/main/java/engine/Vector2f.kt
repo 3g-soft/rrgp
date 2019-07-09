@@ -3,6 +3,7 @@ package engine
 import kotlin.math.*
 
 data class Vector2f(var x: Float = 0f, var y: Float = 10f) {
+    constructor(length: Float = 100f, angle: Float = PI.toFloat() / 2, dummy: Boolean): this(length * cos(angle), length * sin(angle)) { }
     var length: Float
         get() = sqrt(this.x.pow(2) + this.y.pow(2))
         set(value) {
