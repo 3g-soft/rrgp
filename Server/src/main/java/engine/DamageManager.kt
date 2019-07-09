@@ -19,4 +19,13 @@ class DamageManager {
 
         }
     }
+    fun removeEntity(id: Int) {
+        if (id !in EntityHPs.values) return
+        for( key in EntityHPs.keys ) {
+            if (EntityHPs[key] == id) {
+                EntityHPs.remove(key)
+                return
+            }
+        }
+    }
 }

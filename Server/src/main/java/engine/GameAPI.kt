@@ -85,6 +85,12 @@ class GameAPI {
         return toReturn.toList()
     }
 
+    fun removePlayer(id: Int) {
+        Engine.removeEntity(EntityManager.getById(id))
+        EntityManager.removeEntity(id)
+        DamageManager.removeEntity(id)
+    }
+
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
         collisions.forEach { collision ->
             DamageManager.dealDamage(
