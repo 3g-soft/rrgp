@@ -1,9 +1,9 @@
 package websocket
 
+import engine.Engine
 import io.javalin.Javalin
 import io.javalin.websocket.WsContext
 import kotlinx.coroutines.*
-import Engine
 import org.json.JSONObject
 
 class Server(val eng: Engine, val tick: Long = 100) {
