@@ -7,7 +7,7 @@ import io.javalin.websocket.WsContext
 import kotlinx.coroutines.*
 import org.json.JSONObject
 
-class Server(val gapi: GameAPI, val tick: Long = 100) {
+class Server(val gapi: GameAPI, val tick: Long = 16) {
 
     private val l = Logger("SRV")
     private val gameActor = GameActor(gapi)

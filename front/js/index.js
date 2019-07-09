@@ -30,13 +30,13 @@
         },
     }
 
-    var ws = new Connection("ws://127.0.0.1:8080/game")
+    var ws = new Connection(`ws://${document.domain}:8080/game`)
     ws.onstate = (e) => {
         entities = e.map(ent => {
             let newEnt = Object.assign({}, ent)
             newEnt.size = {
-                x: ent.sizeX,
-                y: ent.sizeY
+                x: ent.sizex,
+                y: ent.sizey
             }
             return newEnt
         })
@@ -84,11 +84,11 @@
                     break
                 
                 case 68:
-                    ws.sendRequest("changeAngle", you.angle + 0.01)
+                    ws.sendRequest("changeAngle", you.angle + 0.1)
                     break
                 
                 case 65:
-                    ws.sendRequest("changeAngle", you.angle - 0.01)
+                    ws.sendRequest("changeAngle", you.angle - 0.1)
                     break
             }
         })
@@ -126,7 +126,7 @@
     function drawRotatedImage(image, x, y, sizeX, sizeY, angle) {
         ctx.save()
         ctx.translate(x, y)
-        ctx.rotate(angle)
+        ctx.rotate(angle + Math.PI)
         ctx.drawImage(image, -(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
         ctx.restore()
     }
@@ -213,7 +213,9 @@
         ctx.fillRect(0, canv.height - size, size, size)
         ctx.strokeRect(0, canv.height - size, size, size)
 
-        let myTeam = entities.filter(ent => ent.team == playerTeam)
+        // let myTeam = entities.filter(ent => ent.team == playerTeam)
+        let myTeam = entities.filter(ent => ent.type === "Player")
+
         let vision = []
         for (let ent of myTeam) {
             let mapCoords = {
