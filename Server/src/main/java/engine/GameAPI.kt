@@ -47,6 +47,10 @@ class GameAPI {
         return DataTransferPlayer(EntityManager.getId(player), player.pos)
     }
 
+    fun getAllEntities(): List<Entity> {
+        return Engine.getState()
+    }
+
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
         collisions.forEach { collision ->
             DamageManager.dealDamage(
