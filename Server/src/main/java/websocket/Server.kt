@@ -1,20 +1,23 @@
 package websocket
 
-import engine.Engine
+import engine.GameAPI
 import io.javalin.Javalin
+import io.javalin.http.staticfiles.Location
 import io.javalin.websocket.WsContext
 import kotlinx.coroutines.*
 import org.json.JSONObject
 
-class Server(val eng: Engine, val tick: Long = 100) {
+class Server(val gapi: GameAPI, val tick: Long = 100) {
 
     private val l = Logger("SRV")
-    private val gameActor = GameActor(eng)
+    private val gameActor = GameActor(gapi)
 
     private val clients = mutableMapOf<WsContext, Int>()
 
     init {
-        Javalin.create {}.apply {
+        Javalin.create {
+            it.addStaticFiles("../front/", Location.EXTERNAL)
+        }.apply {
             ws("/game") { ws ->
                 ws.onConnect {
                     l.log("sc")

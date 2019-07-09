@@ -34,7 +34,7 @@
     ws.onstate = (e) => {
         entities = e.map(ent => {
             let newEnt = Object.assign({}, ent)
-            mewEnt.size = {
+            newEnt.size = {
                 x: ent.sizeX,
                 y: ent.sizeY
             }
