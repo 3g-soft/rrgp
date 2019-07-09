@@ -2,6 +2,7 @@ package engine
 
 const val TEAMSCOUNT = 2
 class EntityManager {
+    var unique_counter = 0
     val EntityIDs: MutableMap<Entity, Int> = emptyMap<Entity, Int>().toMutableMap()
     val Teams: MutableMap<Int, MutableList<Int>> = emptyMap<Int, MutableList<Int>>().toMutableMap()
 
@@ -15,7 +16,7 @@ class EntityManager {
     }
     fun identify(entity: Entity) {
         if (entity in EntityIDs.keys) return
-        EntityIDs[entity] = EntityIDs.size
+        EntityIDs[entity] = ++unique_counter
         giveTeam(entity)
     }
     fun getById(id: Int): Entity? {
