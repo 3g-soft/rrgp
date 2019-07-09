@@ -77,6 +77,7 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
                 var c2 = lines2[i + 2][2]
                 if (a1 * point.x + b1 * point.y + c1 != a2 * point.x + b2 * point.y + c2) {
                     if (flag) {
+                        println("c1")
                         return true
                     }
                     flag = true
@@ -94,6 +95,7 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
                 var c2 = lines1[i + 2][2]
                 if (a1 * point.x + b1 * point.y + c1 != a2 * point.x + b2 * point.y + c2) {
                     if (flag) {
+                        println("c2")
                         return true
                     }
                     flag = true
