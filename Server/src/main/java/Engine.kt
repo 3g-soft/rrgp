@@ -8,6 +8,7 @@ class Engine{
 
     fun update() {
         MOVES.forEach { it.move() }
+        angle += 0.05f
     }
     fun checkAllCollisions(): List<CollisionEvent> {
         return listOf()
@@ -22,10 +23,11 @@ class Engine{
         player.velocity = velocity.copy()
     }
 
-    fun getState(): List<NetworkPlayer> {
-        angle += 0.05f
+    fun getState(): List<Entity> {
+
         return listOf(NetworkPlayer(Vector2f(0f, 0f), Point(1f, 1f), angle , 1, nextid - 1, Point(200f, 100f)))
-        TODO("must return copy of players")
+//        TODO("must return copy of players")
+//        return emptyList()
     }
 
     fun removePlayer(id: Int){
