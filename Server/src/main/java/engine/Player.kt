@@ -1,14 +1,10 @@
 package engine
 
-class Player(teamId: Int, homeIsland: Island,
-             velocity: Vector2f, pos: Point) : MovableEntity(velocity, pos) {
-    init {
-        val shotBullets: MutableList<Bullet>
-    }
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.random.Random
 
-    fun selectWeapon(wId: Int) {}
-
-    fun checkCollision(entity: Entity): CollisionEvent {
-        return CollisionEvent(this, entity)
-    }
+class Player(velocity: Vector2f, pos: Point) : MovableEntity(velocity, pos) {
+    override val hitbox = Hitbox(50f, 10f, this)
 }
