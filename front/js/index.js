@@ -1,4 +1,4 @@
-// (function () {
+(function () {
     class Connection{
         constructor(addr){
             this.nextid = 0;
@@ -35,8 +35,8 @@
         entities = e.map(ent => {
             let newEnt = Object.assign({}, ent)
             newEnt.size = {
-                x: ent.sizex,
-                y: ent.sizey
+                x: newEnt.sizex,
+                y: newEnt.sizey
             }
             return newEnt
         })
@@ -63,6 +63,12 @@
         left: false,
         right: false
     }
+
+    var fields = [
+        new Image(),    
+    ]
+    fields[0].src = "sea.png"
+    var offset = 5
 
     function distance(p1, p2) {
         return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
@@ -132,8 +138,14 @@
     }
 
     function renderField() {
-        ctx.fillStyle = "rgb(0, 0, 100)"
-        ctx.fillRect(0, 0, canv.width, canv.height)
+        for (let i = -fields[0].width; i < canv.width; i += fields[0].width) {
+            for (let j = 0; j < canv.height; j += fields[0].height) {
+                ctx.save()
+                ctx.translate(offset, 0)
+                ctx.drawImage(fields[0], i, j)
+                ctx.restore()
+            }
+        }
     }
 
     function renderEntities() {
@@ -285,6 +297,11 @@
         renderGold()
     }
 
-    init()
-    setInterval(render, 17)
-// })();
+    window.onload = () => {
+        init()
+        setInterval(render, 17)
+        setInterval(() => {
+            offset *= -1
+        }, 250)
+    }
+})();
