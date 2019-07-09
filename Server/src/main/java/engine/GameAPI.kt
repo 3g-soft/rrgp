@@ -125,9 +125,13 @@ class GameAPI {
                 DeathState.ALIVE -> {
                 }
                 DeathState.DEAD -> {
-                    when (value) {
-                        is Island -> value.onDeath()
-                        is Player -> value.onDeath()
+                    when(value) {
+                        is Island -> {
+
+                        }
+                        is Player -> {
+
+                        }
                     }
                 }
             }

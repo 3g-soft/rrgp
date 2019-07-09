@@ -17,18 +17,10 @@ class Bullet(velocity: Vector2f, pos: Point) : MovableEntity(velocity, pos) {
 
 class Player(pos: Point, velocity: Vector2f = Vector2f()) : MovableEntity(velocity, pos) {
     override val hitbox = Hitbox(200f, 100f, this)
-
-    fun onDeath() {
-
-    }
 }
 
 class Island(pos: Point) : Entity(pos) {
     override val hitbox = Hitbox(400f, 400f, this)
-
-    fun onDeath() {
-
-    }
 }
 
 
