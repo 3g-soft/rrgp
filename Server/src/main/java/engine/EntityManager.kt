@@ -14,7 +14,7 @@ class EntityManager {
         Teams[Teams.size % TEAMSCOUNT]!!.add(EntityIDs[entity]!!)
     }
     fun identify(entity: Entity) {
-        if (entity !in EntityIDs.keys) return
+        if (entity in EntityIDs.keys) return
         EntityIDs[entity] = EntityIDs.size
         giveTeam(entity)
     }
