@@ -9,45 +9,95 @@ class GameAPI {
         onCollisionDamage(Engine.update())
     }
 
-    fun setPlayerAngle(angle: Float, uid: Int) {
-        var player = EntityManager.getById(uid)
+    fun setPlayerAngle(angle: Float, id: Int) {
+        var player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerAngle(player, angle)
         }
     }
 
-    fun setPlayerSpeed(speed: Float, uid: Int) {
-        var player = EntityManager.getById(uid)
+    fun setPlayerSpeed(speed: Float, id: Int) {
+        var player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerSpeed(player, speed)
         }
     }
 
-    fun setPlayerPos(pos: Point, uid: Int) {
-        var player = EntityManager.getById(uid)
+    fun setPlayerPos(pos: Point, id: Int) {
+        var player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerPos(player, pos)
         }
     }
 
-    fun setPlayerPos(x: Float, y: Float, uid: Int) {
-        var player = EntityManager.getById(uid)
+    fun setPlayerPos(x: Float, y: Float, id: Int) {
+        var player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerPos(player, Point(x, y))
         }
     }
 
-    fun createPlayer(): DataTransferPlayer {
+
+    fun createPlayer(): DataTransferEntity {
 //        var r = Random(System.currentTimeMillis())
         var player = Player(Point(500f, 500f))
         EntityManager.identify(player)
         DamageManager.assignHP(EntityManager.getId(player))
         Engine.addEntity(player)
-        return DataTransferPlayer(EntityManager.getId(player), player.pos)
+        return DataTransferEntity(
+            EntityManager.getId(player),
+            player.pos,
+            DataTransferEntityType.Player,
+            player.hitbox.sizex,
+            player.hitbox.sizey,
+            player.velocity.angle
+        )
     }
 
-    fun getAllEntities(): List<Entity> {
-        return Engine.getState()
+    fun getAllEntities(): List<DataTransferEntity> {
+        val toReturn = mutableListOf<DataTransferEntity>()
+        val listOfEntities = Engine.getState()
+        for (entity in listOfEntities) {
+            when (entity) {
+                is Bullet -> {
+                    toReturn.add(
+                        DataTransferEntity(
+                            EntityManager.getId(entity),
+                            entity.pos,
+                            DataTransferEntityType.Bullet,
+                            entity.hitbox.sizex,
+                            entity.hitbox.sizey,
+                            entity.velocity.angle
+                        )
+                    )
+                }
+                is Player -> {
+                    toReturn.add(
+                        DataTransferEntity(
+                            EntityManager.getId(entity),
+                            entity.pos,
+                            DataTransferEntityType.Player,
+                            entity.hitbox.sizex,
+                            entity.hitbox.sizey,
+                            entity.velocity.angle
+                        )
+                    )
+                }
+                is Island -> {
+                    toReturn.add(
+                        DataTransferEntity(
+                            EntityManager.getId(entity),
+                            entity.pos,
+                            DataTransferEntityType.Island,
+                            entity.hitbox.sizex,
+                            entity.hitbox.sizey
+                        )
+                    )
+                }
+
+            }
+        }
+        return toReturn.toList()
     }
 
     fun removePlayer(id: Int) {
