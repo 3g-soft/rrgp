@@ -9,15 +9,14 @@ class DamageManager {
     fun assignHP(id: Int) {
         EntityHPs[id] = defaultHp
     }
-    fun dealDamage(id: Int, damage: Int) {
-        if (EntityHPs[id] == null) return
+    fun dealDamage(id: Int, damage: Int): DeathState{
+        if (EntityHPs[id] == null) return DeathState.NONE
         EntityHPs[id] = EntityHPs[id]!! - damage
 
         if (EntityHPs[id]!! <= 0f) {
-            assignHP(id)
-            //TODO:tp to island
-
+            return DeathState.DEAD
         }
+        return DeathState.ALIVE
     }
     fun removeEntity(id: Int) {
         if (id !in EntityHPs.values) return

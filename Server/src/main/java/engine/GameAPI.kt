@@ -106,16 +106,29 @@ class GameAPI {
         DamageManager.removeEntity(id)
     }
 
+    fun checkDeath() {
+
+    }
+
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
+        fun deathCheck(value: Entity) {
+            when(DamageManager.dealDamage(
+                    EntityManager.getId(value),
+                    DamageManager.collisionDamage)) {
+                DeathState.NONE -> return
+                DeathState.ALIVE -> {}
+                DeathState.DEAD -> {
+                    when(value) {
+                        is Island -> value.onDeath()
+                        is Player -> value.onDeath()
+                    }
+                }
+            }
+        }
+
         collisions.forEach { collision ->
-            DamageManager.dealDamage(
-                EntityManager.getId(collision.target1),
-                DamageManager.collisionDamage
-            )
-            DamageManager.dealDamage(
-                EntityManager.getId(collision.target2),
-                DamageManager.collisionDamage
-            )
+            deathCheck(collision.target1)
+            deathCheck(collision.target2)
         }
     }
 }
