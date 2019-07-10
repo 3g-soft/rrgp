@@ -1,5 +1,10 @@
 package engine
 
+import java.security.InvalidParameterException
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+
 class GameAPI {
     val Engine: Engine = Engine()
     val DamageManager: DamageManager = DamageManager()
@@ -37,7 +42,6 @@ class GameAPI {
         }
     }
 
-
     fun createPlayer(): DataTransferEntity {
 //        var r = Random(System.currentTimeMillis())
         var player = Player(Point(500f, 500f))
@@ -50,6 +54,7 @@ class GameAPI {
             DataTransferEntityType.Player,
             player.hitbox.sizex,
             player.hitbox.sizey,
+            DamageManager.getHPbyId(EntityManager.getId(player)),
             player.velocity.angle
         )
     }
@@ -67,7 +72,7 @@ class GameAPI {
                             DataTransferEntityType.Bullet,
                             entity.hitbox.sizex,
                             entity.hitbox.sizey,
-                            entity.velocity.angle
+                            angle=entity.velocity.angle
                         )
                     )
                 }
@@ -79,6 +84,7 @@ class GameAPI {
                             DataTransferEntityType.Player,
                             entity.hitbox.sizex,
                             entity.hitbox.sizey,
+                            DamageManager.getHPbyId(EntityManager.getId(entity)),
                             entity.velocity.angle
                         )
                     )
@@ -90,7 +96,8 @@ class GameAPI {
                             entity.pos,
                             DataTransferEntityType.Island,
                             entity.hitbox.sizex,
-                            entity.hitbox.sizey
+                            entity.hitbox.sizey,
+                            DamageManager.getHPbyId(EntityManager.getId(entity))
                         )
                     )
                 }
@@ -112,11 +119,13 @@ class GameAPI {
 
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
         fun deathCheck(value: Entity) {
-            when(DamageManager.dealDamage(
-                    EntityManager.getId(value),
-                    DamageManager.collisionDamage)) {
+            when (DamageManager.dealDamage(
+                EntityManager.getId(value),
+                DamageManager.collisionDamage
+            )) {
                 DeathState.NONE -> return
-                DeathState.ALIVE -> {}
+                DeathState.ALIVE -> {
+                }
                 DeathState.DEAD -> {
                     when(value) {
                         is Island -> {
@@ -135,4 +144,40 @@ class GameAPI {
             deathCheck(collision.target2)
         }
     }
+
+    fun makeShot(id: Int, side: Int): DataTransferEntity {
+        var angle: Float
+        var player = EntityManager.getById(id)
+        if (player is Player) {
+            when (side) {
+                1 -> {
+                    angle = player.velocity.angle + PI.toFloat() / 2f
+                }
+                2 -> {
+                    angle = player.velocity.angle - PI.toFloat() / 2f
+                }
+                else -> {
+                    angle = player.velocity.angle
+                }
+            }
+            var radius = player.hitbox.sizey / 2 + 25f / 2f + 5
+            var bullet = Bullet(Vector2f(10f, angle, false), Point(radius * cos(angle), radius * sin(angle)))
+            EntityManager.identify(bullet)
+            var id = EntityManager.getId(bullet)
+            Engine.addEntity(bullet)
+            return DataTransferEntity(
+                id,
+                bullet.pos,
+                DataTransferEntityType.Bullet,
+                bullet.hitbox.sizex,
+                bullet.hitbox.sizey,
+                angle=bullet.velocity.angle
+            )
+        }
+        else {
+            throw InvalidParameterException()
+        }
+    }
+
+
 }
