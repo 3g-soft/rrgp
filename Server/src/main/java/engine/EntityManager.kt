@@ -1,16 +1,42 @@
 package engine
 
 const val TEAMSCOUNT = 2
+
 class EntityManager {
     var unique_counter = 0
+
     val EntityIDs: MutableMap<Entity, Int> = emptyMap<Entity, Int>().toMutableMap()
+    val PlayerNames: MutableMap<Player, String> = emptyMap<Player, String>().toMutableMap()
     val Teams: MutableMap<Int, MutableList<Int>> = emptyMap<Int, MutableList<Int>>().toMutableMap()
 
     init {
-        Teams[0] = emptyList<Int>().toMutableList()
-        Teams[1] = emptyList<Int>().toMutableList()
+        for (team_number in 0 until TEAMSCOUNT) {
+            Teams[team_number] = emptyList<Int>().toMutableList()
+        }
     }
 
+    fun respawnPlayer(id: Int) {
+        if (id !in EntityIDs.values) return
+        getById(id)!!.pos = Point(
+                (100..(WIDTH-100)).random().toFloat(), (100..(HEIGHT-100)).random().toFloat()
+        )
+    }
+    fun getTeamById(id: Int): Int {
+        if (id !in EntityIDs.values) return 0
+        for (team_number in 0 until TEAMSCOUNT) {
+            if (!Teams[team_number]!!.contains(id)) continue
+            return team_number
+        }
+        return 0
+    }
+    fun changeTeam(id: Int, team_id: Int) {
+        if (team_id !in 0 until TEAMSCOUNT) return
+        for(team_number in 0 until TEAMSCOUNT) {
+            if (!Teams[team_number]!!.contains(id)) continue
+            Teams[team_number]!!.remove(id)
+            Teams[team_id]!!.add(id)
+        }
+    }
     fun giveTeam(entity: Entity){
         Teams[Teams.size % TEAMSCOUNT]!!.add(EntityIDs[entity]!!)
     }

@@ -1,19 +1,27 @@
 package engine
 
+const val WIDTH = 2000
+const val HEIGHT = 2000
+
+data class Events(val collisions: List<CollisionEvent>, val deadBullets: List<Bullet>)
 
 class Engine {
-    private companion object CONSTS{
+    private companion object CONSTS {
         const val ACCELERATION = 0.1f
         const val MAXVEL = 5f
     }
+
     private val entities: MutableList<Entity> = emptyList<Entity>().toMutableList()
 
-    fun update(): List<CollisionEvent> {
-        entities.forEach { entity ->
+    fun update(): Events {
+        val deadBullets = mutableListOf<Bullet>()
+        for (entity in entities) {
             if (entity is MovableEntity) entity.move()
+            if (entity is Bullet && entity.distanceTraveled >= entity.maxDistanceTraveled) deadBullets.add(entity)
         }
-        return checkAllCollisions()
+        return Events(checkAllCollisions(), deadBullets)
     }
+
     private fun checkAllCollisions(): List<CollisionEvent> {
         val toReturn = mutableListOf<CollisionEvent>()
         for (i in 0 until entities.size) {
