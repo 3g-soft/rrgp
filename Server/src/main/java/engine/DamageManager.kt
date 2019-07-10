@@ -18,7 +18,7 @@ class DamageManager {
     }
     fun refreshPlayer(id: Int) {
         if (id !in EntityHPs.keys) return
-        setHP(id, EntityMaxHPs[id])
+        setHP(id, EntityMaxHPs[id]!!)
     }
     fun setMaxHP(id: Int, maxhp: Int) {
         if (id !in EntityMaxHPs.keys) return
