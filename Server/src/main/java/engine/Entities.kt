@@ -34,5 +34,3 @@ class Player(pos: Point, velocity: Vector2f = Vector2f()) : MovableEntity(veloci
 class Island(pos: Point) : Entity(pos) {
     override val hitbox = Hitbox(400f, 400f, this)
 }
-
-
