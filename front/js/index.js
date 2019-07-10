@@ -135,7 +135,7 @@
         ctx.translate(x, y)
         ctx.rotate(angle)
         ctx.drawImage(image, -(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
-        ctx.strokeRect(-(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
+        //ctx.strokeRect(-(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
         ctx.restore()
     }
 
@@ -151,7 +151,7 @@
     }
 
     function renderEntities() {
-        ctx.transform(1, 0, 0, -1, 0, canv.height)
+        //ctx.transform(1, 0, 0, -1, 0, canv.height)
         let you = entities.filter(ent => ent.id == ws.id)[0]
         Camera.pos = Object.assign({}, you.pos)
 
@@ -180,7 +180,7 @@
             y: 0.8 * canv.height
         }
         ctx.drawImage(sprites.buttonL, leftButtonCoords.x, leftButtonCoords.y, 60, 60)
-        ctx.drawImage(sprites.buttonR, leftButtonCoords.x, leftButtonCoords.y, 60, 60)
+        ctx.drawImage(sprites.buttonR, leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)
         /*ctx.lineWidth = 5
         ctx.strokeStyle = "black"
         ctx.fillStyle = "white"*/
@@ -298,10 +298,10 @@
         //ctx.transform()
         ctx.clearRect(0, 0, canv.width, canv.height)
         renderField()
+        renderEntities()
         renderMinimap()
         renderButtons()
         renderGold()
-        renderEntities()
     }
 
     window.onload = () => {
@@ -309,6 +309,6 @@
         setInterval(render, 17)
         setInterval(() => {
             offset *= -1
-        }, 250)
+        }, 500)
     }
 })();
