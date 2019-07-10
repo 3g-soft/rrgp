@@ -11,7 +11,12 @@ class GameAPI {
     val EntityManager: EntityManager = EntityManager()
 
     fun update() {
-        onCollisionDamage(Engine.update())
+        val allEvents = Engine.update()
+        val deadBullets = allEvents.deadBullets
+        for (bullet in deadBullets) {
+            removeEntity(EntityManager.getId(bullet))
+        }
+        onCollisionDamage(allEvents.collisions)
     }
 
     fun setPlayerAngle(angle: Float, id: Int) {
@@ -107,14 +112,15 @@ class GameAPI {
         return toReturn.toList()
     }
 
-    fun removePlayer(id: Int) {
+    fun removeEntity(id: Int) {
         Engine.removeEntity(EntityManager.getById(id))
         EntityManager.removeEntity(id)
         DamageManager.removeEntity(id)
     }
 
-    fun checkDeath() {
-
+    fun respawnById(id: Int) {
+        EntityManager.respawnPlayer(id)
+        DamageManager.refreshPlayer(id)
     }
 
     fun accelerate(id: Int, isForward: Boolean) {
@@ -125,30 +131,44 @@ class GameAPI {
     }
 
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
-        fun deathCheck(value: Entity) {
+        fun deathCheck(entity: Entity, by: Entity) {
+            val damage = when (by) {
+                is Bullet -> DamageManager.BULLETDAMAGE
+                else -> DamageManager.COLLISIONDAMAGE
+            }
             when (DamageManager.dealDamage(
-                EntityManager.getId(value),
-                DamageManager.collisionDamage
-            )) {
+                    EntityManager.getId(entity),
+                    damage)) {
                 DeathState.NONE -> return
                 DeathState.ALIVE -> {
                 }
                 DeathState.DEAD -> {
-                    when (value) {
+                    when (entity) {
                         is Island -> {
-
+                            EntityManager.changeTeam(EntityManager.getId(entity),
+                                                     EntityManager.getTeamById(EntityManager.getId(by)))
                         }
                         is Player -> {
-
+                            respawnById(EntityManager.getId(entity))
                         }
                     }
                 }
             }
         }
-
-        collisions.forEach { collision ->
-            deathCheck(collision.target1)
-            deathCheck(collision.target2)
+        for (collision in collisions) {
+            if (collision.target2 is Bullet && collision.target1 is Bullet) {
+                removeEntity(EntityManager.getId(collision.target1))
+                removeEntity(EntityManager.getId(collision.target2))
+                continue
+            }
+            if (collision.target2 is Bullet){
+                deathCheck(collision.target1, collision.target2)
+                removeEntity(EntityManager.getId(collision.target2))
+            }
+            if (collision.target1 is Bullet){
+                deathCheck(collision.target2, collision.target1)
+                removeEntity(EntityManager.getId(collision.target1))
+            }
         }
     }
 
@@ -156,17 +176,14 @@ class GameAPI {
         val angle: Float
         val player = EntityManager.getById(id)
         if (player is Player) {
-            when (side) {
+            angle = when (side) {
                 1 -> {
-                    angle = player.velocity.angle - PI.toFloat() / 2f
+                    player.velocity.angle - PI.toFloat() / 2f
                 }
-                2 -> {
-                    angle = player.velocity.angle + PI.toFloat() / 2f
+                else -> {
+                    player.velocity.angle + PI.toFloat() / 2f
                 }
                 //  ANGLES ARE RIGGED
-                else -> {
-                    angle = player.velocity.angle
-                }
             }
             val radius = player.hitbox.sizey / 2 + 25f / 2f + 5
             val bullet = Bullet(

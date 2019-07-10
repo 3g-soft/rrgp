@@ -3,7 +3,6 @@ package websocket
 import engine.DataTransferEntity
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.actor
-import engine.Entity
 import engine.GameAPI
 
 sealed class Request
@@ -65,7 +64,7 @@ class GameActor(val gapi: GameAPI) {
     private fun processRequest(r: Request){
         when (r) {
             is LoginRequest -> r.response.complete(gapi.createPlayer().id)
-            is LogoutRequest -> gapi.removePlayer(r.id)
+            is LogoutRequest -> gapi.removeEntity(r.id)
             is TickRequest -> gapi.update()
             is GetStateRequest -> r.response.complete(gapi.getAllEntities())
             is ShotRequest -> gapi.makeShot(r.id, r.type)
