@@ -78,7 +78,7 @@ class GameAPI {
                             DataTransferEntityType.Bullet,
                             entity.hitbox.sizex,
                             entity.hitbox.sizey,
-                            angle = entity.velocity.angle
+                            angle=entity.velocity.angle
                         )
                     )
                 }
@@ -195,10 +195,10 @@ class GameAPI {
             )
             bullet.velocity += player.velocity
             EntityManager.identify(bullet)
-            val id = EntityManager.getId(bullet)
+            val bulId = EntityManager.getId(bullet)
             Engine.addEntity(bullet)
             return DataTransferEntity(
-                id,
+                bulId,
                 bullet.pos,
                 DataTransferEntityType.Bullet,
                 bullet.hitbox.sizex,
