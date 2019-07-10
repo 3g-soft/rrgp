@@ -53,6 +53,7 @@ class GameAPI {
         EntityManager.identify(player)
         DamageManager.assignHP(EntityManager.getId(player))
         Engine.addEntity(player)
+        respawnById(EntityManager.getId(player))
         return DataTransferEntity(
             EntityManager.getId(player),
             player.pos,
@@ -109,7 +110,6 @@ class GameAPI {
                         )
                     )
                 }
-
             }
         }
         return toReturn.toList()
