@@ -1,9 +1,12 @@
 package engine
 
 const val TEAMSCOUNT = 2
+
 class EntityManager {
     var unique_counter = 0
+
     val EntityIDs: MutableMap<Entity, Int> = emptyMap<Entity, Int>().toMutableMap()
+    val PlayerNames: MutableMap<Player, String> = emptyMap<Player, String>().toMutableMap()
     val Teams: MutableMap<Int, MutableList<Int>> = emptyMap<Int, MutableList<Int>>().toMutableMap()
 
     init {
@@ -11,6 +14,13 @@ class EntityManager {
         Teams[1] = emptyList<Int>().toMutableList()
     }
 
+    fun changeTeam(id: Int, team_id: Int) {
+        if (team_id !in 0..TEAMSCOUNT) return
+        for(team_number in 0..TEAMSCOUNT) {
+            if (!Teams[team_number]!!.contains(id)) continue
+            Teams[team_number]!!.remove(id)
+        }
+    }
     fun giveTeam(entity: Entity){
         Teams[Teams.size % TEAMSCOUNT]!!.add(EntityIDs[entity]!!)
     }
