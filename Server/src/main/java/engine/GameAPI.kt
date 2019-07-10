@@ -158,11 +158,12 @@ class GameAPI {
         if (player is Player) {
             when (side) {
                 1 -> {
-                    angle = player.velocity.angle + PI.toFloat() / 2f
-                }
-                2 -> {
                     angle = player.velocity.angle - PI.toFloat() / 2f
                 }
+                2 -> {
+                    angle = player.velocity.angle + PI.toFloat() / 2f
+                }
+                //  ANGLES ARE RIGGED
                 else -> {
                     angle = player.velocity.angle
                 }
