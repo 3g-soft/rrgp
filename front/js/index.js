@@ -53,7 +53,8 @@
         buttonR: new Image(),
         buttonRhover: new Image(),
         buttonRpressed: new Image(),
-        minimap: new Image()
+        minimap: new Image(),
+        bullet: new Image(),
     }
 
     sprites.ship.src = "img/ship.png"
@@ -64,6 +65,7 @@
     sprites.buttonRhover.src = "img/buttonRhover.png"
     sprites.buttonRpressed.src = "img/buttonRpressed.png"
     sprites.minimap.src = "img/minimap.png"
+    sprites.bullet.src = "img/bullet.png"
 
     var lastMousePosition = {
         x: 0, y: 0
@@ -178,7 +180,11 @@
         for (let ent of entities) {
             if (ent.pos.x >= (Camera.pos.x - window.innerWidth / 2 - max(ent.size.x, ent.size.y)) && ent.pos.x <= (Camera.pos.x + window.innerWidth / 2 + max(ent.size.x, ent.size.y))
                 && ent.pos.y >= (Camera.pos.y - window.innerHeight / 2 - max(ent.size.x, ent.size.y)) && ent.pos.y <= (Camera.pos.y + window.innerHeight / 2 + max(ent.size.x, ent.size.y))) {
-                drawRotatedImage(sprites.ship,
+                let sprite = sprites.ship
+                if (ent.type == "Bullet") {
+                    sprite = sprites.bullet
+                }
+                drawRotatedImage(sprite,
                     ent.pos.x - Camera.pos.x + window.innerWidth / 2,
                     ent.pos.y - Camera.pos.y + window.innerHeight / 2, ent.size.x, ent.size.y, ent.angle)
                 
@@ -191,7 +197,6 @@
                     y: -120
                 }
 
-                console.log(ent.hp)
                 ctx.fillRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
                     ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100 * ent.hp / 280, 10)
                 ctx.strokeRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
