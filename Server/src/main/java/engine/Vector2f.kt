@@ -35,4 +35,17 @@ data class Vector2f(var x: Float = 0f, var y: Float = 10f) {
         y /= len
         return Vector2f(x, y)
     }
+
+    fun plus(vec: Vector2f): Vector2f {
+        return Vector2f(this.x + vec.x, this.y + vec.y)
+    }
+    fun minus(vec: Vector2f): Vector2f {
+        return Vector2f(this.x - vec.x, this.y - vec.y)
+    }
+    fun times(float: Float): Vector2f {
+        return Vector2f(this.x * float, this.y * float)
+    }
+    fun div(float: Float): Vector2f {
+        return Vector2f(this.x / float, this.y / float)
+    }
 }

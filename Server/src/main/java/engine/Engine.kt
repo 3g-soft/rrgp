@@ -1,5 +1,7 @@
 package engine
 
+const val WIDTH = 2000
+const val HEIGHT = 2000
 
 class Engine {
     private val entities: MutableList<Entity> = emptyList<Entity>().toMutableList()

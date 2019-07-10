@@ -1,11 +1,12 @@
 package engine
 
 class DamageManager {
-    val EntityHPs: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
+    val EntityHPs: MutableMap<Int, Int>    = emptyMap<Int, Int>().toMutableMap()
     val EntityMaxHPs: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
 
-    val collisionDamage = 30
-    val defaultHp = 280
+    val COLLISIONDAMAGE = 30
+    val BULLETDAMAGE    = 50
+    val MAXHP           = 280
 
     fun setHP(id: Int, hp: Int) {
         if (id !in EntityHPs.keys) return
@@ -15,14 +16,18 @@ class DamageManager {
         }
         EntityHPs[id] = hp
     }
+    fun refreshPlayer(id: Int) {
+        if (id !in EntityHPs.keys) return
+        EntityHPs[id] = EntityMaxHPs[id]!!
+    }
     fun setMaxHP(id: Int, maxhp: Int) {
         if (id !in EntityMaxHPs.keys) return
         EntityMaxHPs[id] = maxhp
-        EntityHPs[id] = EntityMaxHPs[id]!!
+        EntityHPs[id]    = EntityMaxHPs[id]!!
     }
     fun assignHP(id: Int) {
         if (id in EntityHPs.keys) return
-        EntityMaxHPs[id] = defaultHp
+        EntityMaxHPs[id] = MAXHP
         EntityHPs[id]    = EntityMaxHPs[id]!!
     }
     fun dealDamage(id: Int, damage: Int): DeathState{
