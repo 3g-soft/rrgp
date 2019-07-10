@@ -70,7 +70,7 @@
         new Image(),    
     ]
     fields[0].src = "img/sea.png"
-    var offset = 5
+    var offset = 2
 
     function distance(p1, p2) {
         return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
@@ -96,6 +96,14 @@
                 
                 case 65:
                     ws.sendRequest("changeAngle", you.angle - 0.1)
+                    break
+                
+                case 87:
+                    ws.sendRequest("accelerate", true)
+                    break
+                
+                case 83:
+                    ws.sendRequest("accelerate", false)
                     break
             }
         })
@@ -143,7 +151,7 @@
         for (let i = -fields[0].width; i < canv.width + fields[0].width; i += fields[0].width) {
             for (let j = -fields[0].height; j < canv.height + fields[0].height; j += fields[0].height) {
                 ctx.save()
-                ctx.translate(offset - Camera.pos.x % fields[0].width, -Camera.pos.y % fields[0].height)
+                ctx.translate(offset - Camera.pos.x % fields[0].width, offset -Camera.pos.y % fields[0].height)
                 ctx.drawImage(fields[0], i, j)
                 ctx.restore()
             }
