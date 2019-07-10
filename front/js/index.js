@@ -60,6 +60,7 @@
         buttonRpressed: new Image(),
         minimap: new Image(),
         bullet: new Image(),
+        border: new Image(),
     }
 
     sprites.ship.src = "img/ship.png"
@@ -71,6 +72,7 @@
     sprites.buttonRpressed.src = "img/buttonRpressed.png"
     sprites.minimap.src = "img/minimap.png"
     sprites.bullet.src = "img/bullet.png"
+    sprites.border.src = "img/border.png"
 
     var lastMousePosition = {
         x: 0, y: 0
@@ -320,11 +322,10 @@
             y: 0.8 * canv.height
         }
 
-        ctx.fillRect(menuCoords.x, menuCoords.y, 0.2 * canv.width, 0.2 * canv.height)
-        ctx.strokeRect(menuCoords.x, menuCoords.y, 0.2 * canv.width, 0.2 * canv.height)
+        ctx.drawImage(sprites.border, 0, 0, canv.width, canv.height)
 
-        ctx.fillStyle = "yellow" 
-        ctx.font = "20px helvetica"
+        ctx.fillStyle = "black" 
+        ctx.font = "40px helvetica"
         let textCoords = {
             x: menuCoords.x + 0.025 * canv.width,
             y: menuCoords.y + 0.1 * canv.height
