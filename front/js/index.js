@@ -342,9 +342,9 @@
         ctx.clearRect(0, 0, canv.width, canv.height)
         renderField()
         renderEntities()
+        renderGold()
         renderMinimap()
         renderButtons()
-        renderGold()
     }
 
     window.onload = () => {
