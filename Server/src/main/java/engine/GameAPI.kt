@@ -53,6 +53,7 @@ class GameAPI {
         EntityManager.identify(player)
         DamageManager.assignHP(EntityManager.getId(player))
         Engine.addEntity(player)
+        respawnById(EntityManager.getId(player))
         return DataTransferEntity(
             EntityManager.getId(player),
             player.pos,
@@ -60,6 +61,7 @@ class GameAPI {
             player.hitbox.sizex,
             player.hitbox.sizey,
             DamageManager.getHPbyId(EntityManager.getId(player)),
+            DamageManager.getMaxHPbyId(EntityManager.getId(player)),
             player.velocity.angle
         )
     }
@@ -90,6 +92,7 @@ class GameAPI {
                             entity.hitbox.sizex,
                             entity.hitbox.sizey,
                             DamageManager.getHPbyId(EntityManager.getId(entity)),
+                            DamageManager.getMaxHPbyId(EntityManager.getId(entity)),
                             entity.velocity.angle
                         )
                     )
@@ -102,11 +105,11 @@ class GameAPI {
                             DataTransferEntityType.Island,
                             entity.hitbox.sizex,
                             entity.hitbox.sizey,
-                            DamageManager.getHPbyId(EntityManager.getId(entity))
+                            DamageManager.getHPbyId(EntityManager.getId(entity)),
+                            DamageManager.getMaxHPbyId(EntityManager.getId(entity))
                         )
                     )
                 }
-
             }
         }
         return toReturn.toList()
@@ -190,6 +193,7 @@ class GameAPI {
                 Vector2f(10f, angle, false),
                 Point(radius * cos(angle) + player.pos.x, radius * sin(angle) + player.pos.y)
             )
+            bullet.velocity += player.velocity
             EntityManager.identify(bullet)
             val id = EntityManager.getId(bullet)
             Engine.addEntity(bullet)

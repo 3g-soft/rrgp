@@ -7,6 +7,7 @@ data class DataTransferEntity(
     val sizex: Float,
     val sizey: Float,
     val hp: Int=-1,
+    val maxHp: Int=-1,
     val angle: Float = 0f
 ) {
     constructor(
@@ -16,6 +17,7 @@ data class DataTransferEntity(
         sizex: Float,
         sizey: Float,
         hp: Int=-1,
+        maxHp: Int=-1,
         angle: Float = 0f
     ) : this(
         id,
@@ -24,6 +26,7 @@ data class DataTransferEntity(
         sizex,
         sizey,
         hp,
+        maxHp,
         angle
     )
 }

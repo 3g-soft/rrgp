@@ -84,6 +84,8 @@
         right: false
     }
 
+    var animationCoef = 1
+
     var fields = [
         new Image(),    
     ]
@@ -203,7 +205,7 @@
                 }
 
                 ctx.fillRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
-                    ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100 * ent.hp / 280, 10)
+                    ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100 * ent.hp / ent.maxHp, 10)
                 ctx.strokeRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
                     ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100, 10)
             }
@@ -347,7 +349,10 @@
         init()
         setInterval(render, 17)
         setInterval(() => {
-            offset *= -1
-        }, 500)
+            offset += animationCoef
+            if (Math.abs(offset) >= 10) {
+                animationCoef *= -1
+            }
+        }, 100)
     }
 })();

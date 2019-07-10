@@ -30,7 +30,7 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
                     l.log("sending $id")
                     it.send(id)
                     clients[it] = id
-                    GlobalScope.launch { stateManger.sendFullState(it, gameActor.getState().await())}
+                    GlobalScope.launch { stateManger.sendFullState(it, gameActor.getState().await()) }
 
                 }
                 ws.onMessage {
@@ -56,14 +56,13 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
         l.log("Started!")
     }
 
-    fun parseRequest(id: Int, obj: JSONObject){
+    fun parseRequest(id: Int, obj: JSONObject) {
         val name = obj.getString("op")
         val args = obj.getJSONArray("args")
-        when(name){
+        when (name) {
             "makeShot" -> gameActor.shot(id, args.getInt(0))
             "changeAngle" -> gameActor.changeAngle(id, args.getFloat(0))
             "accelerate" -> gameActor.accelerate(id, args.getBoolean(0))
         }
     }
-
 }
