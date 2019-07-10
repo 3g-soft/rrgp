@@ -6,8 +6,10 @@ abstract class Entity(var pos: Point) {
 
 abstract class MovableEntity(var velocity: Vector2f, pos: Point) : Entity(pos) {
     fun move() {
-        this.pos.x += velocity.x
-        this.pos.y += velocity.y
+        if (velocity.length > 0.01f) {
+            this.pos.x += velocity.x
+            this.pos.y += velocity.y
+        }
     }
 }
 

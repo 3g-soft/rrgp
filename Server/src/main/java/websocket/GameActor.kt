@@ -13,6 +13,7 @@ class TickRequest: Request()
 class GetStateRequest(val response: CompletableDeferred<List<DataTransferEntity>>): Request()
 class ShotRequest(val id: Int, val type: Int): Request()
 class ChangeAngleRequest(val id: Int, val angle: Float): Request()
+class AccelerateRequest(val id: Int, val isForward: Boolean): Request()
 
 class GameActor(val gapi: GameAPI) {
     private val l = Logger("GA")
@@ -57,6 +58,10 @@ class GameActor(val gapi: GameAPI) {
         requestChannel.send(ChangeAngleRequest(id, angle))
     }
 
+    fun accelerate(id: Int, isForward: Boolean) = GlobalScope.async {
+        requestChannel.send(AccelerateRequest(id, isForward))
+    }
+
     private fun processRequest(r: Request){
         when (r) {
             is LoginRequest -> r.response.complete(gapi.createPlayer().id)
@@ -65,6 +70,7 @@ class GameActor(val gapi: GameAPI) {
             is GetStateRequest -> r.response.complete(gapi.getAllEntities())
             is ShotRequest -> gapi.makeShot(r.id, r.type)
             is ChangeAngleRequest -> gapi.setPlayerAngle(r.angle, r.id)
+            is AccelerateRequest -> gapi.accelerate(r.id, r.isForward)
         }
     }
 }

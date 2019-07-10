@@ -15,28 +15,28 @@ class GameAPI {
     }
 
     fun setPlayerAngle(angle: Float, id: Int) {
-        var player = EntityManager.getById(id)
+        val player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerAngle(player, angle)
         }
     }
 
     fun setPlayerSpeed(speed: Float, id: Int) {
-        var player = EntityManager.getById(id)
+        val player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerSpeed(player, speed)
         }
     }
 
     fun setPlayerPos(pos: Point, id: Int) {
-        var player = EntityManager.getById(id)
+        val player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerPos(player, pos)
         }
     }
 
     fun setPlayerPos(x: Float, y: Float, id: Int) {
-        var player = EntityManager.getById(id)
+        val player = EntityManager.getById(id)
         if (player is Player) {
             Engine.setPlayerPos(player, Point(x, y))
         }
@@ -72,7 +72,7 @@ class GameAPI {
                             DataTransferEntityType.Bullet,
                             entity.hitbox.sizex,
                             entity.hitbox.sizey,
-                            angle=entity.velocity.angle
+                            angle = entity.velocity.angle
                         )
                     )
                 }
@@ -117,6 +117,13 @@ class GameAPI {
 
     }
 
+    fun accelerate(id: Int, isForward: Boolean) {
+        val player = EntityManager.getById(id)
+        if (player is Player) {
+            Engine.accelerate(player, isForward)
+        }
+    }
+
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
         fun deathCheck(value: Entity) {
             when (DamageManager.dealDamage(
@@ -127,7 +134,7 @@ class GameAPI {
                 DeathState.ALIVE -> {
                 }
                 DeathState.DEAD -> {
-                    when(value) {
+                    when (value) {
                         is Island -> {
 
                         }
@@ -146,24 +153,28 @@ class GameAPI {
     }
 
     fun makeShot(id: Int, side: Int): DataTransferEntity {
-        var angle: Float
-        var player = EntityManager.getById(id)
+        val angle: Float
+        val player = EntityManager.getById(id)
         if (player is Player) {
             when (side) {
                 1 -> {
-                    angle = player.velocity.angle + PI.toFloat() / 2f
-                }
-                2 -> {
                     angle = player.velocity.angle - PI.toFloat() / 2f
                 }
+                2 -> {
+                    angle = player.velocity.angle + PI.toFloat() / 2f
+                }
+                //  ANGLES ARE RIGGED
                 else -> {
                     angle = player.velocity.angle
                 }
             }
-            var radius = player.hitbox.sizey / 2 + 25f / 2f + 5
-            var bullet = Bullet(Vector2f(10f, angle, false), Point(radius * cos(angle), radius * sin(angle)))
+            val radius = player.hitbox.sizey / 2 + 25f / 2f + 5
+            val bullet = Bullet(
+                Vector2f(10f, angle, false),
+                Point(radius * cos(angle) + player.pos.x, radius * sin(angle) + player.pos.y)
+            )
             EntityManager.identify(bullet)
-            var id = EntityManager.getId(bullet)
+            val id = EntityManager.getId(bullet)
             Engine.addEntity(bullet)
             return DataTransferEntity(
                 id,
@@ -171,10 +182,9 @@ class GameAPI {
                 DataTransferEntityType.Bullet,
                 bullet.hitbox.sizex,
                 bullet.hitbox.sizey,
-                angle=bullet.velocity.angle
+                angle = bullet.velocity.angle
             )
-        }
-        else {
+        } else {
             throw InvalidParameterException()
         }
     }

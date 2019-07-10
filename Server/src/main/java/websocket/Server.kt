@@ -62,6 +62,7 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
         when(name){
             "makeShot" -> gameActor.shot(id, args.getInt(0))
             "changeAngle" -> gameActor.changeAngle(id, args.getFloat(0))
+            "accelerate" -> gameActor.accelerate(id, args.getBoolean(0))
         }
     }
 
