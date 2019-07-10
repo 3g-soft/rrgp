@@ -205,11 +205,12 @@
                     x: -50, 
                     y: -120
                 }
-
-                ctx.fillRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
-                    ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100 * ent.hp / ent.maxHp, 10)
-                ctx.strokeRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
-                    ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100, 10)
+                if (ent.type != "Bullet") {
+                    ctx.fillRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
+                        ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100 * ent.hp / ent.maxHp, 10)
+                    ctx.strokeRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
+                        ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100, 10)
+                }
             }
         }
     }
