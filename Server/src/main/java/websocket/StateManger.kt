@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import kotlin.system.measureTimeMillis
 
 class StateManger{
     private var prevState = HashMap<Int, DataTransferEntity>()
@@ -31,11 +32,11 @@ class StateManger{
             ctx.send(JSONObject().put("name", "gd").put("response", state).toString())
     }
 
-    fun sendToAll(clients: MutableSet<WsContext>, newState: HashMap<Int, DataTransferEntity>){
+    fun sendToAll(clients: MutableSet<WsContext>, newState: HashMap<Int, DataTransferEntity>) = GlobalScope.launch{
         val state = convertState(newState)
         val bs = JSONObject().put("name", "gd").put("response", state).toString()
         for (c in clients) {
-            GlobalScope.launch(Dispatchers.Default) { c.send(bs) }
+            c.send(bs)
         }
     }
 }
