@@ -53,6 +53,26 @@ class Engine {
         player.pos = pos.copy()
     }
 
+    fun accelerate(player: Player, isForward: Boolean) {
+        when (isForward) {
+            true -> {
+                if (player.velocity.length < 5f) {
+                    player.velocity.length += 0.1f
+                }
+            }
+            false -> {
+                if (player.velocity.length > 0f) {
+                    player.velocity.length -= 0.1f
+                    if (player.velocity.length < 0f) {
+                        player.velocity.length = 0f
+                    }
+                }
+            }
+
+        }
+    }
+
+
     fun getState(): List<Entity> {
         return entities.toList()
     }
