@@ -48,11 +48,22 @@
     var sprites = {
         ship: new Image(),
         buttonL: new Image(),
-        buttonR: new Image()
+        buttonLhover: new Image(),
+        buttonLpressed: new Image(),
+        buttonR: new Image(),
+        buttonRhover: new Image(),
+        buttonRpressed: new Image(),
+        minimap: new Image()
     }
+
     sprites.ship.src = "img/ship.png"
     sprites.buttonL.src = "img/buttonL.png"
+    sprites.buttonLhover.src = "img/buttonLhover.png"
+    sprites.buttonLpressed.src = "img/buttonLpressed.png"
     sprites.buttonR.src = "img/buttonR.png"
+    sprites.buttonRhover.src = "img/buttonRhover.png"
+    sprites.buttonRpressed.src = "img/buttonRpressed.png"
+    sprites.minimap.src = "img/minimap.png"
 
     var lastMousePosition = {
         x: 0, y: 0
@@ -71,6 +82,7 @@
     ]
     fields[0].src = "img/sea.png"
     var offset = 2
+    var shootCooldown = false
 
     function distance(p1, p2) {
         return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
@@ -201,57 +213,50 @@
         let leftButtonCoords = {
             x: center - 0.05 * canv.width,
             y: 0.8 * canv.height
-        }
-        ctx.drawImage(sprites.buttonL, leftButtonCoords.x, leftButtonCoords.y, 60, 60)
-        ctx.drawImage(sprites.buttonR, leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)
-        /*ctx.lineWidth = 5
-        ctx.strokeStyle = "black"
-        ctx.fillStyle = "white"*/
+        }   
+
+        let leftSprite = sprites.buttonL
+        let rightSprite = sprites.buttonR
 
         //console.log(lastMousePosition, leftButtonCoords)
         //console.log(highlight)
-        /*if (lastMousePosition.x >= leftButtonCoords.x && lastMousePosition.x <= leftButtonCoords.x + 60 &&
+        if (lastMousePosition.x >= leftButtonCoords.x && lastMousePosition.x <= leftButtonCoords.x + 60 &&
             lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 60) {
-            ctx.fillStyle = "rgb(100, 100, 100)"
+            leftSprite = sprites.buttonLhover
         }
 
         if(highlight.left) {
-            ctx.fillStyle = "red"
+            leftSprite = sprites.buttonLpressed
             setTimeout(() => {
                 highlight.left = false
             }, 100)
-        }*/
-        /*ctx.fillRect(leftButtonCoords.x, leftButtonCoords.y, 60, 60)
-        ctx.strokeRect(leftButtonCoords.x, leftButtonCoords.y, 60, 60)
-
-
+        }
+    
         //console.log(lastMousePosition, leftButtonCoords.x + 0.1 * canv.width)
         ctx.fillStyle = "white"
         if (lastMousePosition.x >= leftButtonCoords.x + 0.1 * canv.width && lastMousePosition.x <= leftButtonCoords.x + 60 + 0.1 * canv.width &&
             lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 60) {
-            ctx.fillStyle = "rgb(100, 100, 100)"
+            rightSprite = sprites.buttonRhover
         }
         
         if (highlight.right) {
-            ctx.fillStyle = "red"
+            rightSprite = sprites.buttonRpressed
             setTimeout(() => {
                 highlight.right = false
             }, 100)
         }
-
-        ctx.fillRect(leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)
-        ctx.strokeRect(leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)*/
         
+        ctx.drawImage(leftSprite, leftButtonCoords.x, leftButtonCoords.y, 60, 60)
+        ctx.drawImage(rightSprite, leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)
     }
 
     function renderMinimap() {
         ctx.strokeStyle = "black"
         ctx.lineWidth = 10
         ctx.fillStyle = "#4169E1"
-        let size = 0.2 * canv.width
+        let size = 0.25 * canv.width
 
         ctx.fillRect(0, canv.height - size, size, size)
-        ctx.strokeRect(0, canv.height - size, size, size)
 
         // let myTeam = entities.filter(ent => ent.team == playerTeam)
         let myTeam = entities.filter(ent => ent.type === "Player")
@@ -290,6 +295,7 @@
                 ctx.restore()
             }
         }
+        ctx.drawImage(sprites.minimap, 0, canv.height - size, size, size)
     }
 
     function renderGold() {
