@@ -29,7 +29,7 @@ class EngineTest() {
         val vel = Vector2f(2f, 2f)
         val island1 = Island(1, 100, posIsland)
         val player1 = Player(posPlayer, 100, vel, 1, island1)
-        val engine1 = Engine
+        val engine1 = engine
         engine1.addNewPlayer(player1)
         engine1.update()
     }
