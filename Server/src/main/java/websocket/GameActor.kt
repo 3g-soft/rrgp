@@ -57,7 +57,7 @@ class GameActor(val gapi: GameAPI) {
             is LogoutRequest -> gapi.removePlayer(r.id)
             is TickRequest -> gapi.update()
             is GetStateRequest -> r.response.complete(gapi.getAllEntities())
-            is ShotRequest -> l.log("Shot: not implemented")
+            is ShotRequest -> gapi.makeShot(r.id, r.type)
             is ChangeAngleRequest -> gapi.setPlayerAngle(r.angle, r.id)
         }
     }
