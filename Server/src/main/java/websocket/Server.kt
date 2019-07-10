@@ -29,7 +29,7 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
                 ws.onMessage {
                     GlobalScope.launch(Dispatchers.Default) {
                         val obj = JSONObject(it.message())
-                        l.log(it.message())
+//                        l.log(it.message())
                         parseRequest(clients[it]!!, obj)
                     }
                 }
