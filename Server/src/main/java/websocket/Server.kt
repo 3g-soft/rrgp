@@ -75,7 +75,7 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
                     newdata.remove("sizex")
                     newdata.remove("sizey")
                     newdata.remove("type")
-                    if (prevState[key]?.hp == newState[key]?.hp) newdata.remove("hp")
+//                    if (prevState[key]?.hp == newState[key]?.hp) newdata.remove("hp")
 //                if(prevState[key]?.angle == newState[key]?.angle)newdata.remove("angle")
                 }
                 state.put("$key", newdata)
