@@ -16,7 +16,7 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
 
     private val clients = mutableMapOf<WsContext, Int>()
     private var prevState = HashMap<Int, DataTransferEntity>()
-
+    private val stateManger = StateManger()
 
     init {
         Javalin.create {
@@ -30,7 +30,7 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
                     l.log("sending $id")
                     it.send(id)
                     clients[it] = id
-                    sendFullState(it)
+                    GlobalScope.launch { stateManger.sendFullState(it, gameActor.getState().await()) }
 
                 }
                 ws.onMessage {
@@ -50,54 +50,19 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
             while (true) {
                 delay(tick)
                 gameActor.tick().await()
-                filterAndSend(gameActor.getState().await())
+                stateManger.sendToAll(clients.keys, gameActor.getState().await())
             }
         }
         l.log("Started!")
     }
 
-    fun parseRequest(id: Int, obj: JSONObject){
+    fun parseRequest(id: Int, obj: JSONObject) {
         val name = obj.getString("op")
         val args = obj.getJSONArray("args")
-        when(name){
+        when (name) {
             "makeShot" -> gameActor.shot(id, args.getInt(0))
             "changeAngle" -> gameActor.changeAngle(id, args.getFloat(0))
             "accelerate" -> gameActor.accelerate(id, args.getBoolean(0))
         }
     }
-
-    fun filterAndSend(newState: HashMap<Int, DataTransferEntity>){
-            val state = JSONObject()
-            for(key in newState.keys){
-                val newdata = JSONObject(newState[key])
-                if(prevState.containsKey(key)) {
-                    newdata.remove("id")
-                    newdata.remove("sizex")
-                    newdata.remove("sizey")
-                    newdata.remove("type")
-//                    if (prevState[key]?.hp == newState[key]?.hp) newdata.remove("hp")
-//                if(prevState[key]?.angle == newState[key]?.angle)newdata.remove("angle")
-                }
-                state.put("$key", newdata)
-            }
-        prevState = newState
-        sendToAll(state)
-    }
-
-    fun sendToAll(state: JSONObject){
-        val bs = JSONObject().put("name", "gd").put("response", state).toString()
-        for (c in clients.keys) {
-//            l.log(bs)
-            GlobalScope.launch(Dispatchers.Default) { c.send(bs) }
-        }
-    }
-
-    fun sendFullState(ctx: WsContext){
-        GlobalScope.launch {
-            val state = gameActor.getState().await()
-            l.log(JSONObject(state).toString())
-            ctx.send(JSONObject().put("name", "gd").put("response", state).toString())
-        }
-    }
-
 }
