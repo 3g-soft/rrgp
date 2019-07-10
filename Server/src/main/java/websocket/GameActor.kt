@@ -41,7 +41,13 @@ class GameActor(val gapi: GameAPI) {
     fun getState() = GlobalScope.async {
         val response = CompletableDeferred<List<DataTransferEntity>>()
         requestChannel.send(GetStateRequest(response))
-        response.await()
+
+        val stmap = HashMap<Int, DataTransferEntity>()
+        response.await().forEach {
+//            l.log("${it.id}")
+            stmap[it.id] = it
+        }
+        stmap
     }
 
     fun shot(id: Int, type: Int) = GlobalScope.async {

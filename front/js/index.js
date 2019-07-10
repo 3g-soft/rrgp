@@ -31,15 +31,20 @@
     }
 
     var ws = new Connection(`ws://${document.domain}:8080/game`)
+    let entobj = {}
     ws.onstate = (e) => {
-        entities = e.map(ent => {
-            let newEnt = Object.assign({}, ent)
-            newEnt.size = {
-                x: newEnt.sizex,
-                y: newEnt.sizey
+        console.log(e)
+        for(k in e){
+            if(!entobj.hasOwnProperty(k)){
+                entobj[k] = e[k];
+                entobj[k].size = {x: entobj[k].sizex, y: entobj[k].sizey}
+                continue
             }
-            return newEnt
-        })
+            for(i in e[k])entobj[k][i] = e[k][i]
+            entobj[k].size = {x: entobj[k].sizex, y: entobj[k].sizey}
+        }
+        for(k in entobj)if(!e.hasOwnProperty(k))delete entobj[k]
+        entities = Object.values(entobj)
     }
 
     var canv = document.getElementById("canv")
