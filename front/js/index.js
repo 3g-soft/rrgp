@@ -46,12 +46,14 @@
     var ctx = canv.getContext("2d")
     var entities = []
     var sprites = {
-        ship: new Image()
+        ship: new Image(),
+        buttonL: new Image(),
+        buttonR: new Image()
     }
     sprites.ship.src = "img/ship.png"
+    sprites.buttonL.src = "img/buttonL.png"
+    sprites.buttonR.src = "img/buttonR.png"
 
-
-    var playerTeam = "blue"
     var lastMousePosition = {
         x: 0, y: 0
     }
@@ -75,7 +77,6 @@
     }
 
     function init() {
-        ctx.transform(1, 0, 0, -1, 0, canv.height)
         document.addEventListener("keydown", (e) => {
             let you = entities.filter(ent => ent.id == ws.id)[0]
             switch (e.keyCode) {
@@ -134,6 +135,7 @@
         ctx.translate(x, y)
         ctx.rotate(angle)
         ctx.drawImage(image, -(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
+        //ctx.strokeRect(-(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
         ctx.restore()
     }
 
@@ -149,6 +151,7 @@
     }
 
     function renderEntities() {
+        //ctx.transform(1, 0, 0, -1, 0, canv.height)
         let you = entities.filter(ent => ent.id == ws.id)[0]
         Camera.pos = Object.assign({}, you.pos)
 
@@ -176,13 +179,15 @@
             x: center - 0.05 * canv.width,
             y: 0.8 * canv.height
         }
-        ctx.lineWidth = 5
+        ctx.drawImage(sprites.buttonL, leftButtonCoords.x, leftButtonCoords.y, 60, 60)
+        ctx.drawImage(sprites.buttonR, leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)
+        /*ctx.lineWidth = 5
         ctx.strokeStyle = "black"
-        ctx.fillStyle = "white"
+        ctx.fillStyle = "white"*/
 
         //console.log(lastMousePosition, leftButtonCoords)
         //console.log(highlight)
-        if (lastMousePosition.x >= leftButtonCoords.x && lastMousePosition.x <= leftButtonCoords.x + 60 &&
+        /*if (lastMousePosition.x >= leftButtonCoords.x && lastMousePosition.x <= leftButtonCoords.x + 60 &&
             lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 60) {
             ctx.fillStyle = "rgb(100, 100, 100)"
         }
@@ -192,8 +197,8 @@
             setTimeout(() => {
                 highlight.left = false
             }, 100)
-        }
-        ctx.fillRect(leftButtonCoords.x, leftButtonCoords.y, 60, 60)
+        }*/
+        /*ctx.fillRect(leftButtonCoords.x, leftButtonCoords.y, 60, 60)
         ctx.strokeRect(leftButtonCoords.x, leftButtonCoords.y, 60, 60)
 
 
@@ -212,7 +217,7 @@
         }
 
         ctx.fillRect(leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)
-        ctx.strokeRect(leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)
+        ctx.strokeRect(leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)*/
         
     }
 
@@ -229,6 +234,7 @@
         let myTeam = entities.filter(ent => ent.type === "Player")
 
         let vision = []
+        //ctx.transform(1, 0, 0, -1, 0, canv.height)
         for (let ent of myTeam) {
             let mapCoords = {
                 x: (ent.pos.x + mapSize.x) / mapSize.x * size / 2,
@@ -289,6 +295,7 @@
         canv.width = window.innerWidth
         canv.height = window.innerHeight
 
+        //ctx.transform()
         ctx.clearRect(0, 0, canv.width, canv.height)
         renderField()
         renderEntities()
@@ -302,6 +309,6 @@
         setInterval(render, 17)
         setInterval(() => {
             offset *= -1
-        }, 250)
+        }, 500)
     }
 })();

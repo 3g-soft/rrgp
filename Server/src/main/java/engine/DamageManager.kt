@@ -18,6 +18,10 @@ class DamageManager {
         }
         return DeathState.ALIVE
     }
+    fun getHPbyId(id: Int): Int {
+        if (id in EntityHPs.values) return -1
+        return EntityHPs[id]!!
+    }
     fun removeEntity(id: Int) {
         if (id !in EntityHPs.values) return
         for( key in EntityHPs.keys ) {
