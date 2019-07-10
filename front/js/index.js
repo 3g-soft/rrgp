@@ -161,6 +161,21 @@
                 drawRotatedImage(sprites.ship,
                     ent.pos.x - Camera.pos.x + window.innerWidth / 2,
                     ent.pos.y - Camera.pos.y + window.innerHeight / 2, ent.size.x, ent.size.y, ent.angle)
+                
+                ctx.strokeStyle = "black"
+                ctx.lineWidth = 2
+                ctx.fillStyle = "red"
+
+                hpbaroffset = {
+                    x: -50, 
+                    y: -120
+                }
+
+                console.log(ent.hp)
+                ctx.fillRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
+                    ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100 * ent.hp / 280, 10)
+                ctx.strokeRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
+                    ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100, 10)
             }
         }
     }
