@@ -42,7 +42,6 @@ class GameAPI {
         }
     }
 
-
     fun createPlayer(): DataTransferEntity {
 //        var r = Random(System.currentTimeMillis())
         var player = Player(Point(500f, 500f))
@@ -55,6 +54,7 @@ class GameAPI {
             DataTransferEntityType.Player,
             player.hitbox.sizex,
             player.hitbox.sizey,
+            DamageManager.getHPbyId(EntityManager.getId(player)),
             player.velocity.angle
         )
     }
@@ -72,7 +72,7 @@ class GameAPI {
                             DataTransferEntityType.Bullet,
                             entity.hitbox.sizex,
                             entity.hitbox.sizey,
-                            entity.velocity.angle
+                            angle=entity.velocity.angle
                         )
                     )
                 }
@@ -84,6 +84,7 @@ class GameAPI {
                             DataTransferEntityType.Player,
                             entity.hitbox.sizex,
                             entity.hitbox.sizey,
+                            DamageManager.getHPbyId(EntityManager.getId(entity)),
                             entity.velocity.angle
                         )
                     )
@@ -95,7 +96,8 @@ class GameAPI {
                             entity.pos,
                             DataTransferEntityType.Island,
                             entity.hitbox.sizex,
-                            entity.hitbox.sizey
+                            entity.hitbox.sizey,
+                            DamageManager.getHPbyId(EntityManager.getId(entity))
                         )
                     )
                 }
@@ -169,7 +171,7 @@ class GameAPI {
                 DataTransferEntityType.Bullet,
                 bullet.hitbox.sizex,
                 bullet.hitbox.sizey,
-                bullet.velocity.angle
+                angle=bullet.velocity.angle
             )
         }
         else {
