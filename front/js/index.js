@@ -75,7 +75,6 @@
     }
 
     function init() {
-        ctx.transform(1, 0, 0, -1, 0, canv.height)
         document.addEventListener("keydown", (e) => {
             let you = entities.filter(ent => ent.id == ws.id)[0]
             switch (e.keyCode) {
@@ -132,8 +131,9 @@
     function drawRotatedImage(image, x, y, sizeX, sizeY, angle) {
         ctx.save()
         ctx.translate(x, y)
-        ctx.rotate(angle + Math.PI)
+        ctx.rotate(angle)
         ctx.drawImage(image, -(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
+        ctx.strokeRect(-(sizeX / 2), -(sizeY / 2), sizeX, sizeY)
         ctx.restore()
     }
 
@@ -149,6 +149,7 @@
     }
 
     function renderEntities() {
+        ctx.transform(1, 0, 0, -1, 0, canv.height)
         let you = entities.filter(ent => ent.id == ws.id)[0]
         Camera.pos = Object.assign({}, you.pos)
 
@@ -229,6 +230,7 @@
         let myTeam = entities.filter(ent => ent.type === "Player")
 
         let vision = []
+        //ctx.transform(1, 0, 0, -1, 0, canv.height)
         for (let ent of myTeam) {
             let mapCoords = {
                 x: (ent.pos.x + mapSize.x) / mapSize.x * size / 2,
@@ -289,12 +291,13 @@
         canv.width = window.innerWidth
         canv.height = window.innerHeight
 
+        //ctx.transform()
         ctx.clearRect(0, 0, canv.width, canv.height)
         renderField()
-        renderEntities()
         renderMinimap()
         renderButtons()
         renderGold()
+        renderEntities()
     }
 
     window.onload = () => {

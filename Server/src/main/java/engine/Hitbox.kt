@@ -30,11 +30,12 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
                 sin(angles1[3] + ownerAngle) * radius1 + owner.pos.y
             )
         )
+//        println("(${points1[0].x}, ${points1[0].y}); (${points1[1].x}, ${points1[1].y}); (${points1[2].x}, ${points1[2].y}); (${points1[3].x}, ${points1[3].y})")
         val lines1 = listOf(
             points1[0].getLine(points1[1]), points1[1].getLine(points1[2]),
-            points1[2].getLine(points1[3]), points1[3].getLine(points1[0])
+            points1[3].getLine(points1[2]), points1[0].getLine(points1[3])
         )
-
+//        println(lines1)
 
         var otherAngle = if (hitbox.owner is MovableEntity) {
             hitbox.owner.velocity.angle
@@ -62,12 +63,14 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
                 sin(angles2[3] + otherAngle) * radius2 + hitbox.owner.pos.y
             )
         )
+//        println("(${points2[0].x}, ${points2[0].y}); (${points2[1].x}, ${points2[1].y}); (${points2[2].x}, ${points2[2].y}); (${points2[3].x}, ${points2[3].y})")
         val lines2 = listOf(
             points2[0].getLine(points2[1]), points2[1].getLine(points2[2]),
-            points2[2].getLine(points2[3]), points2[3].getLine(points2[0])
+            points2[3].getLine(points2[2]), points2[0].getLine(points2[3])
         )
-        var flag = false
+
         for (point in points1) {
+            var flag = false
             for (i in 0..1) {
                 var a1 = lines2[i][0]
                 var b1 = lines2[i][1]
@@ -75,17 +78,20 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
                 var a2 = lines2[i + 2][0]
                 var b2 = lines2[i + 2][1]
                 var c2 = lines2[i + 2][2]
-                if (a1 * point.x + b1 * point.y + c1 != a2 * point.x + b2 * point.y + c2) {
+                var res1 = a1 * point.x + b1 * point.y + c1
+                var res2 = a2 * point.x + b2 * point.y + c2
+                if (res1 * res2 <= 0) {
                     if (flag) {
-                        println("c1")
+//                        println("c1")
                         return true
                     }
                     flag = true
                 }
             }
         }
-        flag = false
+
         for (point in points2) {
+            var flag = false
             for (i in 0..1) {
                 var a1 = lines1[i][0]
                 var b1 = lines1[i][1]
@@ -93,9 +99,11 @@ data class Hitbox(var sizex: Float, var sizey: Float, val owner: Entity) {
                 var a2 = lines1[i + 2][0]
                 var b2 = lines1[i + 2][1]
                 var c2 = lines1[i + 2][2]
-                if (a1 * point.x + b1 * point.y + c1 != a2 * point.x + b2 * point.y + c2) {
+                var res1 = a1 * point.x + b1 * point.y + c1
+                var res2 = a2 * point.x + b2 * point.y + c2
+                if (res1 * res2 <= 0) {
                     if (flag) {
-                        println("c2")
+//                        println("c2")
                         return true
                     }
                     flag = true
