@@ -156,17 +156,14 @@ class GameAPI {
         val angle: Float
         val player = EntityManager.getById(id)
         if (player is Player) {
-            when (side) {
+            angle = when (side) {
                 1 -> {
-                    angle = player.velocity.angle - PI.toFloat() / 2f
+                    player.velocity.angle - PI.toFloat() / 2f
                 }
-                2 -> {
-                    angle = player.velocity.angle + PI.toFloat() / 2f
+                else -> {
+                    player.velocity.angle + PI.toFloat() / 2f
                 }
                 //  ANGLES ARE RIGGED
-                else -> {
-                    angle = player.velocity.angle
-                }
             }
             val radius = player.hitbox.sizey / 2 + 25f / 2f + 5
             val bullet = Bullet(
