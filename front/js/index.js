@@ -46,12 +46,14 @@
     var ctx = canv.getContext("2d")
     var entities = []
     var sprites = {
-        ship: new Image()
+        ship: new Image(),
+        buttonL: new Image(),
+        buttonR: new Image()
     }
     sprites.ship.src = "img/ship.png"
+    sprites.buttonL.src = "img/buttonL.png"
+    sprites.buttonR.src = "img/buttonR.png"
 
-
-    var playerTeam = "blue"
     var lastMousePosition = {
         x: 0, y: 0
     }
@@ -176,13 +178,15 @@
             x: center - 0.05 * canv.width,
             y: 0.8 * canv.height
         }
-        ctx.lineWidth = 5
+        ctx.drawImage(sprites.buttonL, leftButtonCoords.x, leftButtonCoords.y, 60, 60)
+        ctx.drawImage(sprites.buttonR, leftButtonCoords.x, leftButtonCoords.y, 60, 60)
+        /*ctx.lineWidth = 5
         ctx.strokeStyle = "black"
-        ctx.fillStyle = "white"
+        ctx.fillStyle = "white"*/
 
         //console.log(lastMousePosition, leftButtonCoords)
         //console.log(highlight)
-        if (lastMousePosition.x >= leftButtonCoords.x && lastMousePosition.x <= leftButtonCoords.x + 60 &&
+        /*if (lastMousePosition.x >= leftButtonCoords.x && lastMousePosition.x <= leftButtonCoords.x + 60 &&
             lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 60) {
             ctx.fillStyle = "rgb(100, 100, 100)"
         }
@@ -192,8 +196,8 @@
             setTimeout(() => {
                 highlight.left = false
             }, 100)
-        }
-        ctx.fillRect(leftButtonCoords.x, leftButtonCoords.y, 60, 60)
+        }*/
+        /*ctx.fillRect(leftButtonCoords.x, leftButtonCoords.y, 60, 60)
         ctx.strokeRect(leftButtonCoords.x, leftButtonCoords.y, 60, 60)
 
 
@@ -212,7 +216,7 @@
         }
 
         ctx.fillRect(leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)
-        ctx.strokeRect(leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)
+        ctx.strokeRect(leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)*/
         
     }
 
