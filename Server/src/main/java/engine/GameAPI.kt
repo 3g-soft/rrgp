@@ -11,7 +11,12 @@ class GameAPI {
     val EntityManager: EntityManager = EntityManager()
 
     fun update() {
-        onCollisionDamage(Engine.update())
+        val allEvents = Engine.update()
+        val deadBullets = allEvents.deadBullets
+        for (bullet in deadBullets) {
+            removeEntity(EntityManager.getId(bullet))
+        }
+        onCollisionDamage(allEvents.collisions)
     }
 
     fun setPlayerAngle(angle: Float, id: Int) {
