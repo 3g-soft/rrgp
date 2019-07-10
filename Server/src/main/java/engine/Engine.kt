@@ -2,6 +2,10 @@ package engine
 
 
 class Engine {
+    private companion object CONSTS{
+        const val ACCELERATION = 0.1f
+        const val MAXVEL = 5f
+    }
     private val entities: MutableList<Entity> = emptyList<Entity>().toMutableList()
 
     fun update(): List<CollisionEvent> {
@@ -56,15 +60,17 @@ class Engine {
     fun accelerate(player: Player, isForward: Boolean) {
         when (isForward) {
             true -> {
-                if (player.velocity.length < 5f) {
-                    player.velocity.length += 0.1f
+                if (player.velocity.length < MAXVEL) {
+                    player.velocity.length += ACCELERATION
                 }
             }
             false -> {
-                if (player.velocity.length > 0f) {
-                    player.velocity.length -= 0.1f
-                    if (player.velocity.length < 0f) {
-                        player.velocity.length = 0f
+                if (player.velocity.length > ACCELERATION) {
+                    val angle = player.velocity.angle
+                    player.velocity.length -= ACCELERATION
+                    if (player.velocity.length <= 0f) {
+                        player.velocity.angle = angle
+                        player.velocity.length = 0.01f
                     }
                 }
             }

@@ -29,7 +29,7 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
                 ws.onMessage {
                     GlobalScope.launch(Dispatchers.Default) {
                         val obj = JSONObject(it.message())
-                        l.log(it.message())
+//                        l.log(it.message())
                         parseRequest(clients[it]!!, obj)
                     }
                 }
@@ -60,6 +60,7 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
         when(name){
             "makeShot" -> gameActor.shot(id, args.getInt(0))
             "changeAngle" -> gameActor.changeAngle(id, args.getFloat(0))
+            "accelerate" -> gameActor.accelerate(id, args.getBoolean(0))
         }
     }
 }
