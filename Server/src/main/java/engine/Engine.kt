@@ -1,15 +1,27 @@
 package engine
 
+const val WIDTH = 2000
+const val HEIGHT = 2000
+
+data class Events(val collisions: List<CollisionEvent>, val deadBullets: List<Bullet>)
 
 class Engine {
+    private companion object Constants {
+        const val ACCELERATION = 0.1f
+        const val MAX_VELOCITY = 5f
+    }
+
     private val entities: MutableList<Entity> = emptyList<Entity>().toMutableList()
 
-    fun update(): List<CollisionEvent> {
-        entities.forEach { entity ->
+    fun update(): Events {
+        val deadBullets = mutableListOf<Bullet>()
+        for (entity in entities) {
             if (entity is MovableEntity) entity.move()
+            if (entity is Bullet && entity.distanceTraveled >= entity.maxDistanceTraveled) deadBullets.add(entity)
         }
-        return checkAllCollisions()
+        return Events(checkAllCollisions(), deadBullets)
     }
+
     private fun checkAllCollisions(): List<CollisionEvent> {
         val toReturn = mutableListOf<CollisionEvent>()
         for (i in 0 until entities.size) {
@@ -56,15 +68,17 @@ class Engine {
     fun accelerate(player: Player, isForward: Boolean) {
         when (isForward) {
             true -> {
-                if (player.velocity.length < 5f) {
-                    player.velocity.length += 0.1f
+                if (player.velocity.length < MAX_VELOCITY) {
+                    player.velocity.length += ACCELERATION
                 }
             }
             false -> {
-                if (player.velocity.length > 0f) {
-                    player.velocity.length -= 0.1f
-                    if (player.velocity.length < 0f) {
-                        player.velocity.length = 0f
+                if (player.velocity.length > ACCELERATION) {
+                    val angle = player.velocity.angle
+                    player.velocity.length -= ACCELERATION
+                    if (player.velocity.length <= 0f) {
+                        player.velocity.angle = angle
+                        player.velocity.length = 0.01f
                     }
                 }
             }

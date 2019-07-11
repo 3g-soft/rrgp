@@ -3,13 +3,14 @@ package engine
 import kotlin.math.*
 
 data class Vector2f(var x: Float = 0f, var y: Float = 5f) {
-    constructor(length: Float = 100f, angle: Float = PI.toFloat() / 2, dummy: Boolean): this(length * cos(angle), length * sin(angle)) { }
+    constructor(length: Float = 100f, angle: Float = PI.toFloat() / 2, dummy: Boolean) : this(length * cos(angle), length * sin(angle))
+
     var length: Float
         get() = sqrt(this.x.pow(2) + this.y.pow(2))
         set(value) {
             val len = this.length
-            this.x *= value/len
-            this.y *= value/len
+            this.x *= value / len
+            this.y *= value / len
         }
     var angle: Float
         get() {
@@ -19,8 +20,7 @@ data class Vector2f(var x: Float = 0f, var y: Float = 5f) {
             val angle = atan2(this.y, this.x)
             return if (angle < 0) {
                 angle + 2 * PI.toFloat()
-            }
-            else {
+            } else {
                 angle
             }
         }
@@ -35,5 +35,21 @@ data class Vector2f(var x: Float = 0f, var y: Float = 5f) {
         x /= len
         y /= len
         return Vector2f(x, y)
+    }
+
+    operator fun plus(vec: Vector2f): Vector2f {
+        return Vector2f(this.x + vec.x, this.y + vec.y)
+    }
+
+    operator fun minus(vec: Vector2f): Vector2f {
+        return Vector2f(this.x - vec.x, this.y - vec.y)
+    }
+
+    operator fun times(float: Float): Vector2f {
+        return Vector2f(this.x * float, this.y * float)
+    }
+
+    operator fun div(float: Float): Vector2f {
+        return Vector2f(this.x / float, this.y / float)
     }
 }

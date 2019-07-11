@@ -88,7 +88,7 @@ class EngineTest {
         engine1.addEntity(col5)
         engine1.addEntity(col6)
         val col = engine1.update()
-        assertEquals(col.size, 2)
+        assertEquals(col.collisions.size, 2)
     }
 
 }

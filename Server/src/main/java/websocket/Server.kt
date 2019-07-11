@@ -7,34 +7,38 @@ import io.javalin.websocket.WsContext
 import kotlinx.coroutines.*
 import org.json.JSONObject
 
-class Server(val gapi: GameAPI, val tick: Long = 16) {
+@ObsoleteCoroutinesApi
+class Server(gameAPI: GameAPI, private val tick: Long = 16) {
 
     private val l = Logger("SRV")
-    private val gameActor = GameActor(gapi)
+    private val gameActor = GameActor(gameAPI)
 
     private val clients = mutableMapOf<WsContext, Int>()
+    private val stateManger = StateManger()
 
     init {
         Javalin.create {
-            it.addStaticFiles("../front/", Location.EXTERNAL)
+            it.addStaticFiles("../Client/", Location.EXTERNAL)
         }.apply {
             ws("/game") { ws ->
                 ws.onConnect {
                     l.log("sc")
                     var id: Int = -1
-                    runBlocking { id = gameActor.login().await() }
+                    runBlocking { id = gameActor.loginAsync().await() }
+                    l.log("sending $id")
                     it.send(id)
                     clients[it] = id
+                    GlobalScope.launch { stateManger.sendFullState(it, gameActor.getStateAsync().await()) }
+
                 }
                 ws.onMessage {
                     GlobalScope.launch(Dispatchers.Default) {
                         val obj = JSONObject(it.message())
-                        l.log(it.message())
                         parseRequest(clients[it]!!, obj)
                     }
                 }
                 ws.onClose {
-                    gameActor.logout(clients[it]!!)
+                    gameActor.logoutAsync(clients[it]!!)
                     clients.remove(it)
                 }
             }
@@ -43,23 +47,20 @@ class Server(val gapi: GameAPI, val tick: Long = 16) {
         GlobalScope.launch(Dispatchers.Default) {
             while (true) {
                 delay(tick)
-                gameActor.tick().await()
-                val bs = JSONObject().put("name", "gd").put("response", gameActor.getState().await()).toString()
-                for (c in clients.keys) {
-//                    l.log(bs)
-                    GlobalScope.launch(Dispatchers.Default) { c.send(bs) }
-                }
+                gameActor.tickAsync().await()
+                stateManger.sendToAll(clients.keys, gameActor.getStateAsync().await())
             }
         }
         l.log("Started!")
     }
 
-    fun parseRequest(id: Int, obj: JSONObject){
+    private fun parseRequest(id: Int, obj: JSONObject) {
         val name = obj.getString("op")
         val args = obj.getJSONArray("args")
-        when(name){
-            "makeShot" -> gameActor.shot(id, args.getInt(0))
-            "changeAngle" -> gameActor.changeAngle(id, args.getFloat(0))
+        when (name) {
+            "makeShot" -> gameActor.shotAsync(id, args.getInt(0))
+            "changeAngle" -> gameActor.changeAngleAsync(id, args.getFloat(0))
+            "accelerate" -> gameActor.accelerateAsync(id, args.getBoolean(0))
         }
     }
 }
