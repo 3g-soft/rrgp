@@ -1,9 +1,8 @@
+//import oop.execute
+//import oop.value
 import engine.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import java.*
-//import oop.execute
-//import oop.value
 import org.junit.jupiter.api.Test
 import kotlin.math.abs
 
@@ -17,7 +16,7 @@ fun floatEquals(a:Float, b:Float):Boolean
 }
 
 //import kotlin.test.assertEquals
-class PointTest() {
+class PointTest {
     @Test
     fun distanceTest() {
         val point1 = Point(2f, 3f)
@@ -26,7 +25,7 @@ class PointTest() {
     }
 }
 
-class EngineTest() {
+class EngineTest {
     @Test
     fun updateTest() {
         val posPlayer = Point(1f, 3f)
@@ -67,7 +66,7 @@ class EngineTest() {
         assertEquals(engine1.getState().size, 1)
     }
     @Test
-    fun CollisionEventTest()
+    fun collisionEventTest()
     {
         val pos1 = Point(1f, 4f)
         val pos2 = Point(1f, 2f)
@@ -76,11 +75,11 @@ class EngineTest() {
         val pos5 = Point(33f, 3f)
         val pos6 = Point(44f, 2f)
         val col1 = CollisionEntity(pos1, 4f, 4f)
-        val col2 = CollisionEntity(pos1, 4f, 4f)
-        val col3 = CollisionEntity(pos1, 4f, 4f)
-        val col4 = CollisionEntity(pos1, 4f, 4f)
-        val col5 = CollisionEntity(pos1, 4f, 4f)
-        val col6 = CollisionEntity(pos1, 4f, 4f)
+        val col2 = CollisionEntity(pos2, 4f, 4f)
+        val col3 = CollisionEntity(pos3, 4f, 4f)
+        val col4 = CollisionEntity(pos4, 4f, 4f)
+        val col5 = CollisionEntity(pos5, 4f, 4f)
+        val col6 = CollisionEntity(pos6, 4f, 4f)
         val engine1 = Engine()
         engine1.addEntity(col1)
         engine1.addEntity(col2)
@@ -88,19 +87,16 @@ class EngineTest() {
         engine1.addEntity(col4)
         engine1.addEntity(col5)
         engine1.addEntity(col6)
-
-        assertEquals(engine1.update().size, 2)
+        val col = engine1.update()
+        assertEquals(col.size, 2)
     }
-
-
 
 }
 
-class PlayerTest() {
+class PlayerTest {
     @Test
     fun moveTest() {
         val posPL = Point(1f, 3f)
-        val posIS = Point(1f, 2f)
         val vel = Vector2f(2f, 2f)
         val player1 = Player(posPL, vel)
         player1.move()
