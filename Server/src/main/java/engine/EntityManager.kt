@@ -6,7 +6,7 @@ class EntityManager {
     private var uniqueCounter = 0
 
     private val entityIDs:   MutableMap<Entity, Int>           = emptyMap<Entity, Int>().toMutableMap()
-    private val playerNames: MutableMap<Player, String>        = emptyMap<Player, String>().toMutableMap()
+    private val playerNames: MutableMap<Int, String>           = emptyMap<Int, String>().toMutableMap()
     private val teams:       MutableMap<Int, MutableList<Int>> = emptyMap<Int, MutableList<Int>>().toMutableMap()
 
     init {
@@ -15,6 +15,13 @@ class EntityManager {
         }
     }
 
+    fun setNameById(id: Int, name: String) {
+        if(id !in entityIDs.values || name in  playerNames.values) return
+        playerNames[id] = name
+    }
+    fun getNameById(id: Int): String {
+        return if (id !in playerNames.keys) "undefined" else playerNames[id]!!
+    }
     fun respawnPlayer(id: Int) {
         if (id !in entityIDs.values) return
         getById(id)!!.pos = Point(
@@ -42,7 +49,7 @@ class EntityManager {
     }
 
     private fun assignTeam(entity: Entity) {
-        var playerCount: Int = 0
+        var playerCount = 0
         for (team in teams.keys) {
             playerCount += teams[team]!!.size
         }
