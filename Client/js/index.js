@@ -244,8 +244,8 @@
 
         //console.log(lastMousePosition, leftButtonCoords)
         //console.log(highlight)
-        if (lastMousePosition.x >= leftButtonCoords.x && lastMousePosition.x <= leftButtonCoords.x + 60 &&
-            lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 60) {
+        if (lastMousePosition.x >= leftButtonCoords.x && lastMousePosition.x <= leftButtonCoords.x + 0.05 * canv.width &&
+            lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 0.05 * canv.width) {
             leftSprite = sprites.buttonLhover
         }
 
@@ -258,8 +258,8 @@
     
         //console.log(lastMousePosition, leftButtonCoords.x + 0.1 * canv.width)
         ctx.fillStyle = "white"
-        if (lastMousePosition.x >= leftButtonCoords.x + 0.1 * canv.width && lastMousePosition.x <= leftButtonCoords.x + 60 + 0.1 * canv.width &&
-            lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 60) {
+        if (lastMousePosition.x >= leftButtonCoords.x + 0.1 * canv.width && lastMousePosition.x <= leftButtonCoords.x + 0.05 * canv.width + 0.1 * canv.width &&
+            lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 0.05 * canv.width) {
             rightSprite = sprites.buttonRhover
         }
         
@@ -270,8 +270,8 @@
             }, 100)
         }
         
-        ctx.drawImage(leftSprite, leftButtonCoords.x, leftButtonCoords.y, 60, 60)
-        ctx.drawImage(rightSprite, leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 60, 60)
+        ctx.drawImage(leftSprite, leftButtonCoords.x, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width)
+        ctx.drawImage(rightSprite, leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width)
     }
 
     function renderMinimap() {
