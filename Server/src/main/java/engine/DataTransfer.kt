@@ -9,7 +9,11 @@ data class DataTransferEntity(
         val hp:    Int   = -1,
         val maxHp: Int   = -1,
         val angle: Float = 0f,
-        val team:  Int   = -1
+        val team:  Int   = -1,
+        val leftShotTimer: Int = 0,
+        val rightShotTimer: Int = 0,
+        val shotCooldown: Int = 60,
+        val isOutside: Boolean = false
 ) {
     constructor(
             id:    Int,
@@ -20,7 +24,11 @@ data class DataTransferEntity(
             hp:    Int   = -1,
             maxHp: Int   = -1,
             angle: Float = 0f,
-            team:  Int   = -1
+            team:  Int   = -1,
+            leftShotTimer: Int = 0,
+            rightShotTimer: Int = 0,
+            shotCooldown: Int = 60,
+            isOutside: Boolean = false
     ) : this(
             id,
             pos,
@@ -30,7 +38,11 @@ data class DataTransferEntity(
             hp,
             maxHp,
             angle,
-            team
+            team,
+            leftShotTimer,
+            rightShotTimer,
+            shotCooldown,
+            isOutside
     )
 }
 

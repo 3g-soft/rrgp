@@ -8,7 +8,7 @@ data class Profile(
     var maxHP: Int = 280,
     var hpRegen: Int = 1,
     var escapeTimer: Int = -1,
-    var hpTimer: Int = -1,
+    var hpTimer: Int = 0,
     var damage: Int = 30,
     var shotCooldown: Int = 60,
     var leftShotTimer: Int = 0,
@@ -112,5 +112,23 @@ class DamageManager {
             1 -> profiles[id]!!.leftShotTimer = profiles[id]!!.shotCooldown
             else -> profiles[id]!!.rightShotTimer = profiles[id]!!.shotCooldown
         }
+    }
+
+    fun getShotCooldown(id: Int, side: Int): Int {
+        if (id !in profiles.keys) return 0
+        return when (side) {
+            1 -> profiles[id]!!.leftShotTimer
+            else -> profiles[id]!!.rightShotTimer
+        }
+    }
+
+    fun getMaxCooldown(id: Int): Int {
+        if (id !in profiles.keys) return 0
+        return profiles[id]!!.shotCooldown
+    }
+
+    fun isOutside(id: Int): Boolean {
+        if (id !in profiles.keys) return false
+        return profiles[id]!!.escapeTimer != -1
     }
 }
