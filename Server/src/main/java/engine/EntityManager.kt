@@ -1,6 +1,6 @@
 package engine
 
-const val TEAMS_COUNT = 3
+const val TEAMS_COUNT = 4
 
 class EntityManager {
     private var uniqueCounter = 0
