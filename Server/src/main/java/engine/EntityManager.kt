@@ -84,6 +84,7 @@ class EntityManager {
                 break
             }
         }
+        playerNames.remove(id)
         for (key in teams.keys) {
             if (teams[key]!!.contains(id))
                 for (entityID in teams[key]!!) {

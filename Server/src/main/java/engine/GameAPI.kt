@@ -12,7 +12,6 @@ class GameAPI {
     private val entityManager: EntityManager = EntityManager()
 
 
-
     fun update() {
         onCollisionDamage(engine.update())
         val deadBullets = mutableListOf<Bullet>()
@@ -38,6 +37,7 @@ class GameAPI {
     fun getName(id: Int): String {
         return entityManager.getNameById(id)
     }
+
     fun setName(id: Int, name: String) {
         entityManager.setNameById(id, name)
     }
@@ -66,6 +66,7 @@ class GameAPI {
     fun createPlayer(): DataTransferEntity {
         val player = Player(Point(500f, 500f))
         entityManager.identify(player)
+        val id = entityManager.getId(player)
         damageManager.assignHP(entityManager.getId(player))
         engine.addEntity(player)
         respawnById(entityManager.getId(player))
@@ -77,7 +78,12 @@ class GameAPI {
             player.hitbox.sizey,
             damageManager.getHPbyId(entityManager.getId(player)),
             damageManager.getMaxHPbyId(entityManager.getId(player)),
-            player.velocity.angle
+            player.velocity.angle,
+            entityManager.getTeamById(id),
+            damageManager.getShotCooldown(id, 1),
+            damageManager.getShotCooldown(id, 2),
+            damageManager.getMaxCooldown(id),
+            damageManager.isOutside(id)
         )
     }
 
