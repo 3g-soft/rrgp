@@ -42,7 +42,7 @@ class Server(gameAPI: GameAPI, private val tick: Long = 16) {
                     clients.remove(it)
                 }
             }
-        }.start(8080)
+        }.start(System.getenv("PORT").toInt())
 
         GlobalScope.launch(Dispatchers.Default) {
             while (true) {
