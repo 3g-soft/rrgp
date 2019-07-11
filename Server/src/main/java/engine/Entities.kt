@@ -21,10 +21,6 @@ class Bullet(velocity: Vector2f, pos: Point) : MovableEntity(velocity, pos) {
         super.move()
         this.distanceTraveled += this.velocity.length
     }
-    fun checkDeath() {
-
-    }
-
 }
 
 class Player(pos: Point, velocity: Vector2f = Vector2f()) : MovableEntity(velocity, pos) {

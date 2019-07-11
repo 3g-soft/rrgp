@@ -6,9 +6,9 @@ const val HEIGHT = 2000
 data class Events(val collisions: List<CollisionEvent>, val deadBullets: List<Bullet>)
 
 class Engine {
-    private companion object CONSTS {
+    private companion object Constants {
         const val ACCELERATION = 0.1f
-        const val MAXVEL = 5f
+        const val MAX_VELOCITY = 5f
     }
 
     private val entities: MutableList<Entity> = emptyList<Entity>().toMutableList()
@@ -68,7 +68,7 @@ class Engine {
     fun accelerate(player: Player, isForward: Boolean) {
         when (isForward) {
             true -> {
-                if (player.velocity.length < MAXVEL) {
+                if (player.velocity.length < MAX_VELOCITY) {
                     player.velocity.length += ACCELERATION
                 }
             }
