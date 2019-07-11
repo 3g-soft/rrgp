@@ -8,8 +8,6 @@ class DamageManager {
     val bulletDamage    = 50
     private val maxHP   = 280
 
-
-
     private fun setHP(id: Int, hp: Int) {
         if (id !in entityHPs.keys) return
         if (hp > entityMaxHPs[id]!!) {

@@ -42,7 +42,11 @@ class EntityManager {
     }
 
     private fun assignTeam(entity: Entity) {
-        teams[teams.keys.size % TEAMS_COUNT]!!.add(entityIDs[entity]!!)
+        var playerCount: Int = 0
+        for (team in teams.keys) {
+            playerCount += teams[team]!!.size
+        }
+        teams[playerCount % TEAMS_COUNT]!!.add(entityIDs[entity]!!)
     }
 
     fun identify(entity: Entity) {

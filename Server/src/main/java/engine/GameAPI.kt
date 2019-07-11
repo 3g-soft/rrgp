@@ -10,6 +10,8 @@ class GameAPI {
     private val damageManager: DamageManager = DamageManager()
     private val entityManager: EntityManager = EntityManager()
 
+
+
     fun update() {
         val allEvents = engine.update()
         val deadBullets = allEvents.deadBullets
