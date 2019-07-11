@@ -2,6 +2,7 @@ package engine
 
 import java.security.InvalidParameterException
 import kotlin.math.PI
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -13,12 +14,25 @@ class GameAPI {
 
 
     fun update() {
-        val allEvents = engine.update()
-        val deadBullets = allEvents.deadBullets
+        onCollisionDamage(engine.update())
+        val deadBullets = mutableListOf<Bullet>()
+        val escapedPlayers = mutableListOf<Int>()
+        val entities = engine.getState()
+        for (entity in entities) {
+            if (entity is Bullet && (entity.distanceTraveled >= entity.maxDistanceTraveled
+                        || abs(entity.pos.x) > WIDTH || abs(entity.pos.y) > HEIGHT)
+            ) deadBullets.add(entity)
+            if (entity is Player && (abs(entity.pos.x) > WIDTH || abs(entity.pos.y) > HEIGHT)) escapedPlayers.add(
+                entityManager.getId(entity)
+            )
+        }
         for (bullet in deadBullets) {
             removeEntity(entityManager.getId(bullet))
         }
-        onCollisionDamage(allEvents.collisions)
+        val deadPlayers = damageManager.update(escapedPlayers)
+        for (deadPlayer in deadPlayers) {
+            respawnById(deadPlayer)
+        }
     }
 
     fun setPlayerAngle(angle: Float, id: Int) {
@@ -49,14 +63,14 @@ class GameAPI {
         engine.addEntity(player)
         respawnById(entityManager.getId(player))
         return DataTransferEntity(
-                entityManager.getId(player),
-                player.pos,
-                DataTransferEntityType.Player,
-                player.hitbox.sizex,
-                player.hitbox.sizey,
-                damageManager.getHPbyId(entityManager.getId(player)),
-                damageManager.getMaxHPbyId(entityManager.getId(player)),
-                player.velocity.angle
+            entityManager.getId(player),
+            player.pos,
+            DataTransferEntityType.Player,
+            player.hitbox.sizex,
+            player.hitbox.sizey,
+            damageManager.getHPbyId(entityManager.getId(player)),
+            damageManager.getMaxHPbyId(entityManager.getId(player)),
+            player.velocity.angle
         )
     }
 
@@ -126,7 +140,7 @@ class GameAPI {
     fun accelerate(id: Int, isForward: Boolean) {
         val player = entityManager.getById(id)
         if (player is Player) {
-            engine.accelerate(player, isForward)
+            engine.accelerate(player, isForward, damageManager.getMaxSpeedById(id))
         }
     }
 
@@ -137,16 +151,19 @@ class GameAPI {
                 else -> damageManager.collisionDamage
             }
             when (damageManager.dealDamage(
-                    entityManager.getId(entity),
-                    damage)) {
+                entityManager.getId(entity),
+                damage
+            )) {
                 DeathState.NONE -> return
                 DeathState.ALIVE -> {
                 }
                 DeathState.DEAD -> {
                     when (entity) {
                         is Island -> {
-                            entityManager.changeTeam(entityManager.getId(entity),
-                                    entityManager.getTeamById(entityManager.getId(by)))
+                            entityManager.changeTeam(
+                                entityManager.getId(entity),
+                                entityManager.getTeamById(entityManager.getId(by))
+                            )
                         }
                         is Player -> {
                             respawnById(entityManager.getId(entity))
@@ -164,15 +181,20 @@ class GameAPI {
             if (collision.target2 is Bullet) {
                 deathCheck(collision.target1, collision.target2)
                 removeEntity(entityManager.getId(collision.target2))
+                continue
             }
             if (collision.target1 is Bullet) {
                 deathCheck(collision.target2, collision.target1)
                 removeEntity(entityManager.getId(collision.target1))
+                continue
             }
+            deathCheck(collision.target1, collision.target2)
+            deathCheck(collision.target2, collision.target1)
         }
     }
 
-    fun makeShot(id: Int, side: Int): DataTransferEntity {
+    fun makeShot(id: Int, side: Int) {
+        if (damageManager.checkShotCooldown(id, side)) return
         val angle: Float
         val player = entityManager.getById(id)
         if (player is Player) {
@@ -187,21 +209,14 @@ class GameAPI {
             }
             val radius = player.hitbox.sizey / 2 + 25f / 2f + 5
             val bullet = Bullet(
-                    Vector2f(10f, angle, false),
-                    Point(radius * cos(angle) + player.pos.x, radius * sin(angle) + player.pos.y)
+                Vector2f(10f, angle, false),
+                Point(radius * cos(angle) + player.pos.x, radius * sin(angle) + player.pos.y)
             )
             bullet.velocity += player.velocity
             entityManager.identify(bullet)
             val bulId = entityManager.getId(bullet)
             engine.addEntity(bullet)
-            return DataTransferEntity(
-                    bulId,
-                    bullet.pos,
-                    DataTransferEntityType.Bullet,
-                    bullet.hitbox.sizex,
-                    bullet.hitbox.sizey,
-                    angle = bullet.velocity.angle
-            )
+            damageManager.goOnCooldown(id, side)
         } else {
             throw InvalidParameterException()
         }

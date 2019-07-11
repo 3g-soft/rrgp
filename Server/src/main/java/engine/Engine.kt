@@ -1,25 +1,19 @@
 package engine
 
+import kotlin.math.abs
+
 const val WIDTH = 2000
 const val HEIGHT = 2000
-
-data class Events(val collisions: List<CollisionEvent>, val deadBullets: List<Bullet>)
+const val ACCELERATION = 0.1f
 
 class Engine {
-    private companion object Constants {
-        const val ACCELERATION = 0.1f
-        const val MAX_VELOCITY = 5f
-    }
-
     private val entities: MutableList<Entity> = emptyList<Entity>().toMutableList()
 
-    fun update(): Events {
-        val deadBullets = mutableListOf<Bullet>()
+    fun update(): List<CollisionEvent> {
         for (entity in entities) {
             if (entity is MovableEntity) entity.move()
-            if (entity is Bullet && entity.distanceTraveled >= entity.maxDistanceTraveled) deadBullets.add(entity)
         }
-        return Events(checkAllCollisions(), deadBullets)
+        return checkAllCollisions()
     }
 
     private fun checkAllCollisions(): List<CollisionEvent> {
@@ -65,10 +59,10 @@ class Engine {
         player.pos = pos.copy()
     }
 
-    fun accelerate(player: Player, isForward: Boolean) {
+    fun accelerate(player: Player, isForward: Boolean, maxSpeed: Float) {
         when (isForward) {
             true -> {
-                if (player.velocity.length < MAX_VELOCITY) {
+                if (player.velocity.length < maxSpeed) {
                     player.velocity.length += ACCELERATION
                 }
             }
@@ -85,7 +79,6 @@ class Engine {
 
         }
     }
-
 
     fun getState(): List<Entity> {
         return entities.toList()
