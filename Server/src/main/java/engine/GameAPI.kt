@@ -14,10 +14,10 @@ class GameAPI {
     init {
         for (team in 0..TEAMS_COUNT) {
             val island = Island(
-                    Point(
-                            ((-WIDTH) .. (WIDTH)).random().toFloat(),
-                            ((-HEIGHT)..(HEIGHT)).random().toFloat()
-                    )
+                Point(
+                    ((-WIDTH)..(WIDTH)).random().toFloat(),
+                    ((-HEIGHT)..(HEIGHT)).random().toFloat()
+                )
             )
             engine.addEntity(island)
             entityManager.identify(island)
@@ -80,25 +80,27 @@ class GameAPI {
         val player = Player(Point(500f, 500f))
         entityManager.identify(player)
         val id = entityManager.getId(player)
-        damageManager.assignHP(entityManager.getId(player))
+        damageManager.assignHP(id)
         engine.addEntity(player)
-        respawnById(entityManager.getId(player))
+        respawnById(id)
         return DataTransferEntity(
             entityManager.getId(player),
             player.pos,
             DataTransferEntityType.Player,
             player.hitbox.sizex,
             player.hitbox.sizey,
-            damageManager.getHPbyId(entityManager.getId(player)),
-            damageManager.getMaxHPbyId(entityManager.getId(player)),
+            damageManager.getHPbyId(id),
+            damageManager.getMaxHPbyId(id),
             player.velocity.angle,
             entityManager.getTeamById(id),
             damageManager.getShotCooldown(id, 1),
             damageManager.getShotCooldown(id, 2),
             damageManager.getMaxCooldown(id),
-            damageManager.isOutside(id)
+            damageManager.isOutside(id),
+            entityManager.getNameById(id)
         )
     }
+
 
     fun getAllEntities(): List<DataTransferEntity> {
         val toReturn = mutableListOf<DataTransferEntity>()
@@ -134,7 +136,8 @@ class GameAPI {
                             damageManager.getShotCooldown(id, 1),
                             damageManager.getShotCooldown(id, 2),
                             damageManager.getMaxCooldown(id),
-                            damageManager.isOutside(id)
+                            damageManager.isOutside(id),
+                            entityManager.getNameById(id)
                         )
                     )
                 }
@@ -256,5 +259,5 @@ class GameAPI {
             throw InvalidParameterException()
         }
     }
-    
+
 }
