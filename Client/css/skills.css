@@ -1,0 +1,73 @@
+.screen{
+    z-index: 99;
+	position: fixed;
+	background:rgba(0, 0, 0, 0.3);
+	top:0;
+	right: 0;
+	left: 0;
+	bottom:0;
+	display: flex;
+}
+
+.window{
+    background: brown;
+    overflow: auto;
+    margin: auto;
+    padding: 3vh;
+    border-radius: 3vh;
+}
+.nodes{
+    display: flex;
+    flex-direction: row;
+}
+.node-name{
+    border: solid;
+    border-radius: 1vh;
+    border-color: darkgray;
+    margin: 20px;
+    size: 20px;
+    page-break-after: auto;
+    padding: 0.5vh;
+}
+.available > .node-name{
+    background-color: greenyellow;
+    transition: all 0.3s;
+}
+.available > .node-name:hover{
+    transform: scale(1.1)
+}
+.active > .node-name{
+    background-color: green;
+}
+.unavailable > .node-name{
+    background-color: red;
+}
+
+.button{
+    z-index: 100;
+    position: fixed;
+    right: 0;
+    top: 0;
+    color:blue;
+    border: none;
+    transition: all 0.5s;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0,0,0,0);
+}
+.button > img{
+    width: 10vh;
+    height: auto;
+    padding: 0;
+    margin: 0;
+    border:none;
+}
+.button:hover{
+    transform: scale(1.1);
+}
+
+#screen{
+    text-align: center;
+    color: blue;
+    font-size: 6vh;
+}
