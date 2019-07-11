@@ -20,7 +20,7 @@ class EntityManager {
         playerNames[id] = name
     }
     fun getNameById(id: Int): String {
-        return if (id !in playerNames.keys) "undefined" else playerNames[id]!!
+        return if (id !in playerNames.keys) "russian hacker" else playerNames[id]!!
     }
     fun respawnPlayer(id: Int) {
         if (id !in entityIDs.values) return
@@ -84,6 +84,7 @@ class EntityManager {
                 break
             }
         }
+        playerNames.remove(id)
         for (key in teams.keys) {
             if (teams[key]!!.contains(id))
                 for (entityID in teams[key]!!) {

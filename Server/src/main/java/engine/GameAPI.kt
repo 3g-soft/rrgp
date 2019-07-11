@@ -12,7 +12,6 @@ class GameAPI {
     private val entityManager: EntityManager = EntityManager()
 
 
-
     fun update() {
         onCollisionDamage(engine.update())
         val deadBullets = mutableListOf<Bullet>()
@@ -20,10 +19,10 @@ class GameAPI {
         val entities = engine.getState()
         for (entity in entities) {
             if (entity is Bullet && (entity.distanceTraveled >= entity.maxDistanceTraveled
-                        || abs(entity.pos.x) > WIDTH || abs(entity.pos.y) > HEIGHT)
+                            || abs(entity.pos.x) > WIDTH || abs(entity.pos.y) > HEIGHT)
             ) deadBullets.add(entity)
             if (entity is Player && (abs(entity.pos.x) > WIDTH || abs(entity.pos.y) > HEIGHT)) escapedPlayers.add(
-                entityManager.getId(entity)
+                    entityManager.getId(entity)
             )
         }
         for (bullet in deadBullets) {
@@ -33,13 +32,6 @@ class GameAPI {
         for (deadPlayer in deadPlayers) {
             respawnById(deadPlayer)
         }
-    }
-
-    fun getName(id: Int): String {
-        return entityManager.getNameById(id)
-    }
-    fun setName(id: Int, name: String) {
-        entityManager.setNameById(id, name)
     }
 
     fun setPlayerAngle(angle: Float, id: Int) {
@@ -66,19 +58,34 @@ class GameAPI {
     fun createPlayer(): DataTransferEntity {
         val player = Player(Point(500f, 500f))
         entityManager.identify(player)
-        damageManager.assignHP(entityManager.getId(player))
+        val id = entityManager.getId(player)
+        damageManager.assignHP(id)
         engine.addEntity(player)
-        respawnById(entityManager.getId(player))
+        respawnById(id)
         return DataTransferEntity(
-            entityManager.getId(player),
-            player.pos,
-            DataTransferEntityType.Player,
-            player.hitbox.sizex,
-            player.hitbox.sizey,
-            damageManager.getHPbyId(entityManager.getId(player)),
-            damageManager.getMaxHPbyId(entityManager.getId(player)),
-            player.velocity.angle
+                entityManager.getId(player),
+                player.pos,
+                DataTransferEntityType.Player,
+                player.hitbox.sizex,
+                player.hitbox.sizey,
+                damageManager.getHPbyId(id),
+                damageManager.getMaxHPbyId(id),
+                player.velocity.angle,
+                entityManager.getTeamById(id),
+                damageManager.getShotCooldown(id, 1),
+                damageManager.getShotCooldown(id, 2),
+                damageManager.getMaxCooldown(id),
+                damageManager.isOutside(id),
+                entityManager.getNameById(id)
         )
+    }
+
+    fun getName(id: Int): String {
+        return entityManager.getNameById(id)
+    }
+
+    fun setName(id: Int, name: String) {
+        entityManager.setNameById(id, name)
     }
 
     fun getAllEntities(): List<DataTransferEntity> {
@@ -89,48 +96,49 @@ class GameAPI {
             when (entity) {
                 is Bullet -> {
                     toReturn.add(
-                        DataTransferEntity(
-                            id,
-                            entity.pos,
-                            DataTransferEntityType.Bullet,
-                            entity.hitbox.sizex,
-                            entity.hitbox.sizey,
-                            angle = entity.velocity.angle,
-                            team = entityManager.getTeamById(entityManager.getId(entity))
-                        )
+                            DataTransferEntity(
+                                    id,
+                                    entity.pos,
+                                    DataTransferEntityType.Bullet,
+                                    entity.hitbox.sizex,
+                                    entity.hitbox.sizey,
+                                    angle = entity.velocity.angle,
+                                    team = entityManager.getTeamById(entityManager.getId(entity))
+                            )
                     )
                 }
                 is Player -> {
                     toReturn.add(
-                        DataTransferEntity(
-                            id,
-                            entity.pos,
-                            DataTransferEntityType.Player,
-                            entity.hitbox.sizex,
-                            entity.hitbox.sizey,
-                            damageManager.getHPbyId(id),
-                            damageManager.getMaxHPbyId(id),
-                            entity.velocity.angle,
-                            entityManager.getTeamById(id),
-                            damageManager.getShotCooldown(id, 1),
-                            damageManager.getShotCooldown(id, 2),
-                            damageManager.getMaxCooldown(id),
-                            damageManager.isOutside(id)
-                        )
+                            DataTransferEntity(
+                                    id,
+                                    entity.pos,
+                                    DataTransferEntityType.Player,
+                                    entity.hitbox.sizex,
+                                    entity.hitbox.sizey,
+                                    damageManager.getHPbyId(id),
+                                    damageManager.getMaxHPbyId(id),
+                                    entity.velocity.angle,
+                                    entityManager.getTeamById(id),
+                                    damageManager.getShotCooldown(id, 1),
+                                    damageManager.getShotCooldown(id, 2),
+                                    damageManager.getMaxCooldown(id),
+                                    damageManager.isOutside(id),
+                                    entityManager.getNameById(id)
+                            )
                     )
                 }
                 is Island -> {
                     toReturn.add(
-                        DataTransferEntity(
-                            id,
-                            entity.pos,
-                            DataTransferEntityType.Island,
-                            entity.hitbox.sizex,
-                            entity.hitbox.sizey,
-                            damageManager.getHPbyId(id),
-                            damageManager.getMaxHPbyId(id),
-                            team = entityManager.getTeamById(entityManager.getId(entity))
-                        )
+                            DataTransferEntity(
+                                    id,
+                                    entity.pos,
+                                    DataTransferEntityType.Island,
+                                    entity.hitbox.sizex,
+                                    entity.hitbox.sizey,
+                                    damageManager.getHPbyId(id),
+                                    damageManager.getMaxHPbyId(id),
+                                    team = entityManager.getTeamById(entityManager.getId(entity))
+                            )
                     )
                 }
             }
@@ -163,8 +171,8 @@ class GameAPI {
                 else -> damageManager.collisionDamage
             }
             when (damageManager.dealDamage(
-                entityManager.getId(entity),
-                damage
+                    entityManager.getId(entity),
+                    damage
             )) {
                 DeathState.NONE -> return
                 DeathState.ALIVE -> {
@@ -173,8 +181,8 @@ class GameAPI {
                     when (entity) {
                         is Island -> {
                             entityManager.changeTeam(
-                                entityManager.getId(entity),
-                                entityManager.getTeamById(entityManager.getId(by))
+                                    entityManager.getId(entity),
+                                    entityManager.getTeamById(entityManager.getId(by))
                             )
                         }
                         is Player -> {
@@ -221,8 +229,8 @@ class GameAPI {
             }
             val radius = player.hitbox.sizey / 2 + 25f / 2f + 5
             val bullet = Bullet(
-                Vector2f(10f, angle, false),
-                Point(radius * cos(angle) + player.pos.x, radius * sin(angle) + player.pos.y)
+                    Vector2f(10f, angle, false),
+                    Point(radius * cos(angle) + player.pos.x, radius * sin(angle) + player.pos.y)
             )
             bullet.velocity += player.velocity
             entityManager.identify(bullet)

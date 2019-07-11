@@ -13,7 +13,8 @@ data class DataTransferEntity(
         val leftShotTimer: Int = 0,
         val rightShotTimer: Int = 0,
         val shotCooldown: Int = 60,
-        val isOutside: Boolean = false
+        val isOutside: Boolean = false,
+        val nickName: String = "russian hacker"
 ) {
     constructor(
             id:    Int,
@@ -28,7 +29,8 @@ data class DataTransferEntity(
             leftShotTimer: Int = 0,
             rightShotTimer: Int = 0,
             shotCooldown: Int = 60,
-            isOutside: Boolean = false
+            isOutside: Boolean = false,
+            nickName: String = "russian hacker"
     ) : this(
             id,
             pos,
@@ -42,7 +44,8 @@ data class DataTransferEntity(
             leftShotTimer,
             rightShotTimer,
             shotCooldown,
-            isOutside
+            isOutside,
+            nickName
     )
 }
 
