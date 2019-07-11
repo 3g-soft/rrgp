@@ -35,6 +35,13 @@ class GameAPI {
         }
     }
 
+    fun getName(id: Int): String {
+        return entityManager.getNameById(id)
+    }
+    fun setName(id: Int, name: String) {
+        entityManager.setNameById(id, name)
+    }
+
     fun setPlayerAngle(angle: Float, id: Int) {
         val player = entityManager.getById(id)
         if (player is Player) {
