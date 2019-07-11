@@ -71,7 +71,8 @@ class GameAPI {
                                     DataTransferEntityType.Bullet,
                                     entity.hitbox.sizex,
                                     entity.hitbox.sizey,
-                                    angle = entity.velocity.angle
+                                    angle = entity.velocity.angle,
+                                    team = entityManager.getTeamById(entityManager.getId(entity))
                             )
                     )
                 }
@@ -85,7 +86,8 @@ class GameAPI {
                                     entity.hitbox.sizey,
                                     damageManager.getHPbyId(entityManager.getId(entity)),
                                     damageManager.getMaxHPbyId(entityManager.getId(entity)),
-                                    entity.velocity.angle
+                                    entity.velocity.angle,
+                                    team = entityManager.getTeamById(entityManager.getId(entity))
                             )
                     )
                 }
@@ -98,7 +100,8 @@ class GameAPI {
                                     entity.hitbox.sizex,
                                     entity.hitbox.sizey,
                                     damageManager.getHPbyId(entityManager.getId(entity)),
-                                    damageManager.getMaxHPbyId(entityManager.getId(entity))
+                                    damageManager.getMaxHPbyId(entityManager.getId(entity)),
+                                    team = entityManager.getTeamById(entityManager.getId(entity))
                             )
                     )
                 }

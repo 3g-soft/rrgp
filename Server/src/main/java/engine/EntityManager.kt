@@ -1,13 +1,13 @@
 package engine
 
-const val TEAMS_COUNT = 2
+const val TEAMS_COUNT = 3
 
 class EntityManager {
     private var uniqueCounter = 0
 
-    private val entityIDs: MutableMap<Entity, Int> = emptyMap<Entity, Int>().toMutableMap()
-    val playerNames: MutableMap<Player, String> = emptyMap<Player, String>().toMutableMap()
-    private val teams: MutableMap<Int, MutableList<Int>> = emptyMap<Int, MutableList<Int>>().toMutableMap()
+    private val entityIDs:   MutableMap<Entity, Int>           = emptyMap<Entity, Int>().toMutableMap()
+    private val playerNames: MutableMap<Player, String>        = emptyMap<Player, String>().toMutableMap()
+    private val teams:       MutableMap<Int, MutableList<Int>> = emptyMap<Int, MutableList<Int>>().toMutableMap()
 
     init {
         for (team_number in 0 until TEAMS_COUNT) {
@@ -18,17 +18,18 @@ class EntityManager {
     fun respawnPlayer(id: Int) {
         if (id !in entityIDs.values) return
         getById(id)!!.pos = Point(
-                (100..(WIDTH - 100)).random().toFloat(), (100..(HEIGHT - 100)).random().toFloat()
+                ((-WIDTH) .. (WIDTH)).random().toFloat(),
+                ((-HEIGHT)..(HEIGHT)).random().toFloat()
         )
     }
 
     fun getTeamById(id: Int): Int {
-        if (id !in entityIDs.values) return 0
+        if (id !in entityIDs.values) return -1
         for (team_number in 0 until TEAMS_COUNT) {
             if (!teams[team_number]!!.contains(id)) continue
             return team_number
         }
-        return 0
+        return -1
     }
 
     fun changeTeam(id: Int, team_id: Int) {
@@ -40,14 +41,18 @@ class EntityManager {
         }
     }
 
-    private fun giveTeam(entity: Entity) {
-        teams[teams.size % TEAMS_COUNT]!!.add(entityIDs[entity]!!)
+    private fun assignTeam(entity: Entity) {
+        var playerCount: Int = 0
+        for (team in teams.keys) {
+            playerCount += teams[team]!!.size
+        }
+        teams[playerCount % TEAMS_COUNT]!!.add(entityIDs[entity]!!)
     }
 
     fun identify(entity: Entity) {
         if (entity in entityIDs.keys) return
         entityIDs[entity] = ++uniqueCounter
-        giveTeam(entity)
+        assignTeam(entity)
     }
 
     fun getById(id: Int): Entity? {
