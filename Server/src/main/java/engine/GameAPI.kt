@@ -11,7 +11,19 @@ class GameAPI {
     private val damageManager: DamageManager = DamageManager()
     private val entityManager: EntityManager = EntityManager()
 
-
+    init {
+        for (team in 0..TEAMS_COUNT) {
+            val island = Island(
+                    Point(
+                            ((-WIDTH) .. (WIDTH)).random().toFloat(),
+                            ((-HEIGHT)..(HEIGHT)).random().toFloat()
+                    )
+            )
+            engine.addEntity(island)
+            entityManager.identify(island)
+            damageManager.assignHP(entityManager.getId(island))
+        }
+    }
 
     fun update() {
         onCollisionDamage(engine.update())
