@@ -32,9 +32,9 @@ data class Vector2f(var x: Float = 0f, var y: Float = 5f) {
 
     fun normalize(): Vector2f {
         val len = this.length
-        x /= len
-        y /= len
-        return Vector2f(x, y)
+        this.x /= len
+        this.y /= len
+        return Vector2f(this.x, this.y)
     }
 
     operator fun plus(vec: Vector2f): Vector2f {
@@ -51,5 +51,9 @@ data class Vector2f(var x: Float = 0f, var y: Float = 5f) {
 
     operator fun div(float: Float): Vector2f {
         return Vector2f(this.x / float, this.y / float)
+    }
+
+    operator fun unaryMinus(): Vector2f {
+        return Vector2f(-this.x, -this.y)
     }
 }

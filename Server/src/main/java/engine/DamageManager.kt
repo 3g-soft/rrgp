@@ -21,6 +21,7 @@ const val MAXHPTICKS = 60
 
 class DamageManager {
     private val profiles: MutableMap<Int, Profile> = emptyMap<Int, Profile>().toMutableMap()
+    private val bulletToShooter: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
     val collisionDamage = 30
     val bulletDamage = 50
 
@@ -94,8 +95,9 @@ class DamageManager {
     }
 
     fun removeEntity(id: Int) {
-        if (id !in profiles.keys) return
-        profiles.remove(id)
+        if (id in profiles.keys) profiles.remove(id)
+        if (id in bulletToShooter.keys) bulletToShooter.remove(id)
+
     }
 
     fun checkShotCooldown(id: Int, side: Int): Boolean {
@@ -131,4 +133,14 @@ class DamageManager {
         if (id !in profiles.keys) return false
         return profiles[id]!!.escapeTimer != -1
     }
+
+    fun onShot(bulId: Int, shooterId: Int) {
+        bulletToShooter[bulId] = shooterId
+    }
+
+    fun getShotDamage(bulId: Int): Int {
+        if (bulId !in bulletToShooter) return -1
+        return profiles[bulletToShooter[bulId]]!!.damage
+    }
+
 }

@@ -165,8 +165,11 @@ class GameAPI {
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
         fun deathCheck(entity: Entity, by: Entity) {
             val damage = when (by) {
-                is Bullet -> damageManager.bulletDamage
-                else -> damageManager.collisionDamage
+                is Bullet -> damageManager.getShotDamage(entityManager.getId(by))
+                else -> {
+                    if (by is MovableEntity) (by.velocity.length * 30f).toInt()
+                    else damageManager.collisionDamage
+                }
             }
             when (damageManager.dealDamage(
                 entityManager.getId(entity),
@@ -233,6 +236,7 @@ class GameAPI {
             bullet.velocity += player.velocity
             entityManager.identify(bullet)
             val bulId = entityManager.getId(bullet)
+            damageManager.onShot(bulId, entityManager.getId(player))
             engine.addEntity(bullet)
             damageManager.goOnCooldown(id, side)
         } else {
