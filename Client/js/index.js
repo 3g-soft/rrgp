@@ -61,6 +61,9 @@
         minimap: new Image(),
         bullet: new Image(),
         border: new Image(),
+        teams: [
+            new Image(), new Image(), new Image()
+        ]
     }
 
     sprites.ship.src = "img/ship.png"
@@ -73,6 +76,9 @@
     sprites.minimap.src = "img/minimap.png"
     sprites.bullet.src = "img/bullet.png"
     sprites.border.src = "img/border.png"
+    sprites.teams[0].src = "img/team1.png"
+    sprites.teams[1].src = "img/team2.png"
+    sprites.teams[2].src = "img/team3.png"
 
     var lastMousePosition = {
         x: 0, y: 0
@@ -175,6 +181,7 @@
             for (let j = -fields[0].height; j < canv.height + fields[0].height; j += fields[0].height) {
                 ctx.save()
                 ctx.translate(offset - Camera.pos.x % fields[0].width, offset -Camera.pos.y % fields[0].height)
+                //ctx.scale(0.5, 0.5)
                 ctx.drawImage(fields[0], i, j)
                 ctx.restore()
             }
@@ -210,6 +217,8 @@
                         ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100 * ent.hp / ent.maxHp, 10)
                     ctx.strokeRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
                         ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100, 10)
+                    ctx.drawImage(sprites.teams[ent.team], ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x - 50,
+                        ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y - 7.5, 30, 30)
                 }
             }
         }
