@@ -1,8 +1,11 @@
 package websocket
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.actor
+import kotlinx.coroutines.launch
 
 object LogManager {
     data class LogEntry(val prefix: String, val data: String)
@@ -20,7 +23,7 @@ object LogManager {
     }
 
     suspend fun send(prefix: String, data: String) {
-        if (isEnabled){
+        if (isEnabled) {
             logChannel.send(LogEntry(prefix, data))
         }
     }
