@@ -29,7 +29,7 @@
             y: 0
         },
     }
-    let protocol = (location.port == 443)? "wss" : "ws"
+    let protocol = (location.port === "")? "wss" : "ws"
     var ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
     let entobj = {}
     ws.onstate = (e) => {
