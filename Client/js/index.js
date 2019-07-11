@@ -33,7 +33,6 @@
     var ws = new Connection(`ws://${document.domain}:8080/game`)
     let entobj = {}
     ws.onstate = (e) => {
-        console.log(e)
         for(k in e){
             if(!entobj.hasOwnProperty(k)){
                 entobj[k] = e[k];
@@ -63,7 +62,8 @@
         border: new Image(),
         teams: [
             new Image(), new Image(), new Image()
-        ]
+        ],
+        paraNeko: new Image(),
     }
 
     sprites.ship.src = "img/ship.png"
@@ -79,6 +79,7 @@
     sprites.teams[0].src = "img/team1.png"
     sprites.teams[1].src = "img/team2.png"
     sprites.teams[2].src = "img/team3.png"
+    sprites.paraNeko.src = "img/para neko.png"
 
     var lastMousePosition = {
         x: 0, y: 0
@@ -99,7 +100,6 @@
     ]
     fields[0].src = "img/sea.png"
     var offset = 2
-    var shootCooldown = false
 
     function distance(p1, p2) {
         return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
@@ -335,12 +335,13 @@
         ctx.drawImage(sprites.border, 0, 0, canv.width, canv.height)
 
         ctx.fillStyle = "black" 
-        ctx.font = "40px helvetica"
+        ctx.font = `${Math.round(0.05 * canv.height)}px helvetica`
         let textCoords = {
             x: menuCoords.x + 0.025 * canv.width,
             y: menuCoords.y + 0.1 * canv.height
         }
         ctx.fillText("1488 g", textCoords.x, textCoords.y)
+        ctx.drawImage(sprites.paraNeko, 0.65 * canv.width, menuCoords.y, 0.3 * canv.height, 0.3 * canv.height)
     }
 
     function render() {
