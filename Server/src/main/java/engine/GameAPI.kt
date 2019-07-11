@@ -11,6 +11,8 @@ class GameAPI {
     private val damageManager: DamageManager = DamageManager()
     private val entityManager: EntityManager = EntityManager()
 
+
+
     fun update() {
         onCollisionDamage(engine.update())
         val deadBullets = mutableListOf<Bullet>()
