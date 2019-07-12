@@ -150,6 +150,8 @@
             lastMousePosition.x = e.clientX - canv.getBoundingClientRect().left
             lastMousePosition.y = e.clientY - canv.getBoundingClientRect().top
         })
+      
+        canv.addEventListener("touchstart", handleStart, false);
 
         canv.addEventListener("mousedown", (e) => {
             let center = 0.5 * canv.width
@@ -171,6 +173,46 @@
             }
         })
     }
+
+    function handleStart(evt) {
+        ctx.beginPath()
+        ctx.fillStyle = "#000000"
+        ctx.moveTo(innerWidth / 3, 0)
+        ctx.lineTo(innerWidth / 3, innerHeight)
+        
+        ctx.moveTo(innerWidth / 3 * 2, 0)
+        ctx.lineTo(innerWidth / 3 * 2, innerHeight)
+        
+        ctx.moveTo(0, innerHeight / 3)
+        ctx.lineTo(innerWidth, innerHeight / 3)
+        ctx.moveTo(0, innerHeight / 3 * 2)
+        ctx.lineTo(innerWidth, innerHeight / 3 * 2)
+        ctx.stroke()
+        ctx.closePath()
+        evt.preventDefault();
+        let x = evt.touches[0].clientX
+        let y = evt.touches[0].clientY
+        let sideX = 0
+        let sideY = 0
+        if (x < innerWidth / 3)
+          sideX = -1
+        else if (x > innerWidth / 3 * 2)
+          sideX = 1
+  
+        if (y < innerHeight / 3)
+          sideY = -1
+        else if (y > innerHeight / 3 * 2)
+          sideY = 1
+  
+        if (sideX == -1 && sideY == 0)
+          ws.sendRequest("turn", 1)
+        else if (sideX == 1 && sideY == 0)
+          ws.sendRequest("turn", 2)
+        else if (sideX == 0 && sideY == -1)
+          ws.sendRequest("accelerate", true)
+        else if (sideX == 0 && sideY == 1)
+          ws.sendRequest("accelerate", false)
+      }
 
     function max(a, b) {
         return a > b ? a : b
@@ -371,7 +413,19 @@
             x: menuCoords.x + 0.025 * canv.width,
             y: menuCoords.y + 0.1 * canv.height
         }
-        ctx.fillText("1488 g", textCoords.x, textCoords.y)
+
+        let myTeamGold = 0
+        let otherTeamGold = 0
+        for (let ent of entities) {
+            if (ent.team == you.team) {
+                myTeamGold += ent.gold
+            } else {
+                otherTeamGold += ent.gold
+            }
+        }
+
+        ctx.fillText(`${myTeamGold}(${you.gold}) | ${otherTeamGold}`, textCoords.x, textCoords.y)
+        ctx.fillText(`${you.maxGold}`)
         ctx.drawImage(sprites.paraNeko, 0.65 * canv.width, menuCoords.y, 0.3 * canv.height, 0.3 * canv.height)
     }
 
