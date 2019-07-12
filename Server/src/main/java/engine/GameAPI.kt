@@ -13,10 +13,10 @@ class GameAPI {
     private val skillManager                 = SkillManager(damageManager)
 
     init {
-        val island1 = Island(Point(1750f, 0f))
-        val island2 = Island(Point(-1750f, 0f))
-        val island3 = Island(Point(0f, 1750f))
-        val island4 = Island(Point(0f, -1750f))
+        val island1 = Island(Point(1600f, 0f))
+        val island2 = Island(Point(-1600f, 0f))
+        val island3 = Island(Point(0f, 1600f))
+        val island4 = Island(Point(0f, -1600f))
 
         engine.addEntity(island1)
         entityManager.identify(island1)
