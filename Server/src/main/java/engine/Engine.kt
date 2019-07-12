@@ -26,12 +26,14 @@ class Engine {
                     if (ent1 is Player && ent2 is Player) {
                         val b2 = Vector2f(ent2.pos.x - ent1.pos.x, ent2.pos.y - ent1.pos.y).normalize()
                         val b1 = Vector2f(ent1.pos.x - ent2.pos.x, ent1.pos.y - ent2.pos.y).normalize()
+                        val len1 = ent1.velocity.length
+                        val len2 = ent2.velocity.length
                         ent1.pos.x += b1.x * 25f
                         ent1.pos.y += b1.y * 25f
-                        ent1.velocity = b1.copy() * ent1.velocity.length / 2f
+                        ent1.velocity = b1.copy() * len2 / 2f
                         ent2.pos.x += b2.x * 25f
                         ent2.pos.y += b2.y * 25f
-                        ent2.velocity = b2.copy() * ent2.velocity.length / 2f
+                        ent2.velocity = b2.copy() * len1 / 2f
                         continue
                     }
                     if (ent1 is Player && ent2 is Island) {

@@ -31,7 +31,7 @@
             y: 0
         },
     }
-    let protocol = (location.port === "")? "wss" : "ws"
+    let protocol = (location.port === "") ? "wss" : "ws"
     var ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
     let st = new SkillTree(skills, ws)
     let entobj = {}
@@ -68,6 +68,7 @@
         ],
         paraNeko: new Image(),
         island: new Image(),
+        box: new Image()
     }
 
     sprites.ship.src = "img/ship.png"
@@ -82,9 +83,9 @@
     sprites.border.src = "img/border.png"
     sprites.teams[0].src = "img/team1.png"
     sprites.teams[1].src = "img/team2.png"
-    sprites.teams[2].src = "img/team3.png"
     sprites.paraNeko.src = "img/para neko.png"
     sprites.island.src = "img/island.png"
+    sprites.box.src - "img/gold.png"
 
     var lastMousePosition = {
         x: 0, y: 0
@@ -227,16 +228,18 @@
                         ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100, 10)
                     ctx.drawImage(sprites.teams[ent.team], ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x - 50,
                         ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y - 27.5, 40, 40)
-                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
-                    ctx.fillRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
-                        ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y - 30, 100, 15)
-                    ctx.fillStyle = "white"
-                    ctx.strokeStyle = "white"
-                    ctx.font = "15px helvetica"
-                    let n = ent.nickName
-                    ctx.fillText(n,
-                        ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
-                        ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y - 30 + 12)
+                    if (ent.type == "Player") {
+                        ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
+                        ctx.fillRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
+                            ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y - 30, 100, 15)
+                        ctx.fillStyle = "white"
+                        ctx.strokeStyle = "white"
+                        ctx.font = "15px helvetica"
+                        let n = ent.nickName
+                        ctx.fillText(n,
+                            ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
+                            ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y - 30 + 12)
+                    }
                 }
             }
         }
@@ -260,8 +263,6 @@
         let leftSprite = sprites.buttonL
         let rightSprite = sprites.buttonR
 
-        //console.log(lastMousePosition, leftButtonCoords)
-        //console.log(highlight)
         if (lastMousePosition.x >= leftButtonCoords.x && lastMousePosition.x <= leftButtonCoords.x + 0.05 * canv.width &&
             lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 0.05 * canv.width) {
             leftSprite = sprites.buttonLhover
@@ -274,7 +275,6 @@
             }, 100)
         }
 
-        //console.log(lastMousePosition, leftButtonCoords.x + 0.1 * canv.width)
         ctx.fillStyle = "white"
         if (lastMousePosition.x >= leftButtonCoords.x + 0.1 * canv.width && lastMousePosition.x <= leftButtonCoords.x + 0.05 * canv.width + 0.1 * canv.width &&
             lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 0.05 * canv.width) {
@@ -301,28 +301,31 @@
     }
 
     function renderMinimap() {
-        ctx.strokeStyle = "black"
-        ctx.lineWidth = 10
-        ctx.fillStyle = "#4169E1"
+        let mapCanv = document.getElementById('mapCanvas')
+        let mctx = mapCanv.getContext('2d')
+
+        mctx.strokeStyle = "black"
+        mctx.lineWidth = 5
         let size = 0.25 * canv.width
 
-        ctx.fillRect(0, canv.height - size, size, size)
+        mapCanv.width = size
+        mapCanv.height = size
 
-        // let myTeam = entities.filter(ent => ent.team == playerTeam)
-        let myTeam = entities.filter(ent => ent.type === "Player")
+        mctx.fillStyle = "rgb(65, 105, 225)"
+        mctx.fillRect(0, 0, size, size)
+        let visionRadius = 0.05 * canv.width
 
-        let vision = []
-        //ctx.transform(1, 0, 0, -1, 0, canv.height)
-        for (let ent of myTeam) {
+        let myTeam = entities.filter(ent => ent.team == entities.filter(ent => ent.id == ws.id)[0].team && ent.type != "Bullet").map(ent => ent.pos)
+        for (let pos of myTeam) {
             let mapCoords = {
-                x: (ent.pos.x + mapSize.x) / mapSize.x * size / 2,
-                y: (ent.pos.y + mapSize.y) / mapSize.y * size / 2
+                x: (pos.x + mapSize.x) / mapSize.x * size / 2,
+                y: (pos.y + mapSize.y) / mapSize.y * size / 2
             }
-            vision.push(mapCoords)
-            ctx.fillStyle = "rgb(135, 206, 235)"
-            ctx.beginPath()
-            ctx.ellipse(mapCoords.x, mapCoords.y + canv.height - size, 40, 40, 0, 0, Math.PI * 2)
-            ctx.fill()
+
+            mctx.fillStyle = "rgb(95, 135, 255)"
+            mctx.beginPath()
+            mctx.ellipse(mapCoords.x, mapCoords.y, visionRadius, visionRadius, 0, 0, 2 * Math.PI)
+            mctx.fill()
         }
 
 
@@ -331,38 +334,34 @@
                 x: (ent.pos.x + mapSize.x) / mapSize.x * size / 2,
                 y: (ent.pos.y + mapSize.y) / mapSize.y * size / 2
             }
-            let good = vision.filter(coord => distance(mapCoords, coord) <= 40)
-            if (good.length > 0 && ent.type != 'bullet') {
-                ctx.save()
-                ctx.translate(mapCoords.x, mapCoords.y + canv.height - size)
-                ctx.rotate(ent.angle)
+            let good = myTeam.filter(pos => distance(pos, ent.pos) <= visionRadius / size * mapSize.x * 2)
+            if (ent.type == "Island" || good.length > 0) {
+                mctx.save()
+                mctx.translate(mapCoords.x, mapCoords.y)
+                mctx.rotate(ent.angle)
 
-                ctx.lineWidth = 1
+                mctx.lineWidth = 1
                 if (ent.id == ws.id) {
-                    ctx.lineWidth = 4
+                    mctx.lineWidth = 4
                 }
-                ctx.strokeStyle = "black"
-                ctx.fillStyle = (['blue', 'red', 'green'])[ent.team]
-                ctx.fillRect(-5, -5, ent.size.x / 10, ent.size.y / 10)
-                ctx.strokeRect(-5, -5, ent.size.x / 10, ent.size.y / 10)
-                ctx.restore()
+                mctx.strokeStyle = "black"
+                mctx.fillStyle = (['blue', 'red'])[ent.team]
+                mctx.fillRect(-ent.size.x / 20, -ent.size.y / 20, ent.size.x / 10, ent.size.y / 10)
+                mctx.strokeRect(-ent.size.x / 20, -ent.size.y / 20, ent.size.x / 10, ent.size.y / 10)
+                mctx.restore()
             }
         }
-        ctx.drawImage(sprites.minimap, 0, canv.height - size, size, size)
+        mctx.drawImage(sprites.minimap, 0, 0, size, size)
     }
 
     function renderGold() {
         ctx.strokeStyle = "black"
         ctx.lineWidth = 10
-        ctx.fillStyle = "rgb(100, 100, 100)"
 
         let menuCoords = {
             x: 0.8 * canv.width,
             y: 0.8 * canv.height
         }
-
-        //ctx.drawImage(sprites.border, 0, 0, canv.width, canv.height)
-
         ctx.fillStyle = "black"
         ctx.font = `${Math.round(0.05 * canv.height)}px helvetica`
         let textCoords = {
@@ -377,7 +376,6 @@
         canv.width = window.innerWidth
         canv.height = window.innerHeight
 
-        //ctx.transform()
         ctx.clearRect(0, 0, canv.width, canv.height)
         renderField()
         renderEntities()
