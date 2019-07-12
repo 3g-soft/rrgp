@@ -254,6 +254,14 @@ class GameAPI {
                                                 entityManager.getId(by)
                                     )
                             )
+                            val killerId = if (by is Bullet) {
+                                damageManager.getShooterId(entityManager.getId(by))
+                            }
+                            else {
+                                entityManager.getId(by)
+                            }
+                            if (entityManager.getTeamById(entityManager.getId(entity)) != killerId)
+                                damageManager.getKill(killerId)
                             damageManager.refreshPlayer(entityManager.getId(entity))
 
                         }
@@ -294,6 +302,7 @@ class GameAPI {
     }
 
     fun makeShot(id: Int, side: Int) {
+        if (damageManager.isRespawning(id)) return
         if (damageManager.checkShotCooldown(id, side)) return
         val angle: Float
         val player = entityManager.getById(id)
