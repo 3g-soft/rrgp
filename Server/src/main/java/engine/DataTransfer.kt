@@ -16,7 +16,9 @@ data class DataTransferEntity(
         val isOutside: Boolean = false,
         val nickName: String = "russian hacker",
         val respTimer: Int = 0,
-        val maxRespTimer: Int = 300
+        val maxRespTimer: Int = 300,
+        val gold: Int = 0,
+        val maxGold: Int = 30
 ) {
     constructor(
             id:    Int,
@@ -34,7 +36,9 @@ data class DataTransferEntity(
             isOutside: Boolean = false,
             nickName: String = "russian hacker",
             respTimer: Int = 0,
-            maxRespTimer: Int = 300
+            maxRespTimer: Int = 300,
+            gold: Int = 0,
+            maxGold: Int = 30
     ) : this(
             id,
             pos,
@@ -51,7 +55,9 @@ data class DataTransferEntity(
             isOutside,
             nickName,
             respTimer,
-            maxRespTimer
+            maxRespTimer,
+            gold,
+            maxGold
     )
 }
 

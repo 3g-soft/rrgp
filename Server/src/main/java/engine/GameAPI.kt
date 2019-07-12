@@ -118,7 +118,9 @@ class GameAPI {
             damageManager.isOutside(id),
             entityManager.getNameById(id),
             damageManager.getRespawnTimer(id),
-            RESPAWNTICKS
+            RESPAWNTICKS,
+            damageManager.getGold(id),
+            MAXGOLD
         )
     }
 
@@ -160,7 +162,9 @@ class GameAPI {
                             damageManager.isOutside(id),
                             entityManager.getNameById(id),
                             damageManager.getRespawnTimer(id),
-                            RESPAWNTICKS
+                            RESPAWNTICKS,
+                            damageManager.getGold(id),
+                            MAXGOLD
                         )
                     )
                 }
@@ -250,6 +254,13 @@ class GameAPI {
 
                         }
                         is Player -> {
+                            val killerId = if (by is Bullet) {
+                                damageManager.getShooterId(entityManager.getId(by))
+                            }
+                            else {
+                                entityManager.getId(by)
+                            }
+                            damageManager.getKill(killerId)
                             respawnById(entityManager.getId(entity))
                             engine.setPlayerSpeed(entity, 0.01f)
                         }
