@@ -213,6 +213,12 @@ class DamageManager {
         return profiles[id]!!
     }
 
+    fun getRespawnTimer(id: Int): Int {
+        if (id !in profiles.keys) return -1
+        return profiles[id]!!.respawnTimer
+
+    }
+
     fun isRespawning(id: Int): Boolean {
         if (id !in profiles.keys) return false
         return profiles[id]!!.respawnTimer != -1

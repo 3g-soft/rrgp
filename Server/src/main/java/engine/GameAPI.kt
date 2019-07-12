@@ -116,7 +116,9 @@ class GameAPI {
             damageManager.getShotCooldown(id, 2),
             damageManager.getMaxCooldown(id),
             damageManager.isOutside(id),
-            entityManager.getNameById(id)
+            entityManager.getNameById(id),
+            damageManager.getRespawnTimer(id),
+            RESPAWNTICKS
         )
     }
 
@@ -156,7 +158,9 @@ class GameAPI {
                             damageManager.getShotCooldown(id, 2),
                             damageManager.getMaxCooldown(id),
                             damageManager.isOutside(id),
-                            entityManager.getNameById(id)
+                            entityManager.getNameById(id),
+                            damageManager.getRespawnTimer(id),
+                            RESPAWNTICKS
                         )
                     )
                 }
