@@ -1,57 +1,62 @@
 class SkillTree {
-    constructor(skills) {
+    constructor(skills, connection) {
         document.getElementById('skillbtn').onclick = (() => this.toggle()).bind(this);
         this.tree = document.getElementById('tree');
-        let self = this
+        let self = this;
+        this.connection = connection;
         this.showed = true;
-        this.hotNodes = []
+        this.hotNodes = [];
         this.root = new Node(undefined, undefined, [], undefined);
         this.currentNode = this.root;
         function createNode(sk, div, parent = undefined) {
-            if (sk === undefined) return
+            if (sk === undefined) return;
             for (let i = 0; i < sk.length; i++) {
                 let node = document.createElement('div');
                 node.className = "node";
                 let text = document.createElement('div');
                 text.className = "node-name";
                 node.classList.add("unavailable");
-                text.innerText = sk[i].name;
+                text.innerHTML = self.insertBRs(sk[i].name);
                 let childs = document.createElement('div');
-                childs.className = "nodes"
+                childs.className = "nodes";
                 div.appendChild(node);
                 node.appendChild(text);
                 node.appendChild(childs);
-                let nd = new Node(node, text, [], parent);
-                parent.nodes.push(nd)
+                let nd = new Node(node, text, [], parent, sk[i].id);
+                parent.nodes.push(nd);
                 createNode(sk[i].childs, childs, nd);
-                text.onclick = (e) => {
+                text.onmousedown = (e) => {
                     let target = undefined;
                     self.currentNode.nodes.forEach((it) => {
-                        if (it.text === e.originalTarget) {
+                        if (it.text === e.currentTarget) {
                             target = it;
                         }
-                    })
+                    });
                     if (target === undefined) return;
                     self.currentNode = target;
                     target.activate();
+                    self.connection.sendRequest("skill", self.currentNode.id);
                 }
             }
         }
-        createNode(skills, this.tree, this.root)
+        createNode(skills, this.tree, this.root);
         this.root.activate();
         window.addEventListener("keydown", ((e) => {
+            if(this.showed)e.preventDefault();
             switch (e.key) {
                 case 'i': this.toggle(); break;
                 case '1': this.nodeBykey(0); break;
                 case '2': this.nodeBykey(1); break;
             }
         }).bind(this));
+        this.hide();
     }
 
     nodeBykey(i) {
         if (!this.showed) return;
         this.currentNode.nodes[i].activate();
-        this.currentNode = this.currentNode.nodes[i]
+        this.currentNode = this.currentNode.nodes[i];
+        this.connection.sendRequest("skill", this.currentNode.id);
     }
     show() {
         document.getElementById("screen").style.display = "flex"
@@ -64,14 +69,22 @@ class SkillTree {
     toggle() {
         this.showed ? this.hide() : this.show();
     }
+
+    insertBRs(str){
+        if("fuck".matchAll === undefined)return str
+        let out = Array.from(str.matchAll(/[+-][^+-]*/gm), m => m[0]);
+        return out.join("<br>");
+    }
+
 }
 
 class Node {
-    constructor(node, text, nodes, parent) {
+    constructor(node, text, nodes, parent, id=-1) {
         this.text = text;
         this.nodes = nodes;
         this.parent = parent;
         this.node = node;
+        this.id = id;
     }
 
     enable() {
@@ -96,42 +109,39 @@ class Node {
 
 let skills = [
     {
-        name: "+SPEED +RANGE -HP",
+        name: "+SPEED +RANGE -HP", id: 1,
         childs: [{
-            name: "ll",
+            name: "+DAMAGE -RELOAD",  id: 3,
             childs: [
-                { name: "end" },
-                { name: "end" }
+                { name: "+TURN -RELOAD", id: 4},
+                { name: "+DAMAGE -HP", id: 5}
             ]
         },
         {
-            name: "lr",
+            name: "+SPEED -DAMAGE", id: 6,
             childs: [
-                { name: "end" },
-                { name: "end" }
+                { name: "+SPEED -HP", id: 7 },
+                { name: "+TURN -DAMAGE", id: 8 }
             ]
         }
         ]
     },
     {
-        name: "+SPEED +RANGE -HP",
+        name: "+BODY DAMAGE +SPEED -DAMAGE", id: 2,
         childs: [{
-            name: "ll",
+            name: "+BODY DAMAGE -TURN",  id: 9,
             childs: [
-                { name: "end" },
-                { name: "end" }
+                { name: "+SPEED -DAMAGE", id: 10},
+                { name: "+BODY DAMAGE -DAMAGE", id: 11}
             ]
         },
         {
-            name: "lr",
+            name: "+SPEED -TURN", id: 12,
             childs: [
-                { name: "end" },
-                { name: "end" }
+                { name: "+BODY DAMAGE -TURN", id: 13},
+                { name: "+SPEED -RELOAD", id: 14}
             ]
         }
         ]
     },
-]
-let st = new SkillTree(skills)
-st.hide()
-console.log(st);
+];

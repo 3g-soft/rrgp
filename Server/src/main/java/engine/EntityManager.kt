@@ -1,8 +1,10 @@
 package engine
 
+import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlin.random.Random
 
 const val TEAMS_COUNT = 3
 
@@ -42,11 +44,13 @@ class EntityManager {
         if (island.pos.x > WIDTH || island.pos.y > HEIGHT)
             return //something happens
 
+        var r = Random(System.currentTimeMillis())
+        var angle = r.nextFloat() * 2 * PI.toFloat() 
         getById(id)!!.pos = Point(
-                island.pos.x + (island.hitbox.sizex * 2f +
-                        getById(id)!!.hitbox.sizex)*cos((0..359).random().toFloat()),
-                island.pos.y + (island.hitbox.sizey * 2f +
-                        getById(id)!!.hitbox.sizey)*sin((0..359).random().toFloat())
+                island.pos.x + (island.hitbox.sizex * sqrt(2f) +
+                        getById(id)!!.hitbox.sizex)*cos(angle),
+                island.pos.y + (island.hitbox.sizey * sqrt(2f) +
+                        getById(id)!!.hitbox.sizey)*sin(angle)
         )
     }
 

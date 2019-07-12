@@ -10,12 +10,13 @@ class GameAPI {
     val engine: Engine = Engine()
     private val damageManager: DamageManager = DamageManager()
     private val entityManager: EntityManager = EntityManager()
+    private val skillManager                 = SkillManager(damageManager)
 
     init {
-        val island1 = Island(Point(1750f, 0f))
-        val island2 = Island(Point(-1750f, 0f))
-        val island3 = Island(Point(0f, 1750f))
-        val island4 = Island(Point(0f, -1750f))
+        val island1 = Island(Point(1600f, 0f))
+        val island2 = Island(Point(-1600f, 0f))
+        val island3 = Island(Point(0f, 1600f))
+        val island4 = Island(Point(0f, -1600f))
 
         engine.addEntity(island1)
         entityManager.identify(island1)
@@ -92,6 +93,7 @@ class GameAPI {
         damageManager.assignHP(id)
         engine.addEntity(player)
         respawnById(id)
+        skillManager.addPlayerId(id)
         return DataTransferEntity(
             entityManager.getId(player),
             player.pos,
@@ -173,11 +175,14 @@ class GameAPI {
         engine.removeEntity(entityManager.getById(id))
         entityManager.removeEntity(id)
         damageManager.removeEntity(id)
+        skillManager.removePlayerId(id)
     }
 
     private fun respawnById(id: Int) {
         entityManager.respawnPlayer(id)
         damageManager.refreshPlayer(id)
+        skillManager.removePlayerId(id)
+        skillManager.addPlayerId(id)
     }
 
     fun accelerate(id: Int, isForward: Boolean) {
@@ -285,6 +290,10 @@ class GameAPI {
         } else {
             throw InvalidParameterException()
         }
+    }
+
+    fun addSkill(playerID: Int, id: Int){
+        skillManager.addSkill(playerID, id)
     }
 
 }
