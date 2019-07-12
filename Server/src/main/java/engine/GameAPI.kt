@@ -29,10 +29,12 @@ class GameAPI {
         engine.addEntity(island3)
         entityManager.identify(island3)
         damageManager.createIsland(entityManager.getId(island3))
+        entityManager.changeTeam(entityManager.getId(island3), TEAMS_COUNT - 1)
 
         engine.addEntity(island4)
         entityManager.identify(island4)
         damageManager.createIsland(entityManager.getId(island4))
+        entityManager.changeTeam(entityManager.getId(island4), TEAMS_COUNT - 1)
     }
 
     fun update() {
@@ -51,9 +53,15 @@ class GameAPI {
         for (bullet in deadBullets) {
             removeEntity(entityManager.getId(bullet))
         }
-        val deadPlayers = damageManager.update(escapedPlayers)
+        val events = damageManager.update(escapedPlayers)
+
+        val deadPlayers = events.deadPlayers
         for (deadPlayer in deadPlayers) {
             respawnById(deadPlayer)
+        }
+        val respawnedPlayers = events.respawnedPlayers
+        for (respawnedPlayer in respawnedPlayers) {
+            entityManager.getById(respawnedPlayer)!!.hitbox.isCollidable = true
         }
     }
 
@@ -181,11 +189,14 @@ class GameAPI {
     private fun respawnById(id: Int) {
         entityManager.respawnPlayer(id)
         damageManager.refreshPlayer(id)
+        damageManager.goOnRespawn(id)
+        entityManager.getById(id)!!.hitbox.isCollidable = false
         skillManager.removePlayerId(id)
         skillManager.addPlayerId(id)
     }
 
     fun accelerate(id: Int, isForward: Boolean) {
+        if (damageManager.isRespawning(id)) return
         val player = entityManager.getById(id)
         if (player is Player) {
             engine.accelerate(player, isForward, damageManager.getMaxSpeedById(id))
@@ -193,6 +204,7 @@ class GameAPI {
     }
 
     fun turn(id: Int, side: Int) {
+        if (damageManager.isRespawning(id)) return
         val player = entityManager.getById(id)
         if (player is Player) {
             engine.turn(player, side, damageManager.getTurnRateById(id))
@@ -212,8 +224,8 @@ class GameAPI {
                 }
             }
             when (damageManager.dealDamage(
-                entityManager.getId(entity),
-                damage
+                    entityManager.getId(entity),
+                    damage
             )) {
                 DeathState.NONE -> return
                 DeathState.ALIVE -> {
@@ -222,23 +234,25 @@ class GameAPI {
                     when (entity) {
                         is Island -> {
                             entityManager.changeTeam(
-                                entityManager.getId(entity),
-                                entityManager.getTeamById(
-                                    if (by is Bullet)
-                                        damageManager.getShooterId(entityManager.getId(by))
-                                    else
-                                        entityManager.getId(by)
-                                )
+                                    entityManager.getId(entity),
+                                    entityManager.getTeamById(
+                                            if (by is Bullet)
+                                                damageManager.getShooterId(entityManager.getId(by))
+                                            else
+                                                entityManager.getId(by)
+                                    )
                             )
                             damageManager.refreshPlayer(entityManager.getId(entity))
+
                         }
                         is Player -> {
                             respawnById(entityManager.getId(entity))
+                            engine.setPlayerSpeed(entity, 0.01f)
                         }
                     }
                 }
             }
-        }
+        }//ya ub'yu seb9 sey4as
         for (collision in collisions) {
             if (collision.target2 is Bullet && collision.target1 is Bullet) {
                 removeEntity(entityManager.getId(collision.target1))
