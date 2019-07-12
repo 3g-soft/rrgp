@@ -17,6 +17,7 @@ class Server(gameAPI: GameAPI, private val tick: Long = 16) {
     private val stateManger = StateManger()
 
     init {
+        val port = System.getenv()["PORT"] ?: "8080"
         Javalin.create {
             it.addStaticFiles("../Client/", Location.EXTERNAL)
         }.apply {
@@ -42,7 +43,7 @@ class Server(gameAPI: GameAPI, private val tick: Long = 16) {
                     clients.remove(it)
                 }
             }
-        }.start(8080)
+        }.start(port.toInt())
 
         GlobalScope.launch(Dispatchers.Default) {
             while (true) {

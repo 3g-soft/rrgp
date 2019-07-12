@@ -31,8 +31,8 @@
             y: 0
         },
     }
-
-    var ws = new Connection(`ws://${document.domain}:8080/game`)
+    let protocol = (location.port === "")? "wss" : "ws"
+    var ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
     let entobj = {}
     ws.onstate = (ent) => {
         for (key in ent) {

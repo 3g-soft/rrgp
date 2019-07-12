@@ -1,0 +1,17 @@
+language: java
+jdk:
+- oraclejdk12
+before_script: cd Server
+before_deploy: cp -r ../Client/ ./
+cache:
+  directories:
+  - "$HOME/.m2"
+deploy:
+  provider: heroku
+  api_key:
+    secure: bwe+021Sa63DVN3fkOdj00RfpvM8m+oA+y/RlLAqwOyUJ9B1uuaCUka9BaTpa4xzsV0TGVH/pSUXCE+Dt12hsRGT18G6Q2ROzz8c7XRwpjAha9wwVqgvwg2NjIOB0gpydEs4v5Qon5ZMoih345nPykPuk3vFRL0MZ6DYkMr7Lj5YHXP0Nb636vNXFwxbrrm/+bH2G89AK8nkXncgWVbOGWxbrY0TarS+3yO24xREbKSdpEXCL3T1yhZqJ3w8KYc3OWqkSYWpIQI93Yw3j4OdaSMWEHJehXAu+PD8TqJ80WSHJu4NO5CcD5jPXqIZi/1I0rCjmmuFyHivI7uh7F1VisQPnC2hK3JbLrkSn4UuijUzLhAhd+HRE1nlPXtqLJnkbVpsM/RuPVeehfDDLubLLrYsGLHF6NNQnbTwH1sIDVEqZkEDdmTuZtJ7Vte5ddYWAweB5TqAET/2UzQFJ4ZXt/9/2/XTGVeVRPJ56neQujkRhUKcTKGYA9uawZqrAulPCzfxFB/UKDC63qtB2HnRuUWq3aDfirxGivl44TKBLdQ11zme1rbelNrIWdTog3tBSZch/vTVagIDclxZzzykoLOWDTXur2wpTGbZYpP6AXxhaJnoeiUrXvwlVWH8WM99p8ERLRlhyR/3BxMnj11qAuLkRmSTeoapVltgUXhS40A=
+  app: rrgp
+  skip_cleanup: true
+  on:
+    repo: 3g-soft/rrgp
+    branch: develop
