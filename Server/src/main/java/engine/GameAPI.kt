@@ -38,6 +38,10 @@ class GameAPI {
     }
 
     fun update() {
+        if (damageManager.getTickTimer() <= 0) {
+            resetGame()
+        }
+
         onCollisionDamage(engine.update())
         val deadBullets = mutableListOf<Bullet>()
         val escapedPlayers = mutableListOf<Int>()
@@ -164,7 +168,8 @@ class GameAPI {
                             damageManager.getRespawnTimer(id),
                             RESPAWNTICKS,
                             damageManager.getGold(id),
-                            MAXGOLD
+                            MAXGOLD,
+                                damageManager.getTickTimer()
                         )
                     )
                 }

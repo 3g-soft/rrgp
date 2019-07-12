@@ -17,7 +17,8 @@ data class Profile(
     var rightShotTimer: Int = 0,
     var immuneTimer: Int = IMMUNETICKS,
     var respawnTimer: Int = -1,
-    var gold: Int = 0
+    var gold: Int = 0,
+    var resetTicks: Int = RESETTICKS
 )
 
 data class IslandProfile(
@@ -28,6 +29,7 @@ data class IslandProfile(
 //    var shotTimer: Int = 0
 )
 
+const val RESETTICKS = 1500
 const val IMMUNETICKS = 300
 const val MAXESCAPETICKS = 150
 const val MAXHPTICKS = 60
@@ -36,6 +38,7 @@ const val MAXGOLD = 30
 
 data class Events(val deadPlayers: List<Int>, val respawnedPlayers: List<Int>)
 class DamageManager {
+    private var gameEnd:         Boolean                        = false
     private val profiles:        MutableMap<Int, Profile>       = emptyMap<Int, Profile>().toMutableMap()
     private val bulletToShooter: MutableMap<Int, Int>           = emptyMap<Int, Int>().toMutableMap()
     private val islandProfiles:  MutableMap<Int, IslandProfile> = emptyMap<Int, IslandProfile>().toMutableMap()
@@ -43,6 +46,20 @@ class DamageManager {
     fun update(escapedPlayers: List<Int>): Events {
         val deadPlayers = mutableListOf<Int>()
         val respawnedPlayers = mutableListOf<Int>()
+
+        if (!gameEnd) {
+            for (profile in profiles.values) {
+                if (profile.gold >= MAXGOLD) {
+                    gameEnd = true
+                    break
+                }
+            }
+        } else {
+            for (prof_id in profiles.keys) {
+                --profiles[prof_id]!!.resetTicks
+            }
+        }
+
         for (id in profiles.keys) {
             val profile = profiles[id]
             if (id in escapedPlayers) {
@@ -89,6 +106,15 @@ class DamageManager {
     fun getProfileById(id: Int): Profile {
         if (id !in profiles.keys) return Profile()
         return profiles[id]!!
+    }
+
+    fun getTickTimer(): Int {
+        var ret = -1
+        for (value in profiles.values){
+            ret = value.resetTicks
+            break
+        }
+        return ret
     }
 
     fun getShotRange(id: Int): Float {
