@@ -34,7 +34,7 @@
     var protocol = (location.port === "") ? "wss" : "ws"
 
     var ws //= new Connection(`${protocol}://${document.domain}:${location.port}/game`)
-    var st = new SkillTree()
+    var st;
 
 
     let entobj = {}
@@ -383,7 +383,7 @@
         }
 
         ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
-
+        st = new SkillTree(skills, ws);
         ws.onstate = (ent) => {
             for (key in ent) {
                 if (!entobj.hasOwnProperty(key)) {

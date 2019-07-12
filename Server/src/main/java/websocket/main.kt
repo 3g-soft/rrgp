@@ -8,6 +8,6 @@ import kotlinx.coroutines.runBlocking
 fun main() {
     runBlocking {
         LogManager.enable()
-        Server(GameAPI())
+        Server(GameAPI(), 32)
     }
 }

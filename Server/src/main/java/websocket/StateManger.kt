@@ -1,6 +1,7 @@
 package websocket
 
 import engine.DataTransferEntity
+import engine.DataTransferEntityType
 import io.javalin.websocket.WsContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -26,6 +27,10 @@ class StateManger {
                 if (prevState[key]?.shotCooldown == newState[key]?.shotCooldown) newData.remove("shotCooldown")
                 if (prevState[key]?.rightShotTimer == newState[key]?.rightShotTimer) newData.remove("rightShotTimer")
                 if (prevState[key]?.leftShotTimer == newState[key]?.leftShotTimer) newData.remove("leftShotTimer")
+                if(newState[key]?.type == "Island"){
+                    newData.remove("angle")
+                    newData.remove("pos")
+                }
             }
             state.put("$key", newData)
         }
