@@ -7,7 +7,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class GameAPI {
-    val engine:                Engine        = Engine()
+    val engine: Engine = Engine()
     private val damageManager: DamageManager = DamageManager()
     private val entityManager: EntityManager = EntityManager()
 
@@ -191,8 +191,10 @@ class GameAPI {
             val damage = when (by) {
                 is Bullet -> damageManager.getShotDamage(entityManager.getId(by))
                 else -> {
-                    if (by is MovableEntity) (by.velocity.length * 30f).toInt()
-                    else damageManager.collisionDamage
+                    if (by is MovableEntity && entity is MovableEntity) (entity.velocity.length * 30f).toInt()
+                    else if (by is MovableEntity) (by.velocity.length * 30f).toInt()
+                    else if (entity is MovableEntity) (entity.velocity.length * 15f).toInt()
+                    else 30
                 }
             }
             when (damageManager.dealDamage(
@@ -208,10 +210,10 @@ class GameAPI {
                             entityManager.changeTeam(
                                 entityManager.getId(entity),
                                 entityManager.getTeamById(
-                                        if (by is Bullet)
-                                            damageManager.getShooterId(entityManager.getId(by))
-                                        else
-                                            entityManager.getId(by)
+                                    if (by is Bullet)
+                                        damageManager.getShooterId(entityManager.getId(by))
+                                    else
+                                        entityManager.getId(by)
                                 )
                             )
                             damageManager.refreshPlayer(entityManager.getId(entity))
