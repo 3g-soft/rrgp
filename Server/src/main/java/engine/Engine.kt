@@ -34,6 +34,18 @@ class Engine {
                         ent2.velocity = b2.copy() * ent2.velocity.length / 2f
                         continue
                     }
+                    if (ent1 is Player && ent2 is Island) {
+                        ent1.velocity = -ent1.velocity / 2f
+                        val b1 = ent1.velocity.copy().normalize()
+                        ent1.pos.x += b1.x * 25f
+                        ent1.pos.y += b1.y * 25f
+                    }
+                    if (ent2 is Player && ent1 is Island) {
+                        ent2.velocity = -ent2.velocity / 2f
+                        val b2 = ent2.velocity.copy().normalize()
+                        ent2.pos.x += b2.x * 25f
+                        ent2.pos.y += b2.y * 25f
+                    }
 
                 }
             }
