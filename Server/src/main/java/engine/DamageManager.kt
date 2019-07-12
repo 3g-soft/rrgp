@@ -63,8 +63,8 @@ class DamageManager {
     }
 
     fun refreshPlayer(id: Int) {
-        if (id !in profiles.keys) return
-        profiles[id] = Profile()
+        if (id in profiles.keys) profiles[id] = Profile()
+        if (id in islandProfiles.keys) islandProfiles[id] = IslandProfile()
     }
 
     fun setMaxHP(id: Int, maxHP: Int) {
@@ -106,7 +106,7 @@ class DamageManager {
 
     fun getHPbyId(id: Int): Int {
         if (id in profiles.keys) return profiles[id]!!.curHP
-        if (id in islandProfiles.keys) return islandProfiles[id]!!.maxHP
+        if (id in islandProfiles.keys) return islandProfiles[id]!!.curHP
         return -1
     }
 
