@@ -16,7 +16,8 @@ data class Profile(
     var leftShotTimer: Int = 0,
     var rightShotTimer: Int = 0,
     var immuneTimer: Int = IMMUNETICKS,
-    var respawnTimer: Int = -1
+    var respawnTimer: Int = -1,
+    var gold: Int = 0
 )
 
 data class IslandProfile(
@@ -29,13 +30,15 @@ data class IslandProfile(
 
 const val IMMUNETICKS = 300
 const val MAXESCAPETICKS = 150
-const val MAXHPTICKS     = 60
+const val MAXHPTICKS = 60
 const val RESPAWNTICKS = 300
+const val MAXGOLD = 30
+
 data class Events(val deadPlayers: List<Int>, val respawnedPlayers: List<Int>)
 class DamageManager {
-    private val profiles: MutableMap<Int, Profile> = emptyMap<Int, Profile>().toMutableMap()
-    private val bulletToShooter: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
-    private val islandProfiles: MutableMap<Int, IslandProfile> = emptyMap<Int, IslandProfile>().toMutableMap()
+    private val profiles:        MutableMap<Int, Profile>       = emptyMap<Int, Profile>().toMutableMap()
+    private val bulletToShooter: MutableMap<Int, Int>           = emptyMap<Int, Int>().toMutableMap()
+    private val islandProfiles:  MutableMap<Int, IslandProfile> = emptyMap<Int, IslandProfile>().toMutableMap()
 
     fun update(escapedPlayers: List<Int>): Events {
         val deadPlayers = mutableListOf<Int>()
@@ -50,7 +53,7 @@ class DamageManager {
             if (profile.hpTimer == 0 && profile.curHP < profile.maxHP) profile.curHP =
                 min(profile.curHP + profile.hpRegen, profile.maxHP)
             else profile.hpTimer--
-            if (profile.leftShotTimer  != 0) profile.leftShotTimer--
+            if (profile.leftShotTimer != 0) profile.leftShotTimer--
             if (profile.rightShotTimer != 0) profile.rightShotTimer--
             if (profile.immuneTimer != 0) profile.immuneTimer--
             if (profile.respawnTimer != -1) {
@@ -62,6 +65,16 @@ class DamageManager {
             }
         }
         return Events(deadPlayers.toList(), respawnedPlayers.toList())
+    }
+
+    fun reset() {
+        for (player_id in profiles.keys) {
+            refreshPlayer(player_id)
+        }
+        for (island_id in islandProfiles.keys) {
+            islandProfiles[island_id] = IslandProfile()
+        }
+        bulletToShooter.clear()
     }
 
     private fun setHP(id: Int, hp: Int) {
@@ -85,7 +98,10 @@ class DamageManager {
     }
 
     fun refreshPlayer(id: Int) {
-        if (id in profiles.keys) profiles[id] = Profile()
+        if (id in profiles.keys) {
+            val gold = profiles[id]!!.gold
+            profiles[id] = Profile(gold = gold)
+        }
         if (id in islandProfiles.keys) islandProfiles[id] = IslandProfile()
     }
 
@@ -164,7 +180,7 @@ class DamageManager {
     fun checkShotCooldown(id: Int, side: Int): Boolean {
         if (id !in profiles.keys) return true
         return when (side) {
-            1    -> profiles[id]!!.leftShotTimer  != 0
+            1 -> profiles[id]!!.leftShotTimer != 0
             else -> profiles[id]!!.rightShotTimer != 0
         }
     }
@@ -172,7 +188,7 @@ class DamageManager {
     fun goOnCooldown(id: Int, side: Int) {
         if (id !in profiles.keys) return
         return when (side) {
-            1    -> profiles[id]!!.leftShotTimer  = profiles[id]!!.shotCooldown
+            1 -> profiles[id]!!.leftShotTimer = profiles[id]!!.shotCooldown
             else -> profiles[id]!!.rightShotTimer = profiles[id]!!.shotCooldown
         }
     }
@@ -203,6 +219,7 @@ class DamageManager {
         if (bulId !in bulletToShooter) return -1
         return profiles[bulletToShooter[bulId]]!!.damage
     }
+
     fun getShooterId(bulId: Int): Int {
         if (bulId !in bulletToShooter.keys) return -1
         return bulletToShooter[bulId]!!
@@ -213,9 +230,37 @@ class DamageManager {
         return profiles[id]!!
     }
 
+    fun getRespawnTimer(id: Int): Int {
+        if (id !in profiles.keys) return -1
+        return profiles[id]!!.respawnTimer
+
+    }
+
     fun isRespawning(id: Int): Boolean {
         if (id !in profiles.keys) return false
         return profiles[id]!!.respawnTimer != -1
     }
+
+    fun getGold(id: Int): Int {
+        if (id !in profiles.keys) return 0
+        return profiles[id]!!.gold
+    }
+
+    fun getKill(id: Int) {
+        if (id !in profiles.keys) return
+        profiles[id]!!.gold++
+    }
+
+
+    fun spendGold(id: Int, gold: Int) {
+        if (id !in profiles.keys) return
+        profiles[id]!!.gold -= gold
+    }
+
+    fun canSpendGold(id: Int, gold: Int): Boolean {
+        if (id !in profiles.keys) return false
+        return profiles[id]!!.gold >= gold
+    }
+
 
 }

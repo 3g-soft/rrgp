@@ -116,7 +116,11 @@ class GameAPI {
             damageManager.getShotCooldown(id, 2),
             damageManager.getMaxCooldown(id),
             damageManager.isOutside(id),
-            entityManager.getNameById(id)
+            entityManager.getNameById(id),
+            damageManager.getRespawnTimer(id),
+            RESPAWNTICKS,
+            damageManager.getGold(id),
+            MAXGOLD
         )
     }
 
@@ -156,7 +160,11 @@ class GameAPI {
                             damageManager.getShotCooldown(id, 2),
                             damageManager.getMaxCooldown(id),
                             damageManager.isOutside(id),
-                            entityManager.getNameById(id)
+                            entityManager.getNameById(id),
+                            damageManager.getRespawnTimer(id),
+                            RESPAWNTICKS,
+                            damageManager.getGold(id),
+                            MAXGOLD
                         )
                     )
                 }
@@ -187,12 +195,16 @@ class GameAPI {
     }
 
     private fun respawnById(id: Int) {
-        entityManager.respawnPlayer(id)
-        damageManager.refreshPlayer(id)
-        damageManager.goOnRespawn(id)
-        entityManager.getById(id)!!.hitbox.isCollidable = false
-        skillManager.removePlayerId(id)
-        skillManager.addPlayerId(id)
+        var player = entityManager.getById(id)
+        if (player is Player) {
+            engine.setPlayerSpeed(player, 0.01f)
+            entityManager.respawnPlayer(id)
+            damageManager.refreshPlayer(id)
+            damageManager.goOnRespawn(id)
+            entityManager.getById(id)!!.hitbox.isCollidable = false
+            skillManager.removePlayerId(id)
+            skillManager.addPlayerId(id)
+        }
     }
 
     fun accelerate(id: Int, isForward: Boolean) {
@@ -246,9 +258,14 @@ class GameAPI {
 
                         }
                         is Player -> {
-                            by
+                            val killerId = if (by is Bullet) {
+                                damageManager.getShooterId(entityManager.getId(by))
+                            }
+                            else {
+                                entityManager.getId(by)
+                            }
+                            damageManager.getKill(killerId)
                             respawnById(entityManager.getId(entity))
-                            engine.setPlayerSpeed(entity, 0.01f)
                         }
                     }
                 }
@@ -303,6 +320,11 @@ class GameAPI {
         } else {
             throw InvalidParameterException()
         }
+    }
+
+    fun resetGame() {
+        entityManager.reset()
+        damageManager.reset()
     }
 
     fun addSkill(playerID: Int, id: Int){
