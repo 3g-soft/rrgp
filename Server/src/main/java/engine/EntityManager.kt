@@ -53,7 +53,7 @@ class EntityManager {
     private fun assignTeam(entity: Entity) {
         var playerCount = 0
         for (team in teams.keys) {
-            if (team == TEAMS_COUNT - 1)
+            if (team == TEAMS_COUNT - 1) break
             playerCount += teams[team]!!.size
         }
         teams[playerCount % (TEAMS_COUNT - 1)]!!.add(entityIDs[entity]!!)

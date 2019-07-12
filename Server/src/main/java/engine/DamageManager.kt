@@ -24,7 +24,6 @@ class DamageManager {
     private val bulletToShooter: MutableMap<Int, Int>     = emptyMap<Int, Int>().toMutableMap()
 
     val collisionDamage = 30
-    val bulletDamage    = 50
 
     fun update(escapedPlayers: List<Int>): List<Int> {
         val deadPlayers = mutableListOf<Int>()
