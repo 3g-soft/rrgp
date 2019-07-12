@@ -29,10 +29,12 @@ class GameAPI {
         engine.addEntity(island3)
         entityManager.identify(island3)
         damageManager.createIsland(entityManager.getId(island3))
+        entityManager.changeTeam(entityManager.getId(island3), TEAMS_COUNT - 1)
 
         engine.addEntity(island4)
         entityManager.identify(island4)
         damageManager.createIsland(entityManager.getId(island4))
+        entityManager.changeTeam(entityManager.getId(island4), TEAMS_COUNT - 1)
     }
 
     fun update() {
