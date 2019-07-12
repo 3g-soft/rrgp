@@ -246,6 +246,7 @@ class GameAPI {
 
                         }
                         is Player -> {
+                            by
                             respawnById(entityManager.getId(entity))
                             engine.setPlayerSpeed(entity, 0.01f)
                         }
