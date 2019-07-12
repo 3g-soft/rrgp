@@ -7,7 +7,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class GameAPI {
-    val engine: Engine = Engine()
+    val engine:                Engine        = Engine()
     private val damageManager: DamageManager = DamageManager()
     private val entityManager: EntityManager = EntityManager()
 
@@ -21,7 +21,7 @@ class GameAPI {
             )
             engine.addEntity(island)
             entityManager.identify(island)
-            damageManager.assignHP(entityManager.getId(island))
+            damageManager.createIsland(entityManager.getId(island))
         }
     }
 
@@ -178,6 +178,14 @@ class GameAPI {
         }
     }
 
+    fun turn(id: Int, side: Int) {
+        val player = entityManager.getById(id)
+        if (player is Player) {
+            engine.turn(player, side, damageManager.getTurnRateById(id))
+        }
+    }
+
+
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
         fun deathCheck(entity: Entity, by: Entity) {
             val damage = when (by) {
@@ -199,8 +207,14 @@ class GameAPI {
                         is Island -> {
                             entityManager.changeTeam(
                                 entityManager.getId(entity),
-                                entityManager.getTeamById(entityManager.getId(by))
+                                entityManager.getTeamById(
+                                        if (by is Bullet)
+                                            damageManager.getShooterId(entityManager.getId(by))
+                                        else
+                                            entityManager.getId(by)
+                                )
                             )
+                            damageManager.refreshPlayer(entityManager.getId(entity))
                         }
                         is Player -> {
                             respawnById(entityManager.getId(entity))
