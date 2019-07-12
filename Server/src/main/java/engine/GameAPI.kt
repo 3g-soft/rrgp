@@ -224,9 +224,11 @@ class GameAPI {
                                 )
                             )
                             damageManager.refreshPlayer(entityManager.getId(entity))
+
                         }
                         is Player -> {
                             respawnById(entityManager.getId(entity))
+                            engine.setPlayerSpeed(entity, 0f)
                         }
                     }
                 }
