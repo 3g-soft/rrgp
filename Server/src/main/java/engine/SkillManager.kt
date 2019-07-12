@@ -64,6 +64,8 @@ class SkillManager(val dm: DamageManager){
     }
 
     fun addSkill(playerID: Int, id: Int): Boolean{
+        if(!dm.canSpendGold(playerID, 1))return false
+        dm.spendGold(playerID, 1)
         if(!skills.containsKey(id))return false
         if(skills[id]!!.dependence != -1){
             if(!playersSkills[playerID]!!.keys.contains(skills[id]!!.dependence))return false

@@ -50,6 +50,7 @@
         for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
         entities = Object.values(entobj)
         if(entobj[ws.id].respTimer > 0)st.reset()
+        st.gold = entobj[ws.id].gold
     }
 
     var canv = document.getElementById("canv")
@@ -345,6 +346,9 @@
         ctx.font = "50px helvetica"
         if (you.outside) {
             ctx.fillText("WAIT THAT'S ILLEGAL", 0.4 * canv.width, 0.3 * canv.height)
+        }
+        if(you.respTimer > 0){
+            ctx.fillText(`YOU ARE DEAD ${you.respTimer}`, 0.4 * canv.width, 0.3 * canv.height)
         }
     }
 

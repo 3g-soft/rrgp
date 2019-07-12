@@ -7,6 +7,7 @@ class SkillTree {
         this.showed = true;
         this.hotNodes = [];
         this.root = new Node(undefined, undefined, [], undefined);
+        this.gold = 0;
         this.currentNode = this.root;
         function createNode(sk, div, parent = undefined) {
             if (sk === undefined) return;
@@ -26,6 +27,8 @@ class SkillTree {
                 parent.nodes.push(nd);
                 createNode(sk[i].childs, childs, nd);
                 text.onmousedown = (e) => {
+                    if(self.gold < 1)return;
+                    self.gold--;
                     let target = undefined;
                     self.currentNode.nodes.forEach((it) => {
                         if (it.text === e.currentTarget) {
