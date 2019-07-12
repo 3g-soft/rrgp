@@ -1,4 +1,4 @@
-(function () {
+// (function () {
     class Connection {
         constructor(addr) {
             this.nextid = 0;
@@ -31,13 +31,23 @@
             y: 0
         },
     }
-    var protocol = (location.port === "") ? "wss" : "ws"
-
-    var ws //= new Connection(`${protocol}://${document.domain}:${location.port}/game`)
-    var st = new SkillTree()
-
-
+    let protocol = (location.port === "") ? "wss" : "ws"
+    var ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
+    let st = new SkillTree(skills, ws)
     let entobj = {}
+    ws.onstate = (ent) => {
+        for (key in ent) {
+            if (!entobj.hasOwnProperty(key)) {
+                entobj[key] = ent[key];
+                entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
+                continue
+            }
+            for (i in ent[key]) entobj[key][i] = ent[key][i]
+            entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
+        }
+        for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
+        entities = Object.values(entobj)
+    }
 
     var canv = document.getElementById("canv")
     var ctx = canv.getContext("2d")
@@ -116,11 +126,11 @@
                     break
 
                 case 68:
-                    ws.sendRequest("turn", 2)
+                    ws.sendRequest("changeAngle", you.angle + 0.1)
                     break
 
                 case 65:
-                    ws.sendRequest("turn", 1)
+                    ws.sendRequest("changeAngle", you.angle - 0.1)
                     break
 
                 case 87:
@@ -278,16 +288,13 @@
             }, 100)
         }
 
-        let you = entities.filter(ent => ent.id == ws.id)[0]
-        ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
         ctx.drawImage(leftSprite, leftButtonCoords.x, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width)
-        ctx.fillRect(leftButtonCoords.x, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width * you.leftShotTimer / you.shotCooldown)
         ctx.drawImage(rightSprite, leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width)
-        ctx.fillRect(leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width * you.rightShotTimer / you.shotCooldown)
 
         ctx.fillStyle = "red"
         ctx.strokeStyle = "black"
         ctx.font = "50px helvetica"
+        let you = entities.filter((e) => e.id == ws.id)[0]
         if (you.outside) {
             ctx.fillText("WAIT THAT'S ILLEGAL", 0.4 * canv.width, 0.3 * canv.height)
         }
@@ -381,27 +388,9 @@
         while (nickname === '') {
             nickname = prompt('Enter your nickname')
         }
-
-        ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
-
-        ws.onstate = (ent) => {
-            for (key in ent) {
-                if (!entobj.hasOwnProperty(key)) {
-                    entobj[key] = ent[key];
-                    entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
-                    continue
-                }
-                for (i in ent[key]) entobj[key][i] = ent[key][i]
-                entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
-            }
-            for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
-            entities = Object.values(entobj)
-        }
-
         setTimeout(() => {
             ws.sendRequest('setNickname', nickname)
         }, 100)
-        
         init()
         setInterval(render, 17)
         setInterval(() => {
@@ -411,4 +400,4 @@
             }
         }, 100)
     }
-})();
+// })();

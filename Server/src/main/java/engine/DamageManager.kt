@@ -6,8 +6,8 @@ data class Profile(
     var maxSpeed: Float = 5f,
     var turnRate: Float = 0.1f,
     var bulRange: Float = 500f,
-    var curHP: Int = 280,
-    var maxHP: Int = 280,
+    var curHP: Int = 50,
+    var maxHP: Int = 50,
     var hpRegen: Int = 1,
     var escapeTimer: Int = -1,
     var hpTimer: Int = 0,
@@ -15,7 +15,8 @@ data class Profile(
     var shotCooldown: Int = 60,
     var leftShotTimer: Int = 0,
     var rightShotTimer: Int = 0,
-    var immuneTimer: Int = IMMUNETICKS
+    var immuneTimer: Int = IMMUNETICKS,
+    var respawnTimer: Int = -1
 )
 
 data class IslandProfile(
@@ -29,15 +30,16 @@ data class IslandProfile(
 const val IMMUNETICKS = 300
 const val MAXESCAPETICKS = 150
 const val MAXHPTICKS     = 60
-
+const val RESPAWNTICKS = 300
+data class Events(val deadPlayers: List<Int>, val respawnedPlayers: List<Int>)
 class DamageManager {
     private val profiles: MutableMap<Int, Profile> = emptyMap<Int, Profile>().toMutableMap()
     private val bulletToShooter: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
     private val islandProfiles: MutableMap<Int, IslandProfile> = emptyMap<Int, IslandProfile>().toMutableMap()
-    val collisionDamage = 30
 
-    fun update(escapedPlayers: List<Int>): List<Int> {
+    fun update(escapedPlayers: List<Int>): Events {
         val deadPlayers = mutableListOf<Int>()
+        val respawnedPlayers = mutableListOf<Int>()
         for (id in profiles.keys) {
             val profile = profiles[id]
             if (id in escapedPlayers) {
@@ -51,8 +53,15 @@ class DamageManager {
             if (profile.leftShotTimer  != 0) profile.leftShotTimer--
             if (profile.rightShotTimer != 0) profile.rightShotTimer--
             if (profile.immuneTimer != 0) profile.immuneTimer--
+            if (profile.respawnTimer != -1) {
+                profile.respawnTimer--
+                if (profile.respawnTimer == 0) {
+                    respawnedPlayers.add(id)
+                    profile.respawnTimer = -1
+                }
+            }
         }
-        return deadPlayers.toList()
+        return Events(deadPlayers.toList(), respawnedPlayers.toList())
     }
 
     private fun setHP(id: Int, hp: Int) {
@@ -117,6 +126,12 @@ class DamageManager {
         }
         return DeathState.NONE
     }
+
+    fun goOnRespawn(id: Int) {
+        if (id !in profiles.keys) return
+        profiles[id]!!.respawnTimer = RESPAWNTICKS
+    }
+
 
     fun getHPbyId(id: Int): Int {
         if (id in profiles.keys) return profiles[id]!!.curHP
@@ -194,7 +209,13 @@ class DamageManager {
     }
 
     fun getPlayerProfile(id: Int): Profile {
+        if (id !in profiles.keys) return Profile()
         return profiles[id]!!
+    }
+
+    fun isRespawning(id: Int): Boolean {
+        if (id !in profiles.keys) return false
+        return profiles[id]!!.respawnTimer != -1
     }
 
 }
