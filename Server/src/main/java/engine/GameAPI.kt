@@ -199,7 +199,12 @@ class GameAPI {
                         is Island -> {
                             entityManager.changeTeam(
                                 entityManager.getId(entity),
-                                entityManager.getTeamById(entityManager.getId(by))
+                                entityManager.getTeamById(
+                                        if (by is Bullet)
+                                            damageManager.getShooterId(entityManager.getId(by))
+                                        else
+                                            entityManager.getId(by)
+                                )
                             )
                             damageManager.refreshPlayer(entityManager.getId(entity))
                         }

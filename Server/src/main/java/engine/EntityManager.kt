@@ -19,9 +19,11 @@ class EntityManager {
         if(id !in entityIDs.values || name in  playerNames.values) return
         playerNames[id] = name
     }
+
     fun getNameById(id: Int): String {
         return if (id !in playerNames.keys) "russian hacker" else playerNames[id]!!
     }
+
     fun respawnPlayer(id: Int) {
         if (id !in entityIDs.values) return
         getById(id)!!.pos = Point(

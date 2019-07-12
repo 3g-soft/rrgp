@@ -20,12 +20,11 @@ const val MAXESCAPETICKS = 150
 const val MAXHPTICKS     = 60
 
 class DamageManager {
-    private val profiles: MutableMap<Int, Profile> = emptyMap<Int, Profile>().toMutableMap()
+    private val profiles:        MutableMap<Int, Profile> = emptyMap<Int, Profile>().toMutableMap()
+    private val bulletToShooter: MutableMap<Int, Int>     = emptyMap<Int, Int>().toMutableMap()
 
     val collisionDamage = 30
     val bulletDamage    = 50
-
-    private val bulletToShooter: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
 
     fun update(escapedPlayers: List<Int>): List<Int> {
         val deadPlayers = mutableListOf<Int>()
@@ -143,6 +142,10 @@ class DamageManager {
     fun getShotDamage(bulId: Int): Int {
         if (bulId !in bulletToShooter) return -1
         return profiles[bulletToShooter[bulId]]!!.damage
+    }
+    fun getShooterId(bulId: Int): Int {
+        if (bulId !in bulletToShooter.keys) return -1
+        return bulletToShooter[bulId]!!
     }
 
 }
