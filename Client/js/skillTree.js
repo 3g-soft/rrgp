@@ -71,6 +71,7 @@ class SkillTree {
     }
 
     insertBRs(str){
+        if("fuck".matchAll === undefined)return str
         let out = Array.from(str.matchAll(/[+-][^+-]*/gm), m => m[0]);
         return out.join("<br>");
     }
