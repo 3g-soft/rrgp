@@ -62,6 +62,7 @@ class Server(gameAPI: GameAPI, private val tick: Long = 16) {
             "makeShot" -> gameActor.shotAsync(id, args.getInt(0))
             "changeAngle" -> gameActor.changeAngleAsync(id, args.getFloat(0))
             "accelerate" -> gameActor.accelerateAsync(id, args.getBoolean(0))
+            "skill" -> l.log("skill id${args[0]}")
         }
     }
 }

@@ -1,8 +1,9 @@
 class SkillTree {
-    constructor(skills) {
+    constructor(skills, connection) {
         document.getElementById('skillbtn').onclick = (() => this.toggle()).bind(this);
         this.tree = document.getElementById('tree');
         let self = this;
+        this.connection = connection;
         this.showed = true;
         this.hotNodes = [];
         this.root = new Node(undefined, undefined, [], undefined);
@@ -34,24 +35,28 @@ class SkillTree {
                     if (target === undefined) return;
                     self.currentNode = target;
                     target.activate();
+                    this.connection.send("skill", self.currentNode.id);
                 }
             }
         }
-        createNode(skills, this.tree, this.root)
+        createNode(skills, this.tree, this.root);
         this.root.activate();
         window.addEventListener("keydown", ((e) => {
+            if(this.showed)e.preventDefault();
             switch (e.key) {
                 case 'i': this.toggle(); break;
                 case '1': this.nodeBykey(0); break;
                 case '2': this.nodeBykey(1); break;
             }
         }).bind(this));
+        this.hide();
     }
 
     nodeBykey(i) {
         if (!this.showed) return;
         this.currentNode.nodes[i].activate();
-        this.currentNode = this.currentNode.nodes[i]
+        this.currentNode = this.currentNode.nodes[i];
+        this.connection.send("skill", this.currentNode.id);
     }
     show() {
         document.getElementById("screen").style.display = "flex"
@@ -73,7 +78,7 @@ class SkillTree {
 }
 
 class Node {
-    constructor(node, text, nodes, parent) {
+    constructor(node, text, nodes, parent, id=-1) {
         this.text = text;
         this.nodes = nodes;
         this.parent = parent;
@@ -138,6 +143,3 @@ let skills = [
         ]
     },
 ];
-let st = new SkillTree(skills);
-st.hide();
-console.log(st);
