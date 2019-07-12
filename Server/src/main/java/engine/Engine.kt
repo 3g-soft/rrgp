@@ -1,6 +1,5 @@
 package engine
 
-import kotlin.math.abs
 
 const val WIDTH = 2000
 const val HEIGHT = 2000
@@ -22,16 +21,20 @@ class Engine {
             for (j in i + 1 until entities.size) {
                 if (entities[i].hitbox.checkCollision(entities[j].hitbox)) {
                     toReturn.add(CollisionEvent(entities[i], entities[j]))
-                    var ent = entities[i]
-                    if (ent is Player) {
-                        ent.pos.x -= ent.velocity.x
-                        ent.pos.y -= ent.velocity.y
+                    val ent1 = entities[i]
+                    val ent2 = entities[j]
+                    if (ent1 is Player && ent2 is Player) {
+                        val b2 = Vector2f(ent2.pos.x - ent1.pos.x, ent2.pos.y - ent1.pos.y).normalize()
+                        val b1 = Vector2f(ent1.pos.x - ent2.pos.x, ent1.pos.y - ent2.pos.y).normalize()
+                        ent1.pos.x += b1.x * 25f
+                        ent1.pos.y += b1.y * 25f
+                        ent1.velocity = b1.copy() * ent1.velocity.length / 2f
+                        ent2.pos.x += b2.x * 25f
+                        ent2.pos.y += b2.y * 25f
+                        ent2.velocity = b2.copy() * ent2.velocity.length / 2f
+                        continue
                     }
-                    ent = entities[j]
-                    if (ent is Player) {
-                        ent.pos.x -= ent.velocity.x
-                        ent.pos.y -= ent.velocity.y
-                    }
+
                 }
             }
         }

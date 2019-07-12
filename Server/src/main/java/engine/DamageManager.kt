@@ -25,6 +25,8 @@ class DamageManager {
     val collisionDamage = 30
     val bulletDamage    = 50
 
+    private val bulletToShooter: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
+
     fun update(escapedPlayers: List<Int>): List<Int> {
         val deadPlayers = mutableListOf<Int>()
         for (id in profiles.keys) {
@@ -95,8 +97,9 @@ class DamageManager {
     }
 
     fun removeEntity(id: Int) {
-        if (id !in profiles.keys) return
-        profiles.remove(id)
+        if (id in profiles.keys) profiles.remove(id)
+        if (id in bulletToShooter.keys) bulletToShooter.remove(id)
+
     }
 
     fun checkShotCooldown(id: Int, side: Int): Boolean {
@@ -114,4 +117,32 @@ class DamageManager {
             else -> profiles[id]!!.rightShotTimer = profiles[id]!!.shotCooldown
         }
     }
+
+    fun getShotCooldown(id: Int, side: Int): Int {
+        if (id !in profiles.keys) return 0
+        return when (side) {
+            1 -> profiles[id]!!.leftShotTimer
+            else -> profiles[id]!!.rightShotTimer
+        }
+    }
+
+    fun getMaxCooldown(id: Int): Int {
+        if (id !in profiles.keys) return 0
+        return profiles[id]!!.shotCooldown
+    }
+
+    fun isOutside(id: Int): Boolean {
+        if (id !in profiles.keys) return false
+        return profiles[id]!!.escapeTimer != -1
+    }
+
+    fun onShot(bulId: Int, shooterId: Int) {
+        bulletToShooter[bulId] = shooterId
+    }
+
+    fun getShotDamage(bulId: Int): Int {
+        if (bulId !in bulletToShooter) return -1
+        return profiles[bulletToShooter[bulId]]!!.damage
+    }
+
 }
