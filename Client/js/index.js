@@ -31,18 +31,11 @@
             y: 0
         },
     }
-<<<<<<< HEAD
-    var protocol = (location.port === "") ? "wss" : "ws"
 
-    var ws //= new Connection(`${protocol}://${document.domain}:${location.port}/game`)
-    var st;
-
-
-=======
     let protocol = (location.port === "") ? "wss" : "ws"
     var ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
     let st = new SkillTree(skills, ws)
->>>>>>> 30c87dbf57525cb149037198f9378a8e884907bc
+
     let entobj = {}
     ws.onstate = (ent) => {
         for (key in ent) {
@@ -56,6 +49,7 @@
         }
         for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
         entities = Object.values(entobj)
+        if(entobj[ws.id].respTimer > 0)st.reset()
     }
 
     var canv = document.getElementById("canv")
@@ -397,26 +391,6 @@
         while (nickname === '') {
             nickname = prompt('Enter your nickname')
         }
-<<<<<<< HEAD
-
-        ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
-        st = new SkillTree(skills, ws);
-        ws.onstate = (ent) => {
-            for (key in ent) {
-                if (!entobj.hasOwnProperty(key)) {
-                    entobj[key] = ent[key];
-                    entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
-                    continue
-                }
-                for (i in ent[key]) entobj[key][i] = ent[key][i]
-                entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
-            }
-            for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
-            entities = Object.values(entobj)
-        }
-
-=======
->>>>>>> 30c87dbf57525cb149037198f9378a8e884907bc
         setTimeout(() => {
             ws.sendRequest('setNickname', nickname)
         }, 100)

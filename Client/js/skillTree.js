@@ -76,6 +76,20 @@ class SkillTree {
         return out.join("<br>");
     }
 
+    reset() {
+        this.currentNode = this.root
+        function disableNodes(nodes) {
+            nodes.forEach((n) => {
+                n.node.classList.remove("available");
+                n.node.classList.remove("active");
+                n.node.classList.add("unavailable");
+                disableNodes(n.nodes)
+            })
+        }
+        disableNodes(this.root.nodes)
+        this.root.activate()
+    }
+
 }
 
 class Node {
