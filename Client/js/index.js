@@ -31,8 +31,8 @@
             y: 0
         },
     }
-    let protocol = (location.port === "") ? "wss" : "ws"
-    var ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
+    var protocol = (location.port === "") ? "wss" : "ws"
+    var ws //= new Connection(`${protocol}://${document.domain}:${location.port}/game`)
     let entobj = {}
     ws.onstate = (ent) => {
         for (key in ent) {
@@ -125,11 +125,11 @@
                     break
 
                 case 68:
-                    ws.sendRequest("changeAngle", you.angle + 0.1)
+                    ws.sendRequest("turn", 2)
                     break
 
                 case 65:
-                    ws.sendRequest("changeAngle", you.angle - 0.1)
+                    ws.sendRequest("turn", 1)
                     break
 
                 case 87:
@@ -387,9 +387,8 @@
         while (nickname === '') {
             nickname = prompt('Enter your nickname')
         }
-        setTimeout(() => {
-            ws.sendRequest('setNickname', nickname)
-        }, 100)
+        ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
+        ws.sendRequest('setNickname', nickname)
         init()
         setInterval(render, 17)
         setInterval(() => {
