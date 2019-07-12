@@ -6,13 +6,22 @@ class EntityManager {
     private var uniqueCounter = 0
 
     private val entityIDs:   MutableMap<Entity, Int>           = emptyMap<Entity, Int>().toMutableMap()
-    private val playerNames: MutableMap<Player, String>        = emptyMap<Player, String>().toMutableMap()
+    private val playerNames: MutableMap<Int, String>           = emptyMap<Int, String>().toMutableMap()
     private val teams:       MutableMap<Int, MutableList<Int>> = emptyMap<Int, MutableList<Int>>().toMutableMap()
 
     init {
         for (team_number in 0 until TEAMS_COUNT) {
             teams[team_number] = emptyList<Int>().toMutableList()
         }
+    }
+
+    fun setNameById(id: Int, name: String) {
+        if(id !in entityIDs.values || name in  playerNames.values) return
+        playerNames[id] = name
+    }
+
+    fun getNameById(id: Int): String {
+        return if (id !in playerNames.keys) "russian hacker" else playerNames[id]!!
     }
 
     fun respawnPlayer(id: Int) {
@@ -42,11 +51,12 @@ class EntityManager {
     }
 
     private fun assignTeam(entity: Entity) {
-        var playerCount: Int = 0
+        var playerCount = 0
         for (team in teams.keys) {
+            if (team == TEAMS_COUNT - 1) break
             playerCount += teams[team]!!.size
         }
-        teams[playerCount % TEAMS_COUNT]!!.add(entityIDs[entity]!!)
+        teams[playerCount % (TEAMS_COUNT - 1)]!!.add(entityIDs[entity]!!)
     }
 
     fun identify(entity: Entity) {
@@ -77,6 +87,7 @@ class EntityManager {
                 break
             }
         }
+        playerNames.remove(id)
         for (key in teams.keys) {
             if (teams[key]!!.contains(id))
                 for (entityID in teams[key]!!) {

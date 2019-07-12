@@ -1,27 +1,29 @@
 (function () {
-    class Connection{
-        constructor(addr){
+    class Connection {
+        constructor(addr) {
             this.nextid = 0;
             this.promiseControl = [];
             this.ws = new WebSocket(addr);
             this.id = -1;
-            this.onstate = (s) => {};
+            this.onstate = (s) => { };
             this.ws.onmessage = ((msg) => {
-                if(this.id === -1){
+                if (this.id === -1) {
                     this.id = parseInt(msg.data);
                     return;
                 }
                 let resp = JSON.parse(msg.data);
-                if(resp.hasOwnProperty('name')){
+                if (resp.hasOwnProperty('name')) {
                     this.onstate(resp.response)
                 }
             }).bind(this);
         }
-    
-        sendRequest(name, ...args){
-            this.ws.send(JSON.stringify({op: name, args: args, rid: this.nextid++}))
+
+        sendRequest(name, ...args) {
+            this.ws.send(JSON.stringify({ op: name, args: args, rid: this.nextid++ }))
         }
     }
+
+    var nickname = ''
 
     var Camera = {
         pos: {
@@ -33,17 +35,17 @@
     var ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
     let st = new SkillTree(skills, ws)
     let entobj = {}
-    ws.onstate = (e) => {
-        for(k in e){
-            if(!entobj.hasOwnProperty(k)){
-                entobj[k] = e[k];
-                entobj[k].size = {x: entobj[k].sizex, y: entobj[k].sizey}
+    ws.onstate = (ent) => {
+        for (key in ent) {
+            if (!entobj.hasOwnProperty(key)) {
+                entobj[key] = ent[key];
+                entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
                 continue
             }
-            for(i in e[k])entobj[k][i] = e[k][i]
-            entobj[k].size = {x: entobj[k].sizex, y: entobj[k].sizey}
+            for (i in ent[key]) entobj[key][i] = ent[key][i]
+            entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
         }
-        for(k in entobj)if(!e.hasOwnProperty(k))delete entobj[k]
+        for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
         entities = Object.values(entobj)
     }
 
@@ -63,7 +65,9 @@
         border: new Image(),
         teams: [
             new Image(), new Image(), new Image()
-        ]
+        ],
+        paraNeko: new Image(),
+        island: new Image(),
     }
 
     sprites.ship.src = "img/ship.png"
@@ -79,12 +83,14 @@
     sprites.teams[0].src = "img/team1.png"
     sprites.teams[1].src = "img/team2.png"
     sprites.teams[2].src = "img/team3.png"
+    sprites.paraNeko.src = "img/para neko.png"
+    sprites.island.src = "img/island.png"
 
     var lastMousePosition = {
         x: 0, y: 0
     }
     var mapSize = {
-        x: 2000, 
+        x: 2000,
         y: 2000
     }
     var highlight = {
@@ -95,11 +101,10 @@
     var animationCoef = 1
 
     var fields = [
-        new Image(),    
+        new Image(),
     ]
     fields[0].src = "img/sea.png"
     var offset = 2
-    var shootCooldown = false
 
     function distance(p1, p2) {
         return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
@@ -113,24 +118,24 @@
                     shot1()
                     highlight.left = true
                     break
-                
+
                 case 50:
                     shot2()
                     highlight.right = true
                     break
-                
+
                 case 68:
                     ws.sendRequest("changeAngle", you.angle + 0.1)
                     break
-                
+
                 case 65:
                     ws.sendRequest("changeAngle", you.angle - 0.1)
                     break
-                
+
                 case 87:
                     ws.sendRequest("accelerate", true)
                     break
-                
+
                 case 83:
                     ws.sendRequest("accelerate", false)
                     break
@@ -180,7 +185,7 @@
         for (let i = -fields[0].width; i < canv.width + fields[0].width; i += fields[0].width) {
             for (let j = -fields[0].height; j < canv.height + fields[0].height; j += fields[0].height) {
                 ctx.save()
-                ctx.translate(offset - Camera.pos.x % fields[0].width, offset -Camera.pos.y % fields[0].height)
+                ctx.translate(offset - Camera.pos.x % fields[0].width, offset - Camera.pos.y % fields[0].height)
                 //ctx.scale(0.5, 0.5)
                 ctx.drawImage(fields[0], i, j)
                 ctx.restore()
@@ -200,17 +205,20 @@
                 if (ent.type == "Bullet") {
                     sprite = sprites.bullet
                 }
+                if (ent.type == "Island") {
+                    sprite = sprites.island
+                }
                 drawRotatedImage(sprite,
                     ent.pos.x - Camera.pos.x + window.innerWidth / 2,
                     ent.pos.y - Camera.pos.y + window.innerHeight / 2, ent.size.x, ent.size.y, ent.angle)
-                
+
                 ctx.strokeStyle = "black"
                 ctx.lineWidth = 2
                 ctx.fillStyle = "red"
 
                 hpbaroffset = {
-                    x: -50, 
-                    y: -120
+                    x: -50,
+                    y: -80
                 }
                 if (ent.type != "Bullet") {
                     ctx.fillRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
@@ -218,7 +226,17 @@
                     ctx.strokeRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
                         ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y, 100, 10)
                     ctx.drawImage(sprites.teams[ent.team], ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x - 50,
-                        ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y - 7.5, 30, 30)
+                        ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y - 27.5, 40, 40)
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
+                    ctx.fillRect(ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
+                        ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y - 30, 100, 15)
+                    ctx.fillStyle = "white"
+                    ctx.strokeStyle = "white"
+                    ctx.font = "15px helvetica"
+                    let n = ent.nickName
+                    ctx.fillText(n,
+                        ent.pos.x - Camera.pos.x + window.innerWidth / 2 + hpbaroffset.x,
+                        ent.pos.y - Camera.pos.y + window.innerHeight / 2 + hpbaroffset.y - 30 + 12)
                 }
             }
         }
@@ -227,7 +245,7 @@
     function shot1() {
         ws.sendRequest("makeShot", 1)
     }
-    
+
     function shot2() {
         ws.sendRequest("makeShot", 2)
     }
@@ -237,7 +255,7 @@
         let leftButtonCoords = {
             x: center - 0.05 * canv.width,
             y: 0.8 * canv.height
-        }   
+        }
 
         let leftSprite = sprites.buttonL
         let rightSprite = sprites.buttonR
@@ -249,29 +267,37 @@
             leftSprite = sprites.buttonLhover
         }
 
-        if(highlight.left) {
+        if (highlight.left) {
             leftSprite = sprites.buttonLpressed
             setTimeout(() => {
                 highlight.left = false
             }, 100)
         }
-    
+
         //console.log(lastMousePosition, leftButtonCoords.x + 0.1 * canv.width)
         ctx.fillStyle = "white"
         if (lastMousePosition.x >= leftButtonCoords.x + 0.1 * canv.width && lastMousePosition.x <= leftButtonCoords.x + 0.05 * canv.width + 0.1 * canv.width &&
             lastMousePosition.y >= leftButtonCoords.y && lastMousePosition.y <= leftButtonCoords.y + 0.05 * canv.width) {
             rightSprite = sprites.buttonRhover
         }
-        
+
         if (highlight.right) {
             rightSprite = sprites.buttonRpressed
             setTimeout(() => {
                 highlight.right = false
             }, 100)
         }
-        
+
         ctx.drawImage(leftSprite, leftButtonCoords.x, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width)
         ctx.drawImage(rightSprite, leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width)
+
+        ctx.fillStyle = "red"
+        ctx.strokeStyle = "black"
+        ctx.font = "50px helvetica"
+        let you = entities.filter((e) => e.id == ws.id)[0]
+        if (you.outside) {
+            ctx.fillText("WAIT THAT'S ILLEGAL", 0.4 * canv.width, 0.3 * canv.height)
+        }
     }
 
     function renderMinimap() {
@@ -306,14 +332,17 @@
                 y: (ent.pos.y + mapSize.y) / mapSize.y * size / 2
             }
             let good = vision.filter(coord => distance(mapCoords, coord) <= 40)
-            if (good.length > 0) {
+            if (good.length > 0 && ent.type != 'bullet') {
                 ctx.save()
                 ctx.translate(mapCoords.x, mapCoords.y + canv.height - size)
                 ctx.rotate(ent.angle)
 
-                ctx.fillStyle = ent.team
-                ctx.strokeStyle = "black"
                 ctx.lineWidth = 1
+                if (ent.id == ws.id) {
+                    ctx.lineWidth = 4
+                }
+                ctx.strokeStyle = "black"
+                ctx.fillStyle = (['blue', 'red', 'green'])[ent.team]
                 ctx.fillRect(-5, -5, ent.size.x / 10, ent.size.y / 10)
                 ctx.strokeRect(-5, -5, ent.size.x / 10, ent.size.y / 10)
                 ctx.restore()
@@ -332,15 +361,16 @@
             y: 0.8 * canv.height
         }
 
-        ctx.drawImage(sprites.border, 0, 0, canv.width, canv.height)
+        //ctx.drawImage(sprites.border, 0, 0, canv.width, canv.height)
 
-        ctx.fillStyle = "black" 
-        ctx.font = "40px helvetica"
+        ctx.fillStyle = "black"
+        ctx.font = `${Math.round(0.05 * canv.height)}px helvetica`
         let textCoords = {
             x: menuCoords.x + 0.025 * canv.width,
             y: menuCoords.y + 0.1 * canv.height
         }
         ctx.fillText("1488 g", textCoords.x, textCoords.y)
+        ctx.drawImage(sprites.paraNeko, 0.65 * canv.width, menuCoords.y, 0.3 * canv.height, 0.3 * canv.height)
     }
 
     function render() {
@@ -357,6 +387,12 @@
     }
 
     window.onload = () => {
+        while (nickname === '') {
+            nickname = prompt('Enter your nickname')
+        }
+        setTimeout(() => {
+            ws.sendRequest('setNickname', nickname)
+        }, 100)
         init()
         setInterval(render, 17)
         setInterval(() => {

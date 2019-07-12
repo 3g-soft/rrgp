@@ -13,13 +13,23 @@ class GetStateRequest(val response: CompletableDeferred<List<DataTransferEntity>
 class ShotRequest(val id: Int, val type: Int) : Request()
 class ChangeAngleRequest(val id: Int, val angle: Float) : Request()
 class AccelerateRequest(val id: Int, val isForward: Boolean) : Request()
+class SetNicknameRequest(val id: Int, val string: String) : Request()
 
 @ObsoleteCoroutinesApi
 class GameActor(private val gameAPI: GameAPI) {
 
     private val requestChannel = GlobalScope.actor<Request> {
         for (request in channel) {
-            processRequest(request)
+            when (request) {
+                is LoginRequest -> request.response.complete(gameAPI.createPlayer().id)
+                is LogoutRequest -> gameAPI.removeEntity(request.id)
+                is TickRequest -> gameAPI.update()
+                is GetStateRequest -> request.response.complete(gameAPI.getAllEntities())
+                is ShotRequest -> gameAPI.makeShot(request.id, request.type)
+                is ChangeAngleRequest -> gameAPI.setPlayerAngle(request.angle, request.id)
+                is AccelerateRequest -> gameAPI.accelerate(request.id, request.isForward)
+                is SetNicknameRequest -> gameAPI.setName(request.id, request.string)
+            }
         }
     }
 
@@ -60,15 +70,7 @@ class GameActor(private val gameAPI: GameAPI) {
         requestChannel.send(AccelerateRequest(id, isForward))
     }
 
-    private fun processRequest(r: Request) {
-        when (r) {
-            is LoginRequest -> r.response.complete(gameAPI.createPlayer().id)
-            is LogoutRequest -> gameAPI.removeEntity(r.id)
-            is TickRequest -> gameAPI.update()
-            is GetStateRequest -> r.response.complete(gameAPI.getAllEntities())
-            is ShotRequest -> gameAPI.makeShot(r.id, r.type)
-            is ChangeAngleRequest -> gameAPI.setPlayerAngle(r.angle, r.id)
-            is AccelerateRequest -> gameAPI.accelerate(r.id, r.isForward)
-        }
+    fun setNickname(id: Int, string: String) = GlobalScope.launch {
+        requestChannel.send(SetNicknameRequest(id, string))
     }
 }
