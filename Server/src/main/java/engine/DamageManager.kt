@@ -34,7 +34,7 @@ const val IMMUNETICKS = 300
 const val MAXESCAPETICKS = 150
 const val MAXHPTICKS = 60
 const val RESPAWNTICKS = 300
-const val MAXGOLD = 30
+const val MAXGOLD = 1
 
 data class Events(val deadPlayers: List<Int>, val respawnedPlayers: List<Int>)
 class DamageManager {
@@ -42,6 +42,10 @@ class DamageManager {
     private val profiles:        MutableMap<Int, Profile>       = emptyMap<Int, Profile>().toMutableMap()
     private val bulletToShooter: MutableMap<Int, Int>           = emptyMap<Int, Int>().toMutableMap()
     private val islandProfiles:  MutableMap<Int, IslandProfile> = emptyMap<Int, IslandProfile>().toMutableMap()
+
+    fun stopEnd() {
+        gameEnd = true
+    }
 
     fun update(escapedPlayers: List<Int>): Events {
         val deadPlayers = mutableListOf<Int>()

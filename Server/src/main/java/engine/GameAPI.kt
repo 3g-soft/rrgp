@@ -39,6 +39,7 @@ class GameAPI {
 
     fun update() {
         if (damageManager.getTickTimer() <= 0) {
+            damageManager.stopEnd()
             resetGame()
         }
 

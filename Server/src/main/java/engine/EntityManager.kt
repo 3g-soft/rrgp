@@ -29,7 +29,7 @@ class EntityManager {
                 break
             }
             if (ent is Island) {
-                changeTeam(entityIDs[ent]!!, getTeamById(entityIDs[ent]!!))
+                changeTeam(entityIDs[ent]!!, teams_count_on_reset%2)
                 ++teams_count_on_reset
             }
         }

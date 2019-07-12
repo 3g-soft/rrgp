@@ -45,7 +45,7 @@ class SkillManager(val dm: DamageManager){
     private val balance = mapOf<String, Float>(
             Pair("SPEED", 1f),
             Pair("TURN", 0.03f),
-            Pair("HP", 50f),
+            Pair("HP", 10f),
             Pair("DAMAGE", 5f),
             Pair("RELOAD", 15f)
     )
