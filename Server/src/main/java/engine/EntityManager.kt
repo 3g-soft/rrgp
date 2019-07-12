@@ -1,6 +1,12 @@
 package engine
 
-const val TEAMS_COUNT = 4
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
+import kotlin.random.Random
+
+const val TEAMS_COUNT = 3
 
 class EntityManager {
     private var uniqueCounter = 0
@@ -15,19 +21,56 @@ class EntityManager {
         }
     }
 
+    fun reset() {
+        var teams_count_on_reset = 0
+        for (ent in entityIDs.keys) {
+            if (teams_count_on_reset == TEAMS_COUNT-1 && ent is Island) {
+                changeTeam(entityIDs[ent]!!, TEAMS_COUNT - 1)
+                break
+            }
+            if (ent is Island) {
+                changeTeam(entityIDs[ent]!!, teams_count_on_reset%2)
+                ++teams_count_on_reset
+            }
+        }
+
+        for (player_id in playerNames.keys) {
+            respawnPlayer(player_id)
+        }
+    }
+
     fun setNameById(id: Int, name: String) {
         if(id !in entityIDs.values || name in  playerNames.values) return
         playerNames[id] = name
     }
+
     fun getNameById(id: Int): String {
         return if (id !in playerNames.keys) "russian hacker" else playerNames[id]!!
     }
+
     fun respawnPlayer(id: Int) {
         if (id !in entityIDs.values) return
+
+        var island: Entity = Island(Point(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY))
+        for (ent_id in teams[getTeamById(id)]!!) {
+            if (getById(ent_id) is Island){
+                island = getById(ent_id)!!
+                break
+            }
+        }
+
+        if (island.pos.x > WIDTH || island.pos.y > HEIGHT)
+            return //something happens
+
+        var r = Random(System.currentTimeMillis())
+        var angle = r.nextFloat() * 2 * PI.toFloat()
         getById(id)!!.pos = Point(
-                ((-WIDTH) .. (WIDTH)).random().toFloat(),
-                ((-HEIGHT)..(HEIGHT)).random().toFloat()
+                island.pos.x + (island.hitbox.sizex * sqrt(2f) +
+                        getById(id)!!.hitbox.sizex)*cos(angle),
+                island.pos.y + (island.hitbox.sizey * sqrt(2f) +
+                        getById(id)!!.hitbox.sizey)*sin(angle)
         )
+
     }
 
     fun getTeamById(id: Int): Int {
@@ -51,9 +94,10 @@ class EntityManager {
     private fun assignTeam(entity: Entity) {
         var playerCount = 0
         for (team in teams.keys) {
+            if (team == TEAMS_COUNT - 1) break
             playerCount += teams[team]!!.size
         }
-        teams[playerCount % TEAMS_COUNT]!!.add(entityIDs[entity]!!)
+        teams[playerCount % (TEAMS_COUNT - 1)]!!.add(entityIDs[entity]!!)
     }
 
     fun identify(entity: Entity) {

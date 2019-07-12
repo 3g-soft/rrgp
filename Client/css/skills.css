@@ -10,37 +10,38 @@
 }
 
 .window{
-    background: brown;
+    background: #969798;
     overflow: auto;
     margin: auto;
     padding: 3vh;
     border-radius: 3vh;
+    max-height: 90vh;
+    max-width: 90vw;
 }
 .nodes{
     display: flex;
     flex-direction: row;
 }
 .node-name{
-    border: solid;
     border-radius: 1vh;
-    border-color: darkgray;
+    border: solid darkgray;
     margin: 20px;
-    size: 20px;
+    font-size: 3vmin;
     page-break-after: auto;
     padding: 0.5vh;
 }
 .available > .node-name{
-    background-color: greenyellow;
+    background-color: #6aca51;
     transition: all 0.3s;
 }
 .available > .node-name:hover{
     transform: scale(1.1)
 }
 .active > .node-name{
-    background-color: green;
+    background-color: #999b10;
 }
 .unavailable > .node-name{
-    background-color: red;
+    background-color: #6d6d6d;
 }
 
 .button{
@@ -48,7 +49,6 @@
     position: fixed;
     right: 0;
     top: 0;
-    color:blue;
     border: none;
     transition: all 0.5s;
     padding: 0;
@@ -68,6 +68,6 @@
 
 #screen{
     text-align: center;
-    color: blue;
+    color: #ffffff;
     font-size: 6vh;
 }
