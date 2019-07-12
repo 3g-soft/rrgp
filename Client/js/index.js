@@ -34,19 +34,6 @@
     var protocol = (location.port === "") ? "wss" : "ws"
     var ws //= new Connection(`${protocol}://${document.domain}:${location.port}/game`)
     let entobj = {}
-    ws.onstate = (ent) => {
-        for (key in ent) {
-            if (!entobj.hasOwnProperty(key)) {
-                entobj[key] = ent[key];
-                entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
-                continue
-            }
-            for (i in ent[key]) entobj[key][i] = ent[key][i]
-            entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
-        }
-        for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
-        entities = Object.values(entobj)
-    }
 
     var canv = document.getElementById("canv")
     var ctx = canv.getContext("2d")
@@ -388,7 +375,25 @@
             nickname = prompt('Enter your nickname')
         }
         ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
-        ws.sendRequest('setNickname', nickname)
+
+        ws.onstate = (ent) => {
+            for (key in ent) {
+                if (!entobj.hasOwnProperty(key)) {
+                    entobj[key] = ent[key];
+                    entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
+                    continue
+                }
+                for (i in ent[key]) entobj[key][i] = ent[key][i]
+                entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
+            }
+            for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
+            entities = Object.values(entobj)
+        }
+
+        setTimeout(() => {
+            ws.sendRequest('setNickname', nickname)
+        }, 100)
+        
         init()
         setInterval(render, 17)
         setInterval(() => {

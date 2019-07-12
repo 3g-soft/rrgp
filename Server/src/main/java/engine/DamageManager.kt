@@ -14,7 +14,8 @@ data class Profile(
     var damage: Int = 30,
     var shotCooldown: Int = 60,
     var leftShotTimer: Int = 0,
-    var rightShotTimer: Int = 0
+    var rightShotTimer: Int = 0,
+    var immuneTimer: Int = IMMUNETICKS
 )
 
 data class IslandProfile(
@@ -25,7 +26,7 @@ data class IslandProfile(
 //    var shotTimer: Int = 0
 )
 
-
+const val IMMUNETICKS = 300
 const val MAXESCAPETICKS = 150
 const val MAXHPTICKS     = 60
 
@@ -50,6 +51,7 @@ class DamageManager {
             else profile.hpTimer--
             if (profile.leftShotTimer  != 0) profile.leftShotTimer--
             if (profile.rightShotTimer != 0) profile.rightShotTimer--
+            if (profile.immuneTimer != 0) profile.immuneTimer--
         }
         return deadPlayers.toList()
     }
@@ -70,7 +72,7 @@ class DamageManager {
 
     fun getShotRange(id: Int): Float {
         if (id in profiles.keys) return profiles[id]!!.bulRange
-        if (id in bulletToShooter) return profiles[bulletToShooter[id]]!!.bulRange
+        if (id in bulletToShooter && bulletToShooter[id] in profiles.keys) return profiles[bulletToShooter[id]]!!.bulRange
         return -1f
     }
 
@@ -99,6 +101,7 @@ class DamageManager {
 
     fun dealDamage(id: Int, damage: Int): DeathState {
         if (id in profiles.keys) {
+            if (profiles[id]!!.immuneTimer != 0) return DeathState.ALIVE
             profiles[id]!!.curHP -= damage
             profiles[id]!!.hpTimer = MAXHPTICKS
             if (profiles[id]!!.curHP <= 0) {
