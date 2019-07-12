@@ -32,7 +32,12 @@ class StateManger {
 
     fun sendToAll(clients: MutableSet<WsContext>, newState: Map<Int, DataTransferEntity>) = GlobalScope.launch {
         val state = convertState(newState)
-        val bs = JSONObject().put("name", "gd").put("response", state).toString()
+        var bs: String = ""
+        try {
+            bs = JSONObject().put("name", "gd").put("response", state).toString()
+        }catch (e: java.lang.IllegalStateException){
+            println("fuck")
+        }
         for (c in clients) {
             c.send(bs)
         }

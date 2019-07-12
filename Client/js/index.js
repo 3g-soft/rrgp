@@ -314,7 +314,7 @@
         mctx.fillRect(0, 0, size, size)
         let visionRadius = 0.05 * canv.width
 
-        let myTeam = entities.filter(ent => ent.team == entities.filter(ent => ent.id == ws.id)[0].team).map(ent => ent.pos)
+        let myTeam = entities.filter(ent => ent.team == entities.filter(ent => ent.id == ws.id)[0].team && ent.type != "Bullet").map(ent => ent.pos)
         for (let pos of myTeam) {
             let mapCoords = {
                 x: (pos.x + mapSize.x) / mapSize.x * size / 2,

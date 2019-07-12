@@ -31,7 +31,7 @@ class GameAPI {
         val escapedPlayers = mutableListOf<Int>()
         val entities = engine.getState()
         for (entity in entities) {
-            if (entity is Bullet && (entity.distanceTraveled >= entity.maxDistanceTraveled
+            if (entity is Bullet && (entity.distanceTraveled >= damageManager.getShotRange(entityManager.getId(entity))
                         || abs(entity.pos.x) > WIDTH || abs(entity.pos.y) > HEIGHT)
             ) deadBullets.add(entity)
             if (entity is Player && (abs(entity.pos.x) > WIDTH || abs(entity.pos.y) > HEIGHT)) escapedPlayers.add(
