@@ -7,7 +7,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class GameAPI {
-    val engine: Engine = Engine()
+    val engine:                Engine        = Engine()
     private val damageManager: DamageManager = DamageManager()
     private val entityManager: EntityManager = EntityManager()
 
@@ -183,6 +183,7 @@ class GameAPI {
                                 entityManager.getId(entity),
                                 entityManager.getTeamById(entityManager.getId(by))
                             )
+                            damageManager.refreshPlayer(entityManager.getId(entity))
                         }
                         is Player -> {
                             respawnById(entityManager.getId(entity))

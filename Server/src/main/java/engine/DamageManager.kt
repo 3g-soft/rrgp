@@ -3,26 +3,27 @@ package engine
 import kotlin.math.min
 
 data class Profile(
-    var maxSpeed: Float = 5f,
-    var curHP: Int = 280,
-    var maxHP: Int = 280,
-    var hpRegen: Int = 1,
-    var escapeTimer: Int = -1,
-    var hpTimer: Int = -1,
-    var damage: Int = 30,
-    var shotCooldown: Int = 60,
-    var leftShotTimer: Int = 0,
-    var rightShotTimer: Int = 0
+    var maxSpeed:       Float = 5f,
+    var curHP:          Int   = 280,
+    var maxHP:          Int   = 280,
+    var hpRegen:        Int   = 1,
+    var escapeTimer:    Int   = -1,
+    var hpTimer:        Int   = -1,
+    var damage:         Int   = 30,
+    var shotCooldown:   Int   = 60,
+    var leftShotTimer:  Int   = 0,
+    var rightShotTimer: Int   = 0
 )
 
 
 const val MAXESCAPETICKS = 150
-const val MAXHPTICKS = 60
+const val MAXHPTICKS     = 60
 
 class DamageManager {
     private val profiles: MutableMap<Int, Profile> = emptyMap<Int, Profile>().toMutableMap()
+
     val collisionDamage = 30
-    val bulletDamage = 50
+    val bulletDamage    = 50
 
     fun update(escapedPlayers: List<Int>): List<Int> {
         val deadPlayers = mutableListOf<Int>()
@@ -36,7 +37,7 @@ class DamageManager {
             if (profile.hpTimer == 0 && profile.curHP < profile.maxHP) profile.curHP =
                 min(profile.curHP + profile.hpRegen, profile.maxHP)
             else profile.hpTimer--
-            if (profile.leftShotTimer != 0) profile.leftShotTimer--
+            if (profile.leftShotTimer  != 0) profile.leftShotTimer--
             if (profile.rightShotTimer != 0) profile.rightShotTimer--
         }
         return deadPlayers.toList()
@@ -70,7 +71,7 @@ class DamageManager {
 
     fun dealDamage(id: Int, damage: Int): DeathState {
         if (id !in profiles.keys) return DeathState.NONE
-        profiles[id]!!.curHP -= damage
+        profiles[id]!!.curHP  -= damage
         profiles[id]!!.hpTimer = MAXHPTICKS
         if (profiles[id]!!.curHP <= 0) {
             return DeathState.DEAD
@@ -101,7 +102,7 @@ class DamageManager {
     fun checkShotCooldown(id: Int, side: Int): Boolean {
         if (id !in profiles.keys) return true
         return when (side) {
-            1 -> profiles[id]!!.leftShotTimer != 0
+            1    -> profiles[id]!!.leftShotTimer  != 0
             else -> profiles[id]!!.rightShotTimer != 0
         }
     }
@@ -109,7 +110,7 @@ class DamageManager {
     fun goOnCooldown(id: Int, side: Int) {
         if (id !in profiles.keys) return
         return when (side) {
-            1 -> profiles[id]!!.leftShotTimer = profiles[id]!!.shotCooldown
+            1    -> profiles[id]!!.leftShotTimer  = profiles[id]!!.shotCooldown
             else -> profiles[id]!!.rightShotTimer = profiles[id]!!.shotCooldown
         }
     }
