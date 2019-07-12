@@ -239,6 +239,7 @@ class DamageManager {
     fun getKill(id: Int) {
         if (id !in profiles.keys) return
         profiles[id]!!.gold++
+        println("gold")
     }
 
 

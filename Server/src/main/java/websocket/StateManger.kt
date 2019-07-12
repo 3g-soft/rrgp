@@ -50,7 +50,7 @@ class StateManger {
         }catch (e: java.lang.IllegalStateException){
             println("fuck")
         }
-        println(bs)
+//        println(bs)
         for (c in clients) {
             c.send(bs)
         }
