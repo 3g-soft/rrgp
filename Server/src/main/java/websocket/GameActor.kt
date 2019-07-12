@@ -14,6 +14,7 @@ class ShotRequest(val id: Int, val type: Int) : Request()
 class ChangeAngleRequest(val id: Int, val angle: Float) : Request()
 class AccelerateRequest(val id: Int, val isForward: Boolean) : Request()
 class SetNicknameRequest(val id: Int, val string: String) : Request()
+class AddSkillRequest(val playerid: Int, val id: Int): Request()
 
 @ObsoleteCoroutinesApi
 class GameActor(private val gameAPI: GameAPI) {
@@ -29,6 +30,7 @@ class GameActor(private val gameAPI: GameAPI) {
                 is ChangeAngleRequest -> gameAPI.setPlayerAngle(request.angle, request.id)
                 is AccelerateRequest -> gameAPI.accelerate(request.id, request.isForward)
                 is SetNicknameRequest -> gameAPI.setName(request.id, request.string)
+                is AddSkillRequest -> gameAPI.addSkill(request.playerid, request.id)
             }
         }
     }
@@ -72,5 +74,9 @@ class GameActor(private val gameAPI: GameAPI) {
 
     fun setNickname(id: Int, string: String) = GlobalScope.launch {
         requestChannel.send(SetNicknameRequest(id, string))
+    }
+
+    fun addSkillAsync(playerid: Int, id: Int) = GlobalScope.launch{
+        requestChannel.send(AddSkillRequest(playerid, id))
     }
 }

@@ -1,4 +1,4 @@
-(function () {
+// (function () {
     class Connection {
         constructor(addr) {
             this.nextid = 0;
@@ -402,4 +402,4 @@
             }
         }, 100)
     }
-})();
+// })();

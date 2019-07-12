@@ -22,20 +22,20 @@ class SkillTree {
                 div.appendChild(node);
                 node.appendChild(text);
                 node.appendChild(childs);
-                let nd = new Node(node, text, [], parent);
+                let nd = new Node(node, text, [], parent, sk[i].id);
                 parent.nodes.push(nd);
                 createNode(sk[i].childs, childs, nd);
-                text.onclick = (e) => {
+                text.onmousedown = (e) => {
                     let target = undefined;
                     self.currentNode.nodes.forEach((it) => {
-                        if (it.text === e.originalTarget) {
+                        if (it.text === e.currentTarget) {
                             target = it;
                         }
                     });
                     if (target === undefined) return;
                     self.currentNode = target;
                     target.activate();
-                    this.connection.send("skill", self.currentNode.id);
+                    self.connection.sendRequest("skill", self.currentNode.id);
                 }
             }
         }
@@ -56,7 +56,7 @@ class SkillTree {
         if (!this.showed) return;
         this.currentNode.nodes[i].activate();
         this.currentNode = this.currentNode.nodes[i];
-        this.connection.send("skill", this.currentNode.id);
+        this.connection.sendRequest("skill", this.currentNode.id);
     }
     show() {
         document.getElementById("screen").style.display = "flex"
@@ -83,6 +83,7 @@ class Node {
         this.nodes = nodes;
         this.parent = parent;
         this.node = node;
+        this.id = id;
     }
 
     enable() {
@@ -107,37 +108,37 @@ class Node {
 
 let skills = [
     {
-        name: "+SPEED +RANGE -HP",
+        name: "+SPEED +RANGE -HP", id: 1,
         childs: [{
-            name: "+DAMAGE -RELOAD",
+            name: "+DAMAGE -RELOAD",  id: 3,
             childs: [
-                { name: "+TURN -RELOAD" },
-                { name: "+DAMAGE -HP" }
+                { name: "+TURN -RELOAD", id: 4},
+                { name: "+DAMAGE -HP", id: 5}
             ]
         },
         {
-            name: "+SPEED -DAMAGE",
+            name: "+SPEED -DAMAGE", id: 6,
             childs: [
-                { name: "+SPEED -HP" },
-                { name: "+TURN -DAMAGE" }
+                { name: "+SPEED -HP", id: 7 },
+                { name: "+TURN -DAMAGE", id: 8 }
             ]
         }
         ]
     },
     {
-        name: "+BODY DAMAGE +SPEED -DAMAGE",
+        name: "+BODY DAMAGE +SPEED -DAMAGE", id: 2,
         childs: [{
-            name: "+BODY DAMAGE -TURN",
+            name: "+BODY DAMAGE -TURN",  id: 9,
             childs: [
-                { name: "+SPEED -DAMAGE" },
-                { name: "+BODY DAMAGE -DAMAGE" }
+                { name: "+SPEED -DAMAGE", id: 10},
+                { name: "+BODY DAMAGE -DAMAGE", id: 11}
             ]
         },
         {
-            name: "+SPEED -TURN",
+            name: "+SPEED -TURN", id: 12,
             childs: [
-                { name: "+BODY DAMAGE -TURN" },
-                { name: "+SPEED -RELOAD" }
+                { name: "+BODY DAMAGE -TURN", id: 13},
+                { name: "+SPEED -RELOAD", id: 14}
             ]
         }
         ]

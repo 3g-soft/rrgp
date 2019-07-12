@@ -179,4 +179,8 @@ class DamageManager {
         return bulletToShooter[bulId]!!
     }
 
+    fun getPlayerProfile(id: Int): Profile {
+        return profiles[id]!!
+    }
+
 }
