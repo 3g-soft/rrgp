@@ -33,6 +33,7 @@
     }
     var protocol = (location.port === "") ? "wss" : "ws"
     var ws //= new Connection(`${protocol}://${document.domain}:${location.port}/game`)
+    var st = new SkillTree()
     let entobj = {}
 
     var canv = document.getElementById("canv")
