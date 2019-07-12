@@ -13,17 +13,26 @@ class GameAPI {
     private val skillManager                 = SkillManager(damageManager)
 
     init {
-        for (team in 0..TEAMS_COUNT) {
-            val island = Island(
-                Point(
-                    ((-WIDTH)..(WIDTH)).random().toFloat(),
-                    ((-HEIGHT)..(HEIGHT)).random().toFloat()
-                )
-            )
-            engine.addEntity(island)
-            entityManager.identify(island)
-            damageManager.createIsland(entityManager.getId(island))
-        }
+        val island1 = Island(Point(1600f, 0f))
+        val island2 = Island(Point(-1600f, 0f))
+        val island3 = Island(Point(0f, 1600f))
+        val island4 = Island(Point(0f, -1600f))
+
+        engine.addEntity(island1)
+        entityManager.identify(island1)
+        damageManager.createIsland(entityManager.getId(island1))
+
+        engine.addEntity(island2)
+        entityManager.identify(island2)
+        damageManager.createIsland(entityManager.getId(island2))
+
+        engine.addEntity(island3)
+        entityManager.identify(island3)
+        damageManager.createIsland(entityManager.getId(island3))
+
+        engine.addEntity(island4)
+        entityManager.identify(island4)
+        damageManager.createIsland(entityManager.getId(island4))
     }
 
     fun update() {
