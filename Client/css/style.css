@@ -5,4 +5,12 @@ html, body {
     border: 0;
     overflow: hidden;
     display: block;
+    z-index: 1;
+}
+
+#mapCanvas {
+    z-index: 0;
+    bottom: 0%;
+    left: 0%;
+    position: fixed;
 }

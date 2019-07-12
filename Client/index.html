@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
     <head>
+        <script src="js/skillTree.js" defer></script>
         <script src="js/index.js" defer></script>
         <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/skills.css">
+        <meta charset="utf-8">
     </head>
     <body>
+        <div class="screen" id="screen">
+            <div class="window">
+                Скилы:
+                <div class="nodes" id="tree">
+                </div>
+            </div>
+        </div>
+        
         <canvas id="canv"></canvas>
+        <button id="skillbtn" class="button"><img src="img/skills.png"></img></button>
+        <canvas id="mapCanvas"></canvas>
     </body>
 </html>

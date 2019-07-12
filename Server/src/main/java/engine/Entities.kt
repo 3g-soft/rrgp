@@ -17,7 +17,6 @@ abstract class MovableEntity(var velocity: Vector2f, pos: Point) : Entity(pos) {
 class Bullet(velocity: Vector2f, pos: Point) : MovableEntity(velocity, pos) {
     override val hitbox = Hitbox(12f, 12f, this)
     var distanceTraveled = 0f
-    val maxDistanceTraveled = 1000f
     override fun move() {
         super.move()
         this.distanceTraveled += this.velocity.length

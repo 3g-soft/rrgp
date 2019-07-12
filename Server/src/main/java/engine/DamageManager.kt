@@ -5,6 +5,7 @@ import kotlin.math.min
 data class Profile(
     var maxSpeed: Float = 5f,
     var turnRate: Float = 0.1f,
+    var bulRange: Float = 500f,
     var curHP: Int = 280,
     var maxHP: Int = 280,
     var hpRegen: Int = 1,
@@ -59,6 +60,17 @@ class DamageManager {
             return
         }
         profiles[id]!!.curHP = hp
+    }
+
+    fun getProfileById(id: Int): Profile {
+        if (id !in profiles.keys) return Profile()
+        return profiles[id]!!
+    }
+
+    fun getShotRange(id: Int): Float {
+        if (id in profiles.keys) return profiles[id]!!.bulRange
+        if (id in bulletToShooter) return profiles[bulletToShooter[id]]!!.bulRange
+        return -1f
     }
 
     fun refreshPlayer(id: Int) {
