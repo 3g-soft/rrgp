@@ -1,5 +1,9 @@
 package engine
 
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
+
 const val TEAMS_COUNT = 3
 
 class EntityManager {
@@ -26,9 +30,23 @@ class EntityManager {
 
     fun respawnPlayer(id: Int) {
         if (id !in entityIDs.values) return
+
+        var island: Entity = Island(Point(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY))
+        for (ent_id in teams[getTeamById(id)]!!) {
+            if (getById(ent_id) is Island){
+                island = getById(ent_id)!!
+                break
+            }
+        }
+
+        if (island.pos.x > WIDTH || island.pos.y > HEIGHT)
+            return //something happens
+
         getById(id)!!.pos = Point(
-                ((-WIDTH) .. (WIDTH)).random().toFloat(),
-                ((-HEIGHT)..(HEIGHT)).random().toFloat()
+                island.pos.x + (island.hitbox.sizex * sqrt(2f) +
+                        getById(id)!!.hitbox.sizex)*cos((0..359).random().toFloat()),
+                island.pos.y + (island.hitbox.sizey * sqrt(2f) +
+                        getById(id)!!.hitbox.sizey)*sin((0..359).random().toFloat())
         )
     }
 
