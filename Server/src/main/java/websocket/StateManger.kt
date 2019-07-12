@@ -19,6 +19,13 @@ class StateManger {
                 newData.remove("sizey")
                 newData.remove("type")
                 if (prevState[key]?.hp == newState[key]?.hp) newData.remove("hp")
+                if (prevState[key]?.maxHp == newState[key]?.maxHp) newData.remove("maxHp")
+                if (prevState[key]?.team == newState[key]?.team) newData.remove("team")
+                if (prevState[key]?.isOutside == newState[key]?.isOutside) newData.remove("outside")
+                if (prevState[key]?.nickName == newState[key]?.nickName) newData.remove("nickName")
+                if (prevState[key]?.shotCooldown == newState[key]?.shotCooldown) newData.remove("shotCooldown")
+                if (prevState[key]?.rightShotTimer == newState[key]?.rightShotTimer) newData.remove("rightShotTimer")
+                if (prevState[key]?.leftShotTimer == newState[key]?.leftShotTimer) newData.remove("leftShotTimer")
             }
             state.put("$key", newData)
         }
@@ -38,6 +45,7 @@ class StateManger {
         }catch (e: java.lang.IllegalStateException){
             println("fuck")
         }
+        println(bs)
         for (c in clients) {
             c.send(bs)
         }
