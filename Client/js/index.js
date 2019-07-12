@@ -412,7 +412,19 @@
             x: menuCoords.x + 0.025 * canv.width,
             y: menuCoords.y + 0.1 * canv.height
         }
-        ctx.fillText("1488 g", textCoords.x, textCoords.y)
+
+        let myTeamGold = 0
+        let otherTeamGold = 0
+        for (let ent of entities) {
+            if (ent.team == you.team) {
+                myTeamGold += ent.gold
+            } else {
+                otherTeamGold += ent.gold
+            }
+        }
+
+        ctx.fillText(`${myTeamGold}(${you.gold}) | ${otherTeamGold}`, textCoords.x, textCoords.y)
+        ctx.fillText(`${you.maxGold}`)
         ctx.drawImage(sprites.paraNeko, 0.65 * canv.width, menuCoords.y, 0.3 * canv.height, 0.3 * canv.height)
     }
 
