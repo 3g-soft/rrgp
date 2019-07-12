@@ -53,9 +53,15 @@ class GameAPI {
         for (bullet in deadBullets) {
             removeEntity(entityManager.getId(bullet))
         }
-        val deadPlayers = damageManager.update(escapedPlayers)
+        val events = damageManager.update(escapedPlayers)
+
+        val deadPlayers = events.deadPlayers
         for (deadPlayer in deadPlayers) {
             respawnById(deadPlayer)
+        }
+        val respawnedPlayers = events.respawnedPlayers
+        for (respawnedPlayer in respawnedPlayers) {
+            entityManager.getById(respawnedPlayer)!!.hitbox.isCollidable = true
         }
     }
 
@@ -183,11 +189,14 @@ class GameAPI {
     private fun respawnById(id: Int) {
         entityManager.respawnPlayer(id)
         damageManager.refreshPlayer(id)
+        damageManager.goOnRespawn(id)
+        entityManager.getById(id)!!.hitbox.isCollidable = false
         skillManager.removePlayerId(id)
         skillManager.addPlayerId(id)
     }
 
     fun accelerate(id: Int, isForward: Boolean) {
+        if (damageManager.isRespawning(id)) return
         val player = entityManager.getById(id)
         if (player is Player) {
             engine.accelerate(player, isForward, damageManager.getMaxSpeedById(id))
@@ -195,6 +204,7 @@ class GameAPI {
     }
 
     fun turn(id: Int, side: Int) {
+        if (damageManager.isRespawning(id)) return
         val player = entityManager.getById(id)
         if (player is Player) {
             engine.turn(player, side, damageManager.getTurnRateById(id))
@@ -237,7 +247,7 @@ class GameAPI {
                         }
                         is Player -> {
                             respawnById(entityManager.getId(entity))
-                            engine.setPlayerSpeed(entity, 0f)
+                            engine.setPlayerSpeed(entity, 0.01f)
                         }
                     }
                 }

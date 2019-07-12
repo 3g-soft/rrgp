@@ -45,13 +45,14 @@ class EntityManager {
             return //something happens
 
         var r = Random(System.currentTimeMillis())
-        var angle = r.nextFloat() * 2 * PI.toFloat() 
+        var angle = r.nextFloat() * 2 * PI.toFloat()
         getById(id)!!.pos = Point(
                 island.pos.x + (island.hitbox.sizex * sqrt(2f) +
                         getById(id)!!.hitbox.sizex)*cos(angle),
                 island.pos.y + (island.hitbox.sizey * sqrt(2f) +
                         getById(id)!!.hitbox.sizey)*sin(angle)
         )
+
     }
 
     fun getTeamById(id: Int): Int {
