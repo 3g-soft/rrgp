@@ -195,12 +195,16 @@ class GameAPI {
     }
 
     private fun respawnById(id: Int) {
-        entityManager.respawnPlayer(id)
-        damageManager.refreshPlayer(id)
-        damageManager.goOnRespawn(id)
-        entityManager.getById(id)!!.hitbox.isCollidable = false
-        skillManager.removePlayerId(id)
-        skillManager.addPlayerId(id)
+        var player = entityManager.getById(id)
+        if (player is Player) {
+            engine.setPlayerSpeed(player, 0.01f)
+            entityManager.respawnPlayer(id)
+            damageManager.refreshPlayer(id)
+            damageManager.goOnRespawn(id)
+            entityManager.getById(id)!!.hitbox.isCollidable = false
+            skillManager.removePlayerId(id)
+            skillManager.addPlayerId(id)
+        }
     }
 
     fun accelerate(id: Int, isForward: Boolean) {
@@ -262,7 +266,7 @@ class GameAPI {
                             }
                             damageManager.getKill(killerId)
                             respawnById(entityManager.getId(entity))
-                            engine.setPlayerSpeed(entity, 0.01f)
+
                         }
                     }
                 }
