@@ -2,27 +2,27 @@ class SkillTree {
     constructor(skills) {
         document.getElementById('skillbtn').onclick = (() => this.toggle()).bind(this);
         this.tree = document.getElementById('tree');
-        let self = this
+        let self = this;
         this.showed = true;
-        this.hotNodes = []
+        this.hotNodes = [];
         this.root = new Node(undefined, undefined, [], undefined);
         this.currentNode = this.root;
         function createNode(sk, div, parent = undefined) {
-            if (sk === undefined) return
+            if (sk === undefined) return;
             for (let i = 0; i < sk.length; i++) {
                 let node = document.createElement('div');
                 node.className = "node";
                 let text = document.createElement('div');
                 text.className = "node-name";
                 node.classList.add("unavailable");
-                text.innerText = sk[i].name;
+                text.innerHTML = self.insertBRs(sk[i].name);
                 let childs = document.createElement('div');
-                childs.className = "nodes"
+                childs.className = "nodes";
                 div.appendChild(node);
                 node.appendChild(text);
                 node.appendChild(childs);
                 let nd = new Node(node, text, [], parent);
-                parent.nodes.push(nd)
+                parent.nodes.push(nd);
                 createNode(sk[i].childs, childs, nd);
                 text.onclick = (e) => {
                     let target = undefined;
@@ -30,7 +30,7 @@ class SkillTree {
                         if (it.text === e.originalTarget) {
                             target = it;
                         }
-                    })
+                    });
                     if (target === undefined) return;
                     self.currentNode = target;
                     target.activate();
@@ -64,6 +64,12 @@ class SkillTree {
     toggle() {
         this.showed ? this.hide() : this.show();
     }
+
+    insertBRs(str){
+        let out = Array.from(str.matchAll(/[+-][^+-]*/gm), m => m[0]);
+        return out.join("<br>");
+    }
+
 }
 
 class Node {
@@ -98,40 +104,40 @@ let skills = [
     {
         name: "+SPEED +RANGE -HP",
         childs: [{
-            name: "ll",
+            name: "+DAMAGE -RELOAD",
             childs: [
-                { name: "end" },
-                { name: "end" }
+                { name: "+TURN -RELOAD" },
+                { name: "+DAMAGE -HP" }
             ]
         },
         {
-            name: "lr",
+            name: "+SPEED -DAMAGE",
             childs: [
-                { name: "end" },
-                { name: "end" }
+                { name: "+SPEED -HP" },
+                { name: "+TURN -DAMAGE" }
             ]
         }
         ]
     },
     {
-        name: "+SPEED +RANGE -HP",
+        name: "+BODY DAMAGE +SPEED -DAMAGE",
         childs: [{
-            name: "ll",
+            name: "+BODY DAMAGE -TURN",
             childs: [
-                { name: "end" },
-                { name: "end" }
+                { name: "+SPEED -DAMAGE" },
+                { name: "+BODY DAMAGE -DAMAGE" }
             ]
         },
         {
-            name: "lr",
+            name: "+SPEED -TURN",
             childs: [
-                { name: "end" },
-                { name: "end" }
+                { name: "+BODY DAMAGE -TURN" },
+                { name: "+SPEED -RELOAD" }
             ]
         }
         ]
     },
-]
-let st = new SkillTree(skills)
-st.hide()
+];
+let st = new SkillTree(skills);
+st.hide();
 console.log(st);
