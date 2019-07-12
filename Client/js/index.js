@@ -31,9 +31,11 @@
             y: 0
         },
     }
+
     let protocol = (location.port === "") ? "wss" : "ws"
     var ws = new Connection(`${protocol}://${document.domain}:${location.port}/game`)
     let st = new SkillTree(skills, ws)
+
     let entobj = {}
     ws.onstate = (ent) => {
         for (key in ent) {
@@ -47,6 +49,7 @@
         }
         for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
         entities = Object.values(entobj)
+        if(entobj[ws.id].respTimer > 0)st.reset()
     }
 
     var canv = document.getElementById("canv")
@@ -330,13 +333,16 @@
             }, 100)
         }
 
+        let you = entities.filter(ent => ent.id == ws.id)[0]
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)"
         ctx.drawImage(leftSprite, leftButtonCoords.x, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width)
+        ctx.fillRect(leftButtonCoords.x, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width * you.leftShotTimer / you.shotCooldown)
         ctx.drawImage(rightSprite, leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width)
+        ctx.fillRect(leftButtonCoords.x + 0.1 * canv.width, leftButtonCoords.y, 0.05 * canv.width, 0.05 * canv.width * you.rightShotTimer / you.shotCooldown)
 
         ctx.fillStyle = "red"
         ctx.strokeStyle = "black"
         ctx.font = "50px helvetica"
-        let you = entities.filter((e) => e.id == ws.id)[0]
         if (you.outside) {
             ctx.fillText("WAIT THAT'S ILLEGAL", 0.4 * canv.width, 0.3 * canv.height)
         }
@@ -411,6 +417,8 @@
             y: menuCoords.y + 0.1 * canv.height
         }
 
+        let you = entities.filter(ent => ent.id === ws.id)[0];
+
         let myTeamGold = 0
         let otherTeamGold = 0
         for (let ent of entities) {
@@ -422,7 +430,7 @@
         }
 
         ctx.fillText(`${myTeamGold}(${you.gold}) | ${otherTeamGold}`, textCoords.x, textCoords.y)
-        ctx.fillText(`${you.maxGold}`)
+        ctx.fillText(`${you.maxGold}`, textCoords.x, textCoords.y + 0.1 * canv.height)
         ctx.drawImage(sprites.paraNeko, 0.65 * canv.width, menuCoords.y, 0.3 * canv.height, 0.3 * canv.height)
     }
 
