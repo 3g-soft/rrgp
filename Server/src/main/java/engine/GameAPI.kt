@@ -38,6 +38,10 @@ class GameAPI {
     }
 
     fun update() {
+        if (damageManager.getTickTimer() <= 0) {
+            resetGame()
+        }
+
         onCollisionDamage(engine.update())
         val deadBullets = mutableListOf<Bullet>()
         val escapedPlayers = mutableListOf<Int>()
@@ -164,7 +168,8 @@ class GameAPI {
                             damageManager.getRespawnTimer(id),
                             RESPAWNTICKS,
                             damageManager.getGold(id),
-                            MAXGOLD
+                            MAXGOLD,
+                                damageManager.getTickTimer()
                         )
                     )
                 }
@@ -260,7 +265,7 @@ class GameAPI {
                             else {
                                 entityManager.getId(by)
                             }
-                            if (entityManager.getTeamById(entityManager.getId(entity)) != killerId)
+                            if (entityManager.getTeamById(entityManager.getId(entity)) != entityManager.getTeamById(killerId))
                                 damageManager.getKill(killerId)
                             damageManager.refreshPlayer(entityManager.getId(entity))
 
@@ -274,7 +279,6 @@ class GameAPI {
                             }
                             damageManager.getKill(killerId)
                             respawnById(entityManager.getId(entity))
-
                         }
                     }
                 }
@@ -330,6 +334,11 @@ class GameAPI {
         } else {
             throw InvalidParameterException()
         }
+    }
+
+    fun resetGame() {
+        entityManager.reset()
+        damageManager.reset()
     }
 
     fun addSkill(playerID: Int, id: Int){

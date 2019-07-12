@@ -21,6 +21,24 @@ class EntityManager {
         }
     }
 
+    fun reset() {
+        var teams_count_on_reset = 0
+        for (ent in entityIDs.keys) {
+            if (teams_count_on_reset == TEAMS_COUNT-1 && ent is Island) {
+                changeTeam(entityIDs[ent]!!, TEAMS_COUNT - 1)
+                break
+            }
+            if (ent is Island) {
+                changeTeam(entityIDs[ent]!!, getTeamById(entityIDs[ent]!!))
+                ++teams_count_on_reset
+            }
+        }
+
+        for (player_id in playerNames.keys) {
+            respawnPlayer(player_id)
+        }
+    }
+
     fun setNameById(id: Int, name: String) {
         if(id !in entityIDs.values || name in  playerNames.values) return
         playerNames[id] = name

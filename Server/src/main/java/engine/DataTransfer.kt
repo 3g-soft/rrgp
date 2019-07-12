@@ -18,7 +18,8 @@ data class DataTransferEntity(
         val respTimer: Int = 0,
         val maxRespTimer: Int = 300,
         val gold: Int = 0,
-        val maxGold: Int = 30
+        val maxGold: Int = 30,
+        val resetTicks: Int = RESETTICKS
 ) {
     constructor(
             id:    Int,
@@ -38,7 +39,9 @@ data class DataTransferEntity(
             respTimer: Int = 0,
             maxRespTimer: Int = 300,
             gold: Int = 0,
-            maxGold: Int = 30
+            maxGold: Int = 30,
+            resetTicks: Int = RESETTICKS
+
     ) : this(
             id,
             pos,
@@ -57,7 +60,8 @@ data class DataTransferEntity(
             respTimer,
             maxRespTimer,
             gold,
-            maxGold
+            maxGold,
+            resetTicks
     )
 }
 
