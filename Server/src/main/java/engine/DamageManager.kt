@@ -29,7 +29,7 @@ data class IslandProfile(
 //    var shotTimer: Int = 0
 )
 
-const val RESETTICKS = 1500
+const val RESETTICKS = 100
 const val IMMUNETICKS = 300
 const val MAXESCAPETICKS = 150
 const val MAXHPTICKS = 60
@@ -44,7 +44,7 @@ class DamageManager {
     private val islandProfiles:  MutableMap<Int, IslandProfile> = emptyMap<Int, IslandProfile>().toMutableMap()
 
     fun stopEnd() {
-        gameEnd = true
+        gameEnd = false
     }
 
     fun update(escapedPlayers: List<Int>): Events {
@@ -90,7 +90,7 @@ class DamageManager {
 
     fun reset() {
         for (player_id in profiles.keys) {
-            refreshPlayer(player_id)
+            profiles[player_id] = Profile()
         }
         for (island_id in islandProfiles.keys) {
             islandProfiles[island_id] = IslandProfile()

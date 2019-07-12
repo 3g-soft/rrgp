@@ -350,6 +350,9 @@
         if(you.respTimer > 0){
             ctx.fillText(`YOU ARE DEAD ${you.respTimer}`, 0.4 * canv.width, 0.3 * canv.height)
         }
+        if(you.resetTicks < 1500){
+            ctx.fillText(`RESTARTING IN ${you.resetTicks}`, 0.4 * canv.width, 0.3 * canv.height)
+        }
     }
 
     function renderMinimap() {
