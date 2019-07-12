@@ -83,6 +83,13 @@ class Engine {
         }
     }
 
+    fun turn(player: Player, side: Int, turnRate: Float) {
+        when (side) {
+            1 -> player.velocity.angle -= turnRate
+            else -> player.velocity.angle += turnRate
+        }
+    }
+
     fun getState(): List<Entity> {
         return entities.toList()
     }

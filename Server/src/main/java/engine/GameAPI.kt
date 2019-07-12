@@ -21,7 +21,7 @@ class GameAPI {
             )
             engine.addEntity(island)
             entityManager.identify(island)
-            damageManager.assignHP(entityManager.getId(island))
+            damageManager.createIsland(entityManager.getId(island))
         }
     }
 
@@ -177,6 +177,14 @@ class GameAPI {
             engine.accelerate(player, isForward, damageManager.getMaxSpeedById(id))
         }
     }
+
+    fun turn(id: Int, side: Int) {
+        val player = entityManager.getById(id)
+        if (player is Player) {
+            engine.turn(player, side, damageManager.getTurnRateById(id))
+        }
+    }
+
 
     private fun onCollisionDamage(collisions: List<CollisionEvent>) {
         fun deathCheck(entity: Entity, by: Entity) {

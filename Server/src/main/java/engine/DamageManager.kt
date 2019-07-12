@@ -4,6 +4,7 @@ import kotlin.math.min
 
 data class Profile(
     var maxSpeed: Float = 5f,
+    var turnRate: Float = 0.1f,
     var curHP: Int = 280,
     var maxHP: Int = 280,
     var hpRegen: Int = 1,
@@ -15,6 +16,14 @@ data class Profile(
     var rightShotTimer: Int = 0
 )
 
+data class IslandProfile(
+    var curHP: Int = 280,
+    var maxHP: Int = 280
+//    var damage: Int = 30,
+//    var shotCooldown: Int = 60,
+//    var shotTimer: Int = 0
+)
+
 
 const val MAXESCAPETICKS = 150
 const val MAXHPTICKS = 60
@@ -22,6 +31,7 @@ const val MAXHPTICKS = 60
 class DamageManager {
     private val profiles: MutableMap<Int, Profile> = emptyMap<Int, Profile>().toMutableMap()
     private val bulletToShooter: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
+    private val islandProfiles: MutableMap<Int, IslandProfile> = emptyMap<Int, IslandProfile>().toMutableMap()
     val collisionDamage = 30
 
     fun update(escapedPlayers: List<Int>): List<Int> {
@@ -68,24 +78,41 @@ class DamageManager {
         profiles[id] = Profile()
     }
 
+    fun createIsland(id: Int) {
+        if (id in islandProfiles.keys) return
+        islandProfiles[id] = IslandProfile()
+    }
+
+
     fun dealDamage(id: Int, damage: Int): DeathState {
-        if (id !in profiles.keys) return DeathState.NONE
-        profiles[id]!!.curHP -= damage
-        profiles[id]!!.hpTimer = MAXHPTICKS
-        if (profiles[id]!!.curHP <= 0) {
-            return DeathState.DEAD
+        if (id in profiles.keys) {
+            profiles[id]!!.curHP -= damage
+            profiles[id]!!.hpTimer = MAXHPTICKS
+            if (profiles[id]!!.curHP <= 0) {
+                return DeathState.DEAD
+            }
+            return DeathState.ALIVE
         }
-        return DeathState.ALIVE
+        if (id in islandProfiles.keys) {
+            islandProfiles[id]!!.curHP -= damage
+            if (islandProfiles[id]!!.curHP <= 0) {
+                return DeathState.DEAD
+            }
+            return DeathState.ALIVE
+        }
+        return DeathState.NONE
     }
 
     fun getHPbyId(id: Int): Int {
-        if (id !in profiles.keys) return -1
-        return profiles[id]!!.curHP
+        if (id in profiles.keys) return profiles[id]!!.curHP
+        if (id in islandProfiles.keys) return islandProfiles[id]!!.maxHP
+        return -1
     }
 
     fun getMaxHPbyId(id: Int): Int {
-        if (id !in profiles.keys) return -1
-        return profiles[id]!!.maxHP
+        if (id in profiles.keys) return profiles[id]!!.maxHP
+        if (id in islandProfiles.keys) return islandProfiles[id]!!.maxHP
+        return -1
     }
 
     fun getMaxSpeedById(id: Int): Float {
@@ -93,10 +120,15 @@ class DamageManager {
         return profiles[id]!!.maxSpeed
     }
 
+    fun getTurnRateById(id: Int): Float {
+        if (id !in profiles.keys) return -1f
+        return profiles[id]!!.turnRate
+    }
+
     fun removeEntity(id: Int) {
         if (id in profiles.keys) profiles.remove(id)
         if (id in bulletToShooter.keys) bulletToShooter.remove(id)
-
+        if (id in islandProfiles.keys) islandProfiles.remove(id)
     }
 
     fun checkShotCooldown(id: Int, side: Int): Boolean {
