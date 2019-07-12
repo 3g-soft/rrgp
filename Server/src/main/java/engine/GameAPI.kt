@@ -224,8 +224,8 @@ class GameAPI {
                 }
             }
             when (damageManager.dealDamage(
-                entityManager.getId(entity),
-                damage
+                    entityManager.getId(entity),
+                    damage
             )) {
                 DeathState.NONE -> return
                 DeathState.ALIVE -> {
@@ -234,13 +234,13 @@ class GameAPI {
                     when (entity) {
                         is Island -> {
                             entityManager.changeTeam(
-                                entityManager.getId(entity),
-                                entityManager.getTeamById(
-                                    if (by is Bullet)
-                                        damageManager.getShooterId(entityManager.getId(by))
-                                    else
-                                        entityManager.getId(by)
-                                )
+                                    entityManager.getId(entity),
+                                    entityManager.getTeamById(
+                                            if (by is Bullet)
+                                                damageManager.getShooterId(entityManager.getId(by))
+                                            else
+                                                entityManager.getId(by)
+                                    )
                             )
                             damageManager.refreshPlayer(entityManager.getId(entity))
 
@@ -252,7 +252,7 @@ class GameAPI {
                     }
                 }
             }
-        }
+        }//ya ub'yu seb9 sey4as
         for (collision in collisions) {
             if (collision.target2 is Bullet && collision.target1 is Bullet) {
                 removeEntity(entityManager.getId(collision.target1))
