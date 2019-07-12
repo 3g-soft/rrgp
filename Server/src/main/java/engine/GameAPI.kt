@@ -260,7 +260,7 @@ class GameAPI {
                             else {
                                 entityManager.getId(by)
                             }
-                            if (entityManager.getTeamById(entityManager.getId(entity)) != killerId)
+                            if (entityManager.getTeamById(entityManager.getId(entity)) != entityManager.getTeamById(killerId))
                                 damageManager.getKill(killerId)
                             damageManager.refreshPlayer(entityManager.getId(entity))
 
