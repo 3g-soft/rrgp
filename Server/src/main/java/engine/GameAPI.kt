@@ -250,6 +250,14 @@ class GameAPI {
                 DeathState.DEAD -> {
                     when (entity) {
                         is Island -> {
+                            val killerId = if (by is Bullet) {
+                                damageManager.getShooterId(entityManager.getId(by))
+                            }
+                            else {
+                                entityManager.getId(by)
+                            }
+                            if (entityManager.getTeamById(entityManager.getId(entity)) != entityManager.getTeamById(killerId))
+                                damageManager.getKill(killerId)
                             entityManager.changeTeam(
                                     entityManager.getId(entity),
                                     entityManager.getTeamById(
@@ -259,14 +267,8 @@ class GameAPI {
                                                 entityManager.getId(by)
                                     )
                             )
-                            val killerId = if (by is Bullet) {
-                                damageManager.getShooterId(entityManager.getId(by))
-                            }
-                            else {
-                                entityManager.getId(by)
-                            }
-                            if (entityManager.getTeamById(entityManager.getId(entity)) != entityManager.getTeamById(killerId))
-                                damageManager.getKill(killerId)
+
+
                             damageManager.refreshPlayer(entityManager.getId(entity))
 
                         }
