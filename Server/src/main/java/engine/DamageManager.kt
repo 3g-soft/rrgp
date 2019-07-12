@@ -26,13 +26,14 @@ data class IslandProfile(
 
 
 const val MAXESCAPETICKS = 150
-const val MAXHPTICKS = 60
+const val MAXHPTICKS     = 60
 
 class DamageManager {
     private val profiles: MutableMap<Int, Profile> = emptyMap<Int, Profile>().toMutableMap()
     private val bulletToShooter: MutableMap<Int, Int> = emptyMap<Int, Int>().toMutableMap()
     private val islandProfiles: MutableMap<Int, IslandProfile> = emptyMap<Int, IslandProfile>().toMutableMap()
     val collisionDamage = 30
+    val bulletDamage    = 50
 
     fun update(escapedPlayers: List<Int>): List<Int> {
         val deadPlayers = mutableListOf<Int>()
@@ -46,7 +47,7 @@ class DamageManager {
             if (profile.hpTimer == 0 && profile.curHP < profile.maxHP) profile.curHP =
                 min(profile.curHP + profile.hpRegen, profile.maxHP)
             else profile.hpTimer--
-            if (profile.leftShotTimer != 0) profile.leftShotTimer--
+            if (profile.leftShotTimer  != 0) profile.leftShotTimer--
             if (profile.rightShotTimer != 0) profile.rightShotTimer--
         }
         return deadPlayers.toList()
@@ -134,7 +135,7 @@ class DamageManager {
     fun checkShotCooldown(id: Int, side: Int): Boolean {
         if (id !in profiles.keys) return true
         return when (side) {
-            1 -> profiles[id]!!.leftShotTimer != 0
+            1    -> profiles[id]!!.leftShotTimer  != 0
             else -> profiles[id]!!.rightShotTimer != 0
         }
     }
@@ -142,7 +143,7 @@ class DamageManager {
     fun goOnCooldown(id: Int, side: Int) {
         if (id !in profiles.keys) return
         return when (side) {
-            1 -> profiles[id]!!.leftShotTimer = profiles[id]!!.shotCooldown
+            1    -> profiles[id]!!.leftShotTimer  = profiles[id]!!.shotCooldown
             else -> profiles[id]!!.rightShotTimer = profiles[id]!!.shotCooldown
         }
     }
@@ -172,6 +173,10 @@ class DamageManager {
     fun getShotDamage(bulId: Int): Int {
         if (bulId !in bulletToShooter) return -1
         return profiles[bulletToShooter[bulId]]!!.damage
+    }
+    fun getShooterId(bulId: Int): Int {
+        if (bulId !in bulletToShooter.keys) return -1
+        return bulletToShooter[bulId]!!
     }
 
 }

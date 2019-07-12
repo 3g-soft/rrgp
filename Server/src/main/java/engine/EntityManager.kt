@@ -1,6 +1,6 @@
 package engine
 
-const val TEAMS_COUNT = 4
+const val TEAMS_COUNT = 3
 
 class EntityManager {
     private var uniqueCounter = 0
@@ -19,9 +19,11 @@ class EntityManager {
         if(id !in entityIDs.values || name in  playerNames.values) return
         playerNames[id] = name
     }
+
     fun getNameById(id: Int): String {
         return if (id !in playerNames.keys) "russian hacker" else playerNames[id]!!
     }
+
     fun respawnPlayer(id: Int) {
         if (id !in entityIDs.values) return
         getById(id)!!.pos = Point(
@@ -51,9 +53,10 @@ class EntityManager {
     private fun assignTeam(entity: Entity) {
         var playerCount = 0
         for (team in teams.keys) {
+            if (team == TEAMS_COUNT - 1)
             playerCount += teams[team]!!.size
         }
-        teams[playerCount % TEAMS_COUNT]!!.add(entityIDs[entity]!!)
+        teams[playerCount % (TEAMS_COUNT - 1)]!!.add(entityIDs[entity]!!)
     }
 
     fun identify(entity: Entity) {
