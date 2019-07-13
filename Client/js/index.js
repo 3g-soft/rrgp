@@ -87,7 +87,7 @@ sprites.bullet.src = "img/bullet.png"
 sprites.border.src = "img/border.png"
 sprites.teams[0].src = "img/team1.png"
 sprites.teams[1].src = "img/team2.png"
-sprites.paraNeko.src = "img/para neko.png"
+sprites.paraNeko.src = "img/trap.png"
 sprites.island.src = "img/island.png"
 sprites.box.src - "img/gold.png"
 
@@ -208,6 +208,11 @@ function handleStart(evt) {
     touchPressing = true
     lastTouch.x = sideX
     lastTouch.y = sideY
+
+    if (sideX == 1 && sideY == 1) {
+        var audio = new Audio("img/trap.mp3")
+        audio.play()
+    }
 }
 
 
