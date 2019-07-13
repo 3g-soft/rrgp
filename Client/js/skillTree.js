@@ -8,6 +8,7 @@ class SkillTree {
         this.hotNodes = [];
         this.root = new Node(undefined, undefined, [], undefined);
         this.gold = 0;
+        this.resetted = false;
         this.currentNode = this.root;
         function createNode(sk, div, parent = undefined) {
             if (sk === undefined) return;
@@ -57,6 +58,8 @@ class SkillTree {
 
     nodeBykey(i) {
         if (!this.showed) return;
+        if(this.gold < 1)return;
+        this.gold--;
         this.currentNode.nodes[i].activate();
         this.currentNode = this.currentNode.nodes[i];
         this.connection.sendRequest("skill", this.currentNode.id);

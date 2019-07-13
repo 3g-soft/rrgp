@@ -45,11 +45,17 @@ ws.onstate = (ent) => {
             continue
         }
         for (i in ent[key]) entobj[key][i] = ent[key][i]
-        entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey }
+        entobj[key].size = { x: entobj[key].sizex, y: entobj[key].sizey}
     }
     for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
     entities = Object.values(entobj)
-    if (entobj[ws.id].respTimer > 0) st.reset()
+    if(entobj[ws.id].respTimer > 0 && !st.resetted){
+        st.reset()
+        st.resetted = true;
+    }
+    if(entobj[ws.id].respTimer <= 0){
+        st.resetted = false;
+    }
     st.gold = entobj[ws.id].gold
 }
 
@@ -125,13 +131,14 @@ function distance(p1, p2) {
 function init() {
     document.addEventListener("keydown", (e) => {
         let you = entities.filter(ent => ent.id == ws.id)[0]
+        console.log(e.keyCode);
         switch (e.keyCode) {
-            case 49:
+            case 74:
                 shot1()
                 highlight.left = true
                 break
 
-            case 50:
+            case 76:
                 shot2()
                 highlight.right = true
                 break
@@ -439,7 +446,7 @@ function renderGold() {
 
     ctx.fillText(`${myTeamGold}(${you.gold}) | ${otherTeamGold}`, textCoords.x, textCoords.y)
     ctx.fillText(`${you.maxGold}`, textCoords.x, textCoords.y + (canv.height * 0.05))
-    ctx.drawImage(sprites.paraNeko, 0.65 * canv.width, menuCoords.y, 0.3 * canv.height, 0.3 * canv.height)
+    ctx.drawImage(sprites.paraNeko, 0.8 * canv.width, canv.height * 0.8, 0.3 * canv.height, 0.3 * canv.height)
 }
 
 function render() {
