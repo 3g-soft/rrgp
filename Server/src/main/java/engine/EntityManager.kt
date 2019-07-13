@@ -25,9 +25,12 @@ class EntityManager {
     fun reset() {
         var teams_count_on_reset = 0
         for (ent in entityIDs.keys) {
-            if (teams_count_on_reset == TEAMS_COUNT-1 && ent is Island) {
-                changeTeam(entityIDs[ent]!!, TEAMS_COUNT - 1)
+            if (teams_count_on_reset == 4)
                 break
+            if (teams_count_on_reset >= TEAMS_COUNT - 1 && ent is Island) {
+                changeTeam(entityIDs[ent]!!, TEAMS_COUNT - 1)
+                ++teams_count_on_reset
+                continue
             }
             if (ent is Island) {
                 changeTeam(entityIDs[ent]!!, teams_count_on_reset%2)
