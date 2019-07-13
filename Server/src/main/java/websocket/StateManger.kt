@@ -6,6 +6,7 @@ import io.javalin.websocket.WsContext
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import kotlin.system.exitProcess
 
 class StateManger {
     private var prevState: Map<Int, DataTransferEntity> = mapOf()
@@ -49,6 +50,7 @@ class StateManger {
             bs = JSONObject().put("name", "gd").put("response", state).toString()
         }catch (e: java.lang.IllegalStateException){
             println("fuck")
+            exitProcess(-1)
         }
 //        println(bs)
         for (c in clients) {
