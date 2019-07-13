@@ -343,15 +343,15 @@
 
         ctx.fillStyle = "red"
         ctx.strokeStyle = "black"
-        ctx.font = "50px helvetica"
+        ctx.font = "3vh helvetica"
         if (you.outside) {
-            ctx.fillText("WAIT THAT'S ILLEGAL", 0.4 * canv.width, 0.3 * canv.height)
+            ctx.fillText("TURN BACK", 0.4 * canv.width, 0.05 * canv.height)
         }
         if(you.respTimer > 0){
-            ctx.fillText(`YOU ARE DEAD ${you.respTimer}`, 0.4 * canv.width, 0.3 * canv.height)
+            ctx.fillText(`YOU ARE DEAD ${you.respTimer}`, 0.4 * canv.width, 0.1 * canv.height)
         }
-        if(you.resetTicks < 1500){
-            ctx.fillText(`RESTARTING IN ${you.resetTicks}`, 0.4 * canv.width, 0.3 * canv.height)
+        if(you.resetTicks < 100){
+            ctx.fillText(`RESTARTING IN ${you.resetTicks}`, 0.4 * canv.width, 0.15 * canv.height)
         }
     }
 
@@ -414,8 +414,8 @@
         ctx.lineWidth = 10
 
         let menuCoords = {
-            x: 0.8 * canv.width,
-            y: 0.8 * canv.height
+            x: 0 * canv.width,
+            y: 0 * canv.height
         }
         ctx.fillStyle = "black"
         ctx.font = `${Math.round(0.05 * canv.height)}px helvetica`
@@ -437,7 +437,7 @@
         }
 
         ctx.fillText(`${myTeamGold}(${you.gold}) | ${otherTeamGold}`, textCoords.x, textCoords.y)
-        ctx.fillText(`${you.maxGold}`, textCoords.x, textCoords.y + 0.1 * canv.height)
+        ctx.fillText(`${you.maxGold}`, textCoords.x, textCoords.y + (canv.height * 0.05))
         ctx.drawImage(sprites.paraNeko, 0.65 * canv.width, menuCoords.y, 0.3 * canv.height, 0.3 * canv.height)
     }
 
