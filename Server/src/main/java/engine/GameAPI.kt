@@ -10,8 +10,8 @@ class GameAPI {
     val engine: Engine = Engine()
     private val damageManager: DamageManager = DamageManager()
     private val entityManager: EntityManager = EntityManager()
-    private val skillManager                 = SkillManager(damageManager)
-
+    private val skillManager = SkillManager(damageManager)
+    private var gameEndTimer = -1
     init {
         val island1 = Island(Point(1600f, 0f))
         val island2 = Island(Point(-1600f, 0f))
@@ -38,10 +38,20 @@ class GameAPI {
     }
 
     fun update() {
-        if (damageManager.getTickTimer() <= 0) {
-            damageManager.stopEnd()
-            resetGame()
+        if (gameEndTimer != -1) {
+            gameEndTimer--
+            if (gameEndTimer == 0) {
+                gameEndTimer--
+
+            }
+            return
         }
+
+       if (checkWin()) {
+           gameEndTimer = RESETTICKS
+           resetGame()
+       }
+
 
         onCollisionDamage(engine.update())
         val deadBullets = mutableListOf<Bullet>()
@@ -125,10 +135,25 @@ class GameAPI {
             damageManager.getRespawnTimer(id),
             RESPAWNTICKS,
             damageManager.getGold(id),
-            MAXGOLD
+            MAXGOLD,
+            damageManager.getTickTimer()
         )
     }
 
+
+    fun getGold(teamId: Int): Int {
+        var gold = 0
+        for (id in damageManager.getIds()) {
+            if (teamId == entityManager.getTeamById(id)) gold++
+        }
+        return gold
+    }
+
+    fun checkWin(): Boolean {
+        if (getGold(0) > MAXGOLD) return true
+        if (getGold(1) > MAXGOLD) return true
+        return false
+    }
 
     fun getAllEntities(): List<DataTransferEntity> {
         val toReturn = mutableListOf<DataTransferEntity>()
@@ -170,7 +195,7 @@ class GameAPI {
                             RESPAWNTICKS,
                             damageManager.getGold(id),
                             MAXGOLD,
-                                damageManager.getTickTimer()
+                            damageManager.getTickTimer()
                         )
                     )
                 }
@@ -242,8 +267,8 @@ class GameAPI {
                 }
             }
             when (damageManager.dealDamage(
-                    entityManager.getId(entity),
-                    damage
+                entityManager.getId(entity),
+                damage
             )) {
                 DeathState.NONE -> return
                 DeathState.ALIVE -> {
@@ -253,20 +278,22 @@ class GameAPI {
                         is Island -> {
                             val killerId = if (by is Bullet) {
                                 damageManager.getShooterId(entityManager.getId(by))
-                            }
-                            else {
+                            } else {
                                 entityManager.getId(by)
                             }
-                            if (entityManager.getTeamById(entityManager.getId(entity)) != entityManager.getTeamById(killerId))
+                            if (entityManager.getTeamById(entityManager.getId(entity)) != entityManager.getTeamById(
+                                    killerId
+                                )
+                            )
                                 damageManager.getKill(killerId)
                             entityManager.changeTeam(
-                                    entityManager.getId(entity),
-                                    entityManager.getTeamById(
-                                            if (by is Bullet)
-                                                damageManager.getShooterId(entityManager.getId(by))
-                                            else
-                                                entityManager.getId(by)
-                                    )
+                                entityManager.getId(entity),
+                                entityManager.getTeamById(
+                                    if (by is Bullet)
+                                        damageManager.getShooterId(entityManager.getId(by))
+                                    else
+                                        entityManager.getId(by)
+                                )
                             )
 
 
@@ -276,8 +303,7 @@ class GameAPI {
                         is Player -> {
                             val killerId = if (by is Bullet) {
                                 damageManager.getShooterId(entityManager.getId(by))
-                            }
-                            else {
+                            } else {
                                 entityManager.getId(by)
                             }
                             damageManager.getKill(killerId)
@@ -344,7 +370,7 @@ class GameAPI {
         damageManager.reset()
     }
 
-    fun addSkill(playerID: Int, id: Int){
+    fun addSkill(playerID: Int, id: Int) {
         skillManager.addSkill(playerID, id)
     }
 

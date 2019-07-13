@@ -29,12 +29,12 @@ data class IslandProfile(
 //    var shotTimer: Int = 0
 )
 
-const val RESETTICKS     = 300
-const val IMMUNETICKS    = 150
+const val RESETTICKS = 300
+const val IMMUNETICKS = 150
 const val MAXESCAPETICKS = 150
-const val MAXHPTICKS     = 60
-const val RESPAWNTICKS   = 150
-const val MAXGOLD        = 20
+const val MAXHPTICKS = 60
+const val RESPAWNTICKS = 150
+const val MAXGOLD = 30
 
 data class Events(val deadPlayers: List<Int>, val respawnedPlayers: List<Int>)
 class DamageManager {
@@ -43,26 +43,10 @@ class DamageManager {
     private val bulletToShooter: MutableMap<Int, Int>           = emptyMap<Int, Int>().toMutableMap()
     private val islandProfiles:  MutableMap<Int, IslandProfile> = emptyMap<Int, IslandProfile>().toMutableMap()
 
-    fun stopEnd() {
-        gameEnd = false
-    }
 
     fun update(escapedPlayers: List<Int>): Events {
         val deadPlayers = mutableListOf<Int>()
         val respawnedPlayers = mutableListOf<Int>()
-
-        if (!gameEnd) {
-            for (profile in profiles.values) {
-                if (profile.gold >= MAXGOLD) {
-                    gameEnd = true
-                    break
-                }
-            }
-        } else {
-            for (prof_id in profiles.keys) {
-                --profiles[prof_id]!!.resetTicks
-            }
-        }
 
         for (id in profiles.keys) {
             val profile = profiles[id]
@@ -290,5 +274,9 @@ class DamageManager {
         return profiles[id]!!.gold >= gold
     }
 
+
+    fun getIds(): List<Int> {
+        return profiles.keys.toList()
+    }
 
 }
