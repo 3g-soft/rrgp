@@ -368,6 +368,7 @@ class GameAPI {
     fun resetGame() {
         entityManager.reset()
         damageManager.reset()
+        skillManager.reset()
     }
 
     fun addSkill(playerID: Int, id: Int) {

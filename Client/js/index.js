@@ -49,7 +49,13 @@
         }
         for (key in entobj) if (!ent.hasOwnProperty(key)) delete entobj[key]
         entities = Object.values(entobj)
-        if(entobj[ws.id].respTimer > 0)st.reset()
+        if(entobj[ws.id].respTimer > 0 && !st.resetted){
+            st.reset()
+            st.resetted = true;
+        }
+        if(entobj[ws.id].respTimer <= 0){
+            st.resetted = false;
+        }
         st.gold = entobj[ws.id].gold
     }
 

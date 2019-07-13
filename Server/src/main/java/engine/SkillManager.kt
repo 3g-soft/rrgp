@@ -85,6 +85,11 @@ class SkillManager(val dm: DamageManager){
     fun removePlayerId(id: Int){
         playersSkills.remove(id)
     }
+    fun reset(){
+        for(player in playersSkills.values){
+            player.clear()
+        }
+    }
 
     fun updateProfile(id: Int, skill: Skill){
         val profile = dm.getPlayerProfile(id)
