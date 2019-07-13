@@ -45,16 +45,16 @@ class GameAPI {
             }
             if (gameEndTimer == 0) {
                 gameEndTimer--
+                resetGame()
             }
-            return
         }
 
-       if (checkWin()) {
+       if (checkWin() && gameEndTimer < 0) {
            gameEndTimer = RESETTICKS
            for (id in damageManager.getIds()) {
                damageManager.getPlayerProfile(id).resetTicks = RESETTICKS
            }
-           resetGame()
+
        }
 
 
