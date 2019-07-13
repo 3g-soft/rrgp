@@ -58,6 +58,8 @@ class SkillTree {
 
     nodeBykey(i) {
         if (!this.showed) return;
+        if(this.gold < 1)return;
+        this.gold--;
         this.currentNode.nodes[i].activate();
         this.currentNode = this.currentNode.nodes[i];
         this.connection.sendRequest("skill", this.currentNode.id);

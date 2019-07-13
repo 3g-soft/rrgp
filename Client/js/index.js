@@ -131,13 +131,14 @@ function distance(p1, p2) {
 function init() {
     document.addEventListener("keydown", (e) => {
         let you = entities.filter(ent => ent.id == ws.id)[0]
+        console.log(e.keyCode);
         switch (e.keyCode) {
-            case 49:
+            case 74:
                 shot1()
                 highlight.left = true
                 break
 
-            case 50:
+            case 76:
                 shot2()
                 highlight.right = true
                 break
