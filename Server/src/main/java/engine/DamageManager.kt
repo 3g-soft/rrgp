@@ -3,38 +3,38 @@ package engine
 import kotlin.math.min
 
 data class Profile(
-    var maxSpeed: Float = 5f,
-    var turnRate: Float = 0.1f,
-    var bulRange: Float = 500f,
-    var curHP: Int = 50,
-    var maxHP: Int = 50,
-    var hpRegen: Int = 1,
-    var escapeTimer: Int = -1,
-    var hpTimer: Int = 0,
-    var damage: Int = 30,
-    var shotCooldown: Int = 60,
-    var leftShotTimer: Int = 0,
-    var rightShotTimer: Int = 0,
-    var immuneTimer: Int = IMMUNETICKS,
-    var respawnTimer: Int = -1,
-    var gold: Int = 0,
-    var resetTicks: Int = RESETTICKS
+    var maxSpeed:      Float = 10f,
+    var turnRate:      Float = 0.2f,
+    var bulRange:      Float = 500f,
+    var curHP:          Int  = 110,
+    var maxHP:          Int  = 110,
+    var hpRegen:        Int  = 1,
+    var escapeTimer:    Int  = -1,
+    var hpTimer:        Int  = 0,
+    var damage:         Int  = 50,
+    var shotCooldown:   Int  = 40,
+    var leftShotTimer:  Int  = 0,
+    var rightShotTimer: Int  = 0,
+    var immuneTimer:    Int  = IMMUNETICKS,
+    var respawnTimer:   Int  = -1,
+    var gold:           Int  = 0,
+    var resetTicks:     Int  = RESETTICKS
 )
 
 data class IslandProfile(
-    var curHP: Int = 280,
-    var maxHP: Int = 280
+    var curHP: Int = 350,
+    var maxHP: Int = 350
 //    var damage: Int = 30,
 //    var shotCooldown: Int = 60,
 //    var shotTimer: Int = 0
 )
 
-const val RESETTICKS = 100
-const val IMMUNETICKS = 300
+const val RESETTICKS     = 300
+const val IMMUNETICKS    = 150
 const val MAXESCAPETICKS = 150
-const val MAXHPTICKS = 60
-const val RESPAWNTICKS = 300
-const val MAXGOLD = 30
+const val MAXHPTICKS     = 60
+const val RESPAWNTICKS   = 150
+const val MAXGOLD        = 20
 
 data class Events(val deadPlayers: List<Int>, val respawnedPlayers: List<Int>)
 class DamageManager {
@@ -263,7 +263,6 @@ class DamageManager {
     fun getRespawnTimer(id: Int): Int {
         if (id !in profiles.keys) return -1
         return profiles[id]!!.respawnTimer
-
     }
 
     fun isRespawning(id: Int): Boolean {
