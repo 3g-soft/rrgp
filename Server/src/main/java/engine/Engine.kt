@@ -3,7 +3,7 @@ package engine
 
 const val WIDTH = 2000
 const val HEIGHT = 2000
-const val ACCELERATION = 0.1f
+const val ACCELERATION = 0.15f
 
 class Engine {
     private val entities: MutableList<Entity> = emptyList<Entity>().toMutableList()
