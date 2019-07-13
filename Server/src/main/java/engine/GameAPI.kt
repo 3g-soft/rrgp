@@ -311,7 +311,11 @@ class GameAPI {
                             } else {
                                 entityManager.getId(by)
                             }
-                            damageManager.getKill(killerId)
+                            if (entityManager.getTeamById(entityManager.getId(entity)) != entityManager.getTeamById(
+                                    killerId
+                                )
+                            )
+                                damageManager.getKill(killerId)
                             respawnById(entityManager.getId(entity))
                         }
                     }
