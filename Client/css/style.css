@@ -14,3 +14,9 @@ html, body {
     left: 0%;
     position: fixed;
 }
+
+#nekoCanvas {
+    z-index: 0;
+    right: 30%;
+    
+}
