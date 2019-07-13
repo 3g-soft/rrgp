@@ -34,7 +34,7 @@ const val IMMUNETICKS    = 150
 const val MAXESCAPETICKS = 150
 const val MAXHPTICKS = 60
 const val RESPAWNTICKS = 150
-const val MAXGOLD = 5
+const val MAXGOLD = 20
 
 data class Events(val deadPlayers: List<Int>, val respawnedPlayers: List<Int>)
 class DamageManager {
