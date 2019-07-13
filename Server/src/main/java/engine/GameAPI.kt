@@ -40,15 +40,20 @@ class GameAPI {
     fun update() {
         if (gameEndTimer != -1) {
             gameEndTimer--
+            for (id in damageManager.getIds()) {
+                damageManager.getPlayerProfile(id).resetTicks--
+            }
             if (gameEndTimer == 0) {
                 gameEndTimer--
-
             }
             return
         }
 
        if (checkWin()) {
            gameEndTimer = RESETTICKS
+           for (id in damageManager.getIds()) {
+               damageManager.getPlayerProfile(id).resetTicks = RESETTICKS
+           }
            resetGame()
        }
 
@@ -144,14 +149,14 @@ class GameAPI {
     fun getGold(teamId: Int): Int {
         var gold = 0
         for (id in damageManager.getIds()) {
-            if (teamId == entityManager.getTeamById(id)) gold++
+            if (teamId == entityManager.getTeamById(id)) gold += damageManager.getGold(id)
         }
         return gold
     }
 
     fun checkWin(): Boolean {
-        if (getGold(0) > MAXGOLD) return true
-        if (getGold(1) > MAXGOLD) return true
+        if (getGold(0) >= MAXGOLD) return true
+        if (getGold(1) >= MAXGOLD) return true
         return false
     }
 

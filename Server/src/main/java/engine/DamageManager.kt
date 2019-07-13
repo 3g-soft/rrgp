@@ -18,7 +18,7 @@ data class Profile(
     var immuneTimer:    Int  = IMMUNETICKS,
     var respawnTimer:   Int  = -1,
     var gold:           Int  = 0,
-    var resetTicks:     Int  = RESETTICKS
+    var resetTicks:     Int  = 0
 )
 
 data class IslandProfile(
@@ -32,9 +32,9 @@ data class IslandProfile(
 const val RESETTICKS     = 300
 const val IMMUNETICKS    = 150
 const val MAXESCAPETICKS = 150
-const val MAXHPTICKS     = 60
-const val RESPAWNTICKS   = 150
-const val MAXGOLD        = 5
+const val MAXHPTICKS = 60
+const val RESPAWNTICKS = 150
+const val MAXGOLD = 2
 
 data class Events(val deadPlayers: List<Int>, val respawnedPlayers: List<Int>)
 class DamageManager {
